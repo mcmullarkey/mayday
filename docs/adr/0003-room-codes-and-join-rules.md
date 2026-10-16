@@ -1,6 +1,6 @@
 # ADR-0003: Room codes and join rules
 
-Status: Accepted (2026-10-16)
+Status: Accepted (2026-10-16). Code lifetime amended by ADR-0007.
 
 ## Context
 
