@@ -20,8 +20,22 @@ function renderLobby(view) {
     : `${crew} aboard. Waiting for the Captain to cast off.`;
 }
 
-const socket = openSocket("/ws/play", (view) => {
-  if (view.screen === "lobby") renderLobby(view);
+const REFUSALS = {
+  wrong_code: "That code doesn't match the TV. Check the letters and try again.",
+  name_taken: "Someone aboard already has that name. Pick another.",
+  bad_name: "Names need 1 to 12 characters.",
+  room_full: "This ship is full: 8 crew already aboard.",
+};
+
+function renderRefusal(reason) {
+  $("join-error").textContent = REFUSALS[reason] ?? "Couldn't join. Try again.";
+  $("join-error").hidden = false;
+  $("join").disabled = false;
+}
+
+const socket = openSocket("/ws/play", (message) => {
+  if (message.t === "refused") renderRefusal(message.reason);
+  if (message.t === "view" && message.screen === "lobby") renderLobby(message);
 });
 
 const prefill = new URLSearchParams(location.search).get("code");
@@ -29,6 +43,8 @@ if (prefill) $("code").value = prefill.toUpperCase();
 
 $("join-screen").addEventListener("submit", async (event) => {
   event.preventDefault();
+  $("join-error").hidden = true;
+  $("join").disabled = true;
   await socket.ready;
   socket.send({ t: "join", code: $("code").value.trim().toUpperCase(), name: $("name").value.trim() });
 });

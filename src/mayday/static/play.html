@@ -27,6 +27,8 @@
     margin-top: auto; border: 0; border-radius: 12px; background: var(--flare); color: #fff;
     font: 800 19px var(--body); padding: 18px; cursor: pointer;
   }
+  .error { margin: 0; padding: 12px 14px; border-radius: 10px; background: rgba(255, 82, 51, 0.16); border: 1px solid var(--flare); font-size: 15px; font-weight: 600; }
+  button:disabled { opacity: 0.6; }
   .note { font-size: 13px; color: var(--dim); text-align: center; margin: 0; }
   .aboard { flex: 1; display: grid; align-content: center; gap: 14px; text-align: center; }
   .aboard h1 { font: 900 56px/0.95 var(--display); margin: 0; }
@@ -44,6 +46,7 @@
   <label class="field" for="name"><span class="label">Your name</span>
     <input id="name" name="name" maxlength="12" autocapitalize="words" spellcheck="false" required>
   </label>
+  <p class="error" id="join-error" role="alert" hidden></p>
   <button type="submit" id="join">Climb aboard</button>
   <p class="note">Up to 8 crew per game.</p>
 </form>

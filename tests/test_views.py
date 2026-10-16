@@ -1,4 +1,4 @@
-from mayday.lobby import Lobby, Player, PlayerId, join
+from mayday.lobby import Lobby, PlayerId, join
 from mayday.room_code import RoomCode
 from mayday.views import host_view, player_view
 
@@ -8,7 +8,9 @@ JOIN_URL = "http://192.168.0.10:8000"
 def _lobby_with(*names: str) -> Lobby:
     lobby = Lobby(code=RoomCode("MXQT"))
     for i, name in enumerate(names):
-        lobby = join(lobby, Player(id=PlayerId(f"p{i}"), name=name))
+        result = join(lobby, lobby.code, name, PlayerId(f"p{i}"))
+        assert isinstance(result, Lobby)
+        lobby = result
     return lobby
 
 

@@ -8,9 +8,7 @@ Does not: send anything, or change game state.
 
 from typing import Literal, TypedDict
 
-from mayday.lobby import Lobby, Player, PlayerId
-
-MAX_PLAYERS = 8
+from mayday.lobby import MAX_PLAYERS, Lobby, Player, PlayerId
 
 
 class CrewMember(TypedDict):
@@ -35,7 +33,7 @@ class PlayerLobbyView(TypedDict):
 
 
 def _crew_member(lobby: Lobby, player: Player) -> CrewMember:
-    return {"name": player.name, "captain": player == lobby.captain}
+    return {"name": str(player.name), "captain": player == lobby.captain}
 
 
 def host_view(lobby: Lobby, join_url: str) -> HostLobbyView:

@@ -34,6 +34,6 @@ function renderLobby(view) {
     : "Waiting for crew to climb aboard";
 }
 
-openSocket("/ws/host", (view) => {
-  if (view.screen === "lobby") renderLobby(view);
+openSocket("/ws/host", (message) => {
+  if (message.t === "view" && message.screen === "lobby") renderLobby(message);
 });

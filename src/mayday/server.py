@@ -7,6 +7,7 @@ Also serves the TV and phone pages.
 Does not: contain game rules (lobby) or decide what a screen shows (views).
 """
 
+import json
 import random
 import secrets
 from pathlib import Path
@@ -17,11 +18,25 @@ from starlette.routing import Mount, Route, WebSocketRoute
 from starlette.staticfiles import StaticFiles
 from starlette.websockets import WebSocket, WebSocketDisconnect
 
-from mayday.lobby import Lobby, Player, PlayerId, join
+from mayday.lobby import JoinRefusal, Lobby, PlayerId, join
 from mayday.room_code import new_room_code
 from mayday.views import host_view, player_view
 
 STATIC = Path(__file__).parent / "static"
+
+
+def _parse_intent(raw: str) -> dict:
+    """Untrusted phone input: anything that isn't a JSON object becomes an empty intent."""
+    try:
+        intent = json.loads(raw)
+    except json.JSONDecodeError:
+        return {}
+    return intent if isinstance(intent, dict) else {}
+
+
+def _text(intent: dict, key: str) -> str:
+    value = intent.get(key)
+    return value if isinstance(value, str) else ""
 
 
 class Table:
@@ -55,16 +70,23 @@ def create_app(join_url: str, rng: random.Random | None = None) -> Starlette:
         finally:
             table.hosts.discard(ws)
 
+    async def handle_join(ws: WebSocket, intent: dict) -> None:
+        player_id = PlayerId(secrets.token_hex(8))
+        result = join(table.lobby, _text(intent, "code"), _text(intent, "name"), player_id)
+        if isinstance(result, JoinRefusal):
+            await ws.send_json({"t": "refused", "reason": result.value})
+            return
+        table.lobby = result
+        table.phones[ws] = player_id
+        await table.send_views()
+
     async def play_socket(ws: WebSocket) -> None:
         await ws.accept()
         try:
             while True:
-                intent = await ws.receive_json()
+                intent = _parse_intent(await ws.receive_text())
                 if intent.get("t") == "join" and ws not in table.phones:
-                    player = Player(id=PlayerId(secrets.token_hex(8)), name=intent["name"])
-                    table.lobby = join(table.lobby, player)
-                    table.phones[ws] = player.id
-                    await table.send_views()
+                    await handle_join(ws, intent)
         except WebSocketDisconnect:
             pass
         finally:
