@@ -7,17 +7,18 @@ import json
 import threading
 import time
 from collections.abc import Iterator
+from contextlib import contextmanager
 
 import pytest
 import uvicorn
 from websockets.sync.client import ClientConnection
 
 
-@pytest.fixture
-def server_address() -> Iterator[str]:
+@contextmanager
+def running_server(**app_options) -> Iterator[str]:
     from mayday.server import create_app
 
-    app = create_app(join_url="http://192.168.0.10:8000")
+    app = create_app(join_url="http://192.168.0.10:8000", **app_options)
     config = uvicorn.Config(app, host="127.0.0.1", port=0, log_level="warning")
     server = uvicorn.Server(config)
     thread = threading.Thread(target=server.run, daemon=True)
@@ -28,14 +29,37 @@ def server_address() -> Iterator[str]:
             raise RuntimeError("test server did not start")
         time.sleep(0.01)
     port = server.servers[0].sockets[0].getsockname()[1]
-    yield f"127.0.0.1:{port}"
-    server.should_exit = True
-    thread.join(timeout=5)
+    try:
+        yield f"127.0.0.1:{port}"
+    finally:
+        server.should_exit = True
+        thread.join(timeout=5)
 
 
-def receive_view(connection: ClientConnection) -> dict:
+@pytest.fixture
+def server_address() -> Iterator[str]:
+    with running_server() as address:
+        yield address
+
+
+@pytest.fixture
+def quick_server_address() -> Iterator[str]:
+    """A server whose questions close after half a second."""
+    with running_server(question_seconds=0.5) as address:
+        yield address
+
+
+def receive_view(connection: ClientConnection, timeout: float = 2) -> dict:
     """Read messages until the next screen view arrives."""
     while True:
-        message = json.loads(connection.recv(timeout=2))
+        message = json.loads(connection.recv(timeout=timeout))
         if message["t"] == "view":
             return message
+
+
+def receive_screen(connection: ClientConnection, screen: str, timeout: float = 2) -> dict:
+    """Read views until one for `screen` arrives."""
+    while True:
+        view = receive_view(connection, timeout)
+        if view["screen"] == screen:
+            return view
