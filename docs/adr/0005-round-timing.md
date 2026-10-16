@@ -1,6 +1,6 @@
 # ADR-0005: Round timing: server deadline, relative countdown on screens
 
-Status: Accepted (2026-10-16)
+Status: Accepted (2026-10-16). `expire` generalized to `tick` by ADR-0006.
 
 ## Context
 
