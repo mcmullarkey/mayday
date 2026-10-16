@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07162a">
+<title>Mayday!</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@700;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="/static/mayday.css">
+<style>
+  body {
+    display: flex; flex-direction: column;
+    padding: max(20px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
+  }
+  .screen { flex: 1; display: flex; flex-direction: column; gap: 18px; max-width: 420px; width: 100%; margin: 0 auto; }
+  .logo { font-size: 52px; }
+  .field { display: grid; gap: 6px; }
+  .label { font-size: 11px; }
+  input {
+    width: 100%; border: 0; border-radius: 10px; background: var(--foam); color: var(--deep);
+    font: 700 20px var(--body); padding: 14px;
+  }
+  input:focus-visible, button:focus-visible { outline: 3px solid var(--brass); outline-offset: 2px; }
+  #code { font: 900 34px var(--display); letter-spacing: 0.3em; text-transform: uppercase; padding: 8px 14px; }
+  button {
+    margin-top: auto; border: 0; border-radius: 12px; background: var(--flare); color: #fff;
+    font: 800 19px var(--body); padding: 18px; cursor: pointer;
+  }
+  .note { font-size: 13px; color: var(--dim); text-align: center; margin: 0; }
+  .aboard { flex: 1; display: grid; align-content: center; gap: 14px; text-align: center; }
+  .aboard h1 { font: 900 56px/0.95 var(--display); margin: 0; }
+  .aboard .name { font-size: 26px; font-weight: 800; }
+  .aboard .badge { justify-self: center; font-size: 12px; padding: 4px 10px; }
+  .aboard p { margin: 0; color: var(--dim); font-size: 15px; }
+</style>
+</head>
+<body>
+<form class="screen" id="join-screen" autocomplete="off">
+  <div class="logo">MAYDAY<span>!</span></div>
+  <label class="field" for="code"><span class="label">Room code (it's on the TV)</span>
+    <input id="code" name="code" maxlength="4" inputmode="text" autocapitalize="characters" spellcheck="false" required>
+  </label>
+  <label class="field" for="name"><span class="label">Your name</span>
+    <input id="name" name="name" maxlength="12" autocapitalize="words" spellcheck="false" required>
+  </label>
+  <button type="submit" id="join">Climb aboard</button>
+  <p class="note">Up to 8 crew per game.</p>
+</form>
+
+<section class="screen" id="lobby-screen" hidden>
+  <div class="logo" style="font-size:32px">MAYDAY<span>!</span></div>
+  <div class="aboard">
+    <h1>You're aboard</h1>
+    <div class="name" id="you-name"></div>
+    <span class="badge" id="you-captain" hidden>Captain</span>
+    <p id="lobby-note"></p>
+  </div>
+</section>
+<script type="module" src="/static/play.js"></script>
+</body>
+</html>

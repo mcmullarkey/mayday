@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mayday! · TV</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@700;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="/static/mayday.css">
+<style>
+  /* TV is 16:9 and fullscreen: size everything off the viewport width. */
+  body { overflow: hidden; }
+  .lobby { position: fixed; inset: 0; display: grid; grid-template-columns: 1.05fr 1fr; gap: 3vw; padding: 3.4vw 4vw; }
+  .left { display: grid; align-content: space-between; }
+  .left .logo { font-size: 8.5vw; }
+  .sub { font-size: 1.1vw; margin-top: 0.8vw; }
+  .join { display: grid; gap: 0.6vw; }
+  .join .label { font-size: 1.1vw; }
+  .url { font-family: var(--mono); font-size: 2.2vw; }
+  .code { font-family: var(--display); font-weight: 900; font-size: 9vw; line-height: 0.9; letter-spacing: 0.12em; color: var(--brass); }
+  .berths { display: grid; grid-template-rows: auto 1fr auto; gap: 1.4vw; min-width: 0; }
+  .berths-head { display: flex; justify-content: space-between; font-size: 1.15vw; }
+  .berths-head b { color: var(--foam); font-weight: 500; }
+  .list { display: grid; grid-template-columns: 1fr 1fr; gap: 1vw; align-content: start; margin: 0; padding: 0; list-style: none; }
+  .berth { display: flex; align-items: center; gap: 1vw; background: rgba(243,238,226,.07); border: 0.12vw solid var(--line); border-radius: 0.6vw; padding: 1vw 1.2vw; font-size: 1.75vw; font-weight: 600; min-width: 0; }
+  .berth .no { font-family: var(--mono); font-size: 1vw; color: var(--dim); font-weight: 400; }
+  .berth .name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .berth.empty { border-style: dashed; background: transparent; color: var(--dim); font-weight: 400; font-style: italic; }
+  .berth.captain { border-color: var(--brass); }
+  .berth .badge { margin-left: auto; font-size: 0.9vw; padding: 0.2vw 0.6vw; }
+  .foot { font-size: 1.6vw; display: flex; align-items: center; gap: 1vw; }
+  .foot .blink { width: 1vw; height: 1vw; }
+</style>
+</head>
+<body>
+<main class="lobby" id="lobby">
+  <section class="left">
+    <div>
+      <div class="logo">MAYDAY<span>!</span></div>
+      <div class="label sub">Sea Disaster Trivia</div>
+    </div>
+    <div class="join">
+      <span class="label">On your phone, go to</span>
+      <span class="url" id="join-url">…</span>
+      <span class="label">Room code</span>
+      <span class="code" id="room-code">····</span>
+    </div>
+  </section>
+  <section class="berths" aria-label="Crew manifest">
+    <div class="berths-head label"><span>Crew manifest</span><b id="berth-count">0 / 8 berths</b></div>
+    <ol class="list" id="berths"></ol>
+    <div class="foot"><span class="blink"></span><span id="status">Waiting for crew to climb aboard</span></div>
+  </section>
+</main>
+<script type="module" src="/static/host.js"></script>
+</body>
+</html>

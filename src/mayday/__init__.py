@@ -1,2 +1,1 @@
-def main() -> None:
-    print("Hello from mayday!")
+"""Mayday: a Jackbox-style party game about disasters at sea."""

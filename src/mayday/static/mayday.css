@@ -1,0 +1,35 @@
+/* Mayday! shared look: night sea, stencilled hull lettering, signal-flag colors.
+   Single dark theme on purpose: this runs on a TV and on phones in a dim room. */
+:root {
+  --deep: #07162a;
+  --hull: #0e2a45;
+  --swell: #173d5f;
+  --foam: #f3eee2;
+  --flare: #ff5233;
+  --brass: #e6b44c;
+  --dim: #8aa3b8;
+  --line: rgba(243, 238, 226, 0.16);
+  --display: "Big Shoulders Stencil Display", "Big Shoulders Stencil", "Stardos Stencil", Impact, "Arial Narrow", sans-serif;
+  --body: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  background: radial-gradient(120% 90% at 20% 0%, var(--swell) 0%, var(--hull) 45%, var(--deep) 100%) fixed;
+  background-color: var(--deep);
+  color: var(--foam);
+  font-family: var(--body);
+}
+[hidden] { display: none !important; }
+.logo { font-family: var(--display); font-weight: 900; line-height: 0.85; letter-spacing: 0.02em; }
+.logo span { color: var(--flare); }
+.label { font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.1em; color: var(--dim); }
+.badge {
+  font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--deep); background: var(--brass); border-radius: 4px; font-weight: 500;
+}
+.blink { border-radius: 50%; background: var(--flare); animation: blink 1.4s steps(2, start) infinite; flex: none; }
+@keyframes blink { 50% { opacity: 0.2; } }
+@media (prefers-reduced-motion: reduce) { .blink { animation: none; } }
