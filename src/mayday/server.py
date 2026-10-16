@@ -55,6 +55,7 @@ class Table:
         self.join_url = join_url
         self.hosts: set[WebSocket] = set()
         self.phones: dict[WebSocket, PlayerId] = {}
+        self.tokens: dict[str, PlayerId] = {}  # rejoin secrets (ADR-0009)
         self._clock_task: asyncio.Task | None = None
 
     async def send_views(self) -> None:
@@ -152,6 +153,21 @@ def create_app(
         if not isinstance(result, StrEnum):
             table.phones[ws] = player_id
         await settle(ws, result)
+        if not isinstance(result, StrEnum):
+            token = secrets.token_hex(16)
+            table.tokens[token] = player_id
+            await ws.send_json({"t": "welcome", "token": token})
+
+    async def handle_rejoin(ws: WebSocket, intent: dict) -> None:
+        player_id = table.tokens.get(_text(intent, "token"))
+        if player_id is None:
+            await settle(ws, JoinRefusal.UNKNOWN_PLAYER)
+            return
+        for other, pid in list(table.phones.items()):
+            if pid == player_id:
+                del table.phones[other]
+        table.phones[ws] = player_id
+        await table.send_views()
 
     async def handle_captain_or_answer(ws: WebSocket, player_id: PlayerId, intent: dict) -> None:
         now = time.monotonic()
@@ -176,6 +192,8 @@ def create_app(
                 if player_id is None:
                     if intent.get("t") == "join":
                         await handle_join(ws, intent)
+                    elif intent.get("t") == "rejoin":
+                        await handle_rejoin(ws, intent)
                 else:
                     await handle_captain_or_answer(ws, player_id, intent)
         except WebSocketDisconnect:

@@ -128,11 +128,14 @@ openSocket(
   (message) => {
     if (message.t === "view") RENDER[message.screen]?.(message);
   },
-  (code) => {
-    if (code === 4401) {
-      $("room-code").textContent = "····";
-      $("join-url").textContent = "This TV needs the host key";
-      $("status").textContent = "Open this page as /host?key=YOUR-KEY";
-    }
+  {
+    onClose: (code) => {
+      if (code === 4401) {
+        show("lobby");
+        $("room-code").textContent = "····";
+        $("join-url").textContent = "This TV needs the host key";
+        $("status").textContent = "Open this page as /host?key=YOUR-KEY";
+      }
+    },
   },
 );

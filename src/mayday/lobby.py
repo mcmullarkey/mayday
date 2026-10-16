@@ -51,6 +51,7 @@ class JoinRefusal(StrEnum):
     ROOM_FULL = "room_full"
     GAME_STARTED = "game_started"
     TOO_MANY_GUESSES = "too_many_guesses"
+    UNKNOWN_PLAYER = "unknown_player"  # rejoin with a token the server doesn't know (ADR-0009)
 
 
 @dataclass(frozen=True)

@@ -117,6 +117,7 @@ const REFUSALS = {
   bad_name: "Names need 1 to 12 characters.",
   room_full: "This ship is full: 8 crew already aboard.",
   game_started: "A game is underway. Wait for the Captain to head back to the lobby.",
+  offline: "Can't reach the ship. Check your WiFi; we'll keep trying.",
   too_many_guesses: "Too many wrong codes. Wait a few minutes, then check the TV and try again.",
 };
 
@@ -126,13 +127,49 @@ function renderRefusal(reason) {
   $("join").disabled = false;
 }
 
-const socket = openSocket("/ws/play", (message) => {
+// Rejoin token (ADR-0009): kept on this phone so a dropped socket comes back as the same player.
+const TOKEN_KEY = "mayday-token";
+const storage = {
+  get: () => {
+    try {
+      return localStorage.getItem(TOKEN_KEY);
+    } catch {
+      return null;
+    }
+  },
+  set: (token) => {
+    try {
+      localStorage.setItem(TOKEN_KEY, token);
+    } catch {}
+  },
+  clear: () => {
+    try {
+      localStorage.removeItem(TOKEN_KEY);
+    } catch {}
+  },
+};
+
+function handleMessage(message) {
+  if (message.t === "welcome") storage.set(message.token);
+  if (message.t === "refused" && message.reason === "unknown_player") {
+    storage.clear();
+    show("join-screen");
+    $("join").disabled = false;
+    return;
+  }
   if (message.t === "refused") renderRefusal(message.reason);
   if (message.t === "view" && message.screen === "lobby") renderLobby(message);
   if (message.t === "view" && message.screen === "question") renderQuestion(message);
   if (message.t === "view" && message.screen === "reveal") renderReveal(message);
   if (message.t === "view" && message.screen === "standings") renderStandings(message);
   if (message.t === "view" && message.screen === "final") renderFinal(message);
+}
+
+const socket = openSocket("/ws/play", handleMessage, {
+  onOpen: () => {
+    const token = storage.get();
+    if (token) socket.send({ t: "rejoin", token });
+  },
 });
 
 for (const [id, intent] of [["play-again", "again"], ["to-lobby", "lobby"]]) {
@@ -153,8 +190,11 @@ if (prefill) $("code").value = prefill.toUpperCase();
 
 $("join-screen").addEventListener("submit", async (event) => {
   event.preventDefault();
+  if (!socket.isOpen()) {
+    renderRefusal("offline");
+    return;
+  }
   $("join-error").hidden = true;
   $("join").disabled = true;
-  await socket.ready;
   socket.send({ t: "join", code: $("code").value.trim().toUpperCase(), name: $("name").value.trim() });
 });

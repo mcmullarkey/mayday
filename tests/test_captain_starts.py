@@ -6,7 +6,7 @@ from importlib.resources import files
 
 from websockets.sync.client import ClientConnection, connect
 
-from conftest import receive_view
+from conftest import receive_reply, receive_view
 
 BANK = json.loads(files("mayday").joinpath("questions/sea_disasters.json").read_text())
 PROMPTS = {q["prompt"] for q in BANK}
@@ -17,7 +17,7 @@ def _send(ws: ClientConnection, intent: dict) -> None:
 
 
 def _recv(ws: ClientConnection) -> dict:
-    return json.loads(ws.recv(timeout=2))
+    return receive_reply(ws)
 
 
 def test_captain_casts_off_and_question_one_appears_everywhere(server_address: str) -> None:

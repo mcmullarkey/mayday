@@ -16,20 +16,19 @@ def _recv(ws: ClientConnection) -> dict:
     return json.loads(ws.recv(timeout=2))
 
 
-def _join(address: str, code: str, name: str) -> tuple[ClientConnection, str]:
-    phone = connect(f"ws://{address}/ws/play")
+def _join(phone: ClientConnection, code: str, name: str) -> str:
     _send(phone, {"t": "join", "code": code, "name": name})
     while (message := _recv(phone))["t"] != "welcome":
         assert message["t"] == "view"
-    return phone, message["token"]
+    return message["token"]
 
 
 def test_dropped_phone_rejoins_as_the_same_player(server_address: str) -> None:
     with connect(f"ws://{server_address}/ws/host") as tv:
         code = receive_view(tv)["code"]
-        dana, dana_token = _join(server_address, code, "Dana")
-        bev, _ = _join(server_address, code, "Bev")
-        with bev:
+        with connect(f"ws://{server_address}/ws/play") as dana, connect(f"ws://{server_address}/ws/play") as bev:
+            dana_token = _join(dana, code, "Dana")
+            _join(bev, code, "Bev")
             dana.close()
 
             with connect(f"ws://{server_address}/ws/play") as dana_again:

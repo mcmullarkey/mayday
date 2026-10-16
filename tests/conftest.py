@@ -65,3 +65,11 @@ def receive_screen(connection: ClientConnection, screen: str, timeout: float = 2
         view = receive_view(connection, timeout)
         if view["screen"] == screen:
             return view
+
+
+def receive_reply(connection: ClientConnection, timeout: float = 2) -> dict:
+    """Read until a direct reply (e.g. a refusal), skipping views and join welcomes."""
+    while True:
+        message = json.loads(connection.recv(timeout=timeout))
+        if message["t"] not in ("view", "welcome"):
+            return message
