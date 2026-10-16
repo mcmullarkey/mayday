@@ -79,8 +79,13 @@ class Table:
         if not isinstance(self.game, Trivia) or (wakes_at := self.game.wakes_at) is None:
             return
         await asyncio.sleep(max(0.0, wakes_at - time.monotonic()))
-        if isinstance(self.game, Trivia):
-            await self.apply(tick(self.game, time.monotonic()))
+        if not isinstance(self.game, Trivia):
+            return
+        ticked = tick(self.game, time.monotonic())
+        if ticked is self.game:  # woke a hair early: nothing due yet, so don't resend views
+            self._run_clock()
+            return
+        await self.apply(ticked)
 
 
 async def _send_quietly(ws: WebSocket, message: dict) -> None:
