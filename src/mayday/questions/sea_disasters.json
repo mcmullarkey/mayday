@@ -1,0 +1,299 @@
+[
+  {
+    "id": "titanic-year",
+    "category": "Titanic",
+    "prompt": "In what year did the RMS Titanic sink?",
+    "choices": ["1905", "1912", "1915", "1921"],
+    "answer": 1,
+    "fact": "She hit the iceberg late on 14 April and was gone by 2:20 a.m. on the 15th. More than 1,500 people died.",
+    "source": "https://en.wikipedia.org/wiki/Titanic"
+  },
+  {
+    "id": "titanic-lifeboats",
+    "category": "Titanic",
+    "prompt": "How many lifeboats did the Titanic carry?",
+    "choices": ["12", "32", "20", "48"],
+    "answer": 2,
+    "fact": "Room for about 1,178 people, roughly half of those aboard. It was still more than the law required.",
+    "source": "https://en.wikipedia.org/wiki/Lifeboats_of_the_Titanic"
+  },
+  {
+    "id": "titanic-rescue",
+    "category": "Titanic",
+    "prompt": "Which ship raced through the ice to pick up the Titanic's survivors?",
+    "choices": ["Californian", "Olympic", "Mauretania", "Carpathia"],
+    "answer": 3,
+    "fact": "The Californian was close enough to see Titanic's distress rockets, and did nothing.",
+    "source": "https://en.wikipedia.org/wiki/RMS_Carpathia"
+  },
+  {
+    "id": "titanic-bandleader",
+    "category": "Titanic",
+    "prompt": "What was the name of the Titanic's bandleader, who kept playing as the ship went down?",
+    "choices": ["Wallace Hartley", "Edward Smith", "Bruce Ismay", "Harold Bride"],
+    "answer": 0,
+    "fact": "His violin was recovered and sold at auction in 2013 for about £900,000 before fees.",
+    "source": "https://en.wikipedia.org/wiki/Wallace_Hartley"
+  },
+  {
+    "id": "titanic-depth",
+    "category": "Titanic",
+    "prompt": "Roughly how deep does the Titanic wreck lie?",
+    "choices": ["1,000 feet", "5,000 feet", "12,500 feet", "30,000 feet"],
+    "answer": 2,
+    "fact": "About 3,800 metres down. Robert Ballard and Jean-Louis Michel found it in 1985.",
+    "source": "https://en.wikipedia.org/wiki/Wreck_of_the_Titanic"
+  },
+  {
+    "id": "titanic-solas",
+    "category": "Titanic",
+    "prompt": "Which international rulebook was written because the Titanic sank?",
+    "choices": ["The Geneva Convention", "Safety of Life at Sea (SOLAS)", "The Law of the Sea", "The Plimsoll Act"],
+    "answer": 1,
+    "fact": "The first SOLAS convention, in 1914, required lifeboat space for everyone aboard and a 24-hour radio watch.",
+    "source": "https://en.wikipedia.org/wiki/International_Convention_for_the_Safety_of_Life_at_Sea"
+  },
+  {
+    "id": "britannic",
+    "category": "Titanic",
+    "prompt": "Which of Titanic's sister ships sank in 1916 after hitting a mine while serving as a hospital ship?",
+    "choices": ["Olympic", "Lusitania", "Britannic", "Carpathia"],
+    "answer": 2,
+    "fact": "Stewardess Violet Jessop survived both the Titanic and the Britannic.",
+    "source": "https://en.wikipedia.org/wiki/HMHS_Britannic"
+  },
+  {
+    "id": "fitzgerald-lake",
+    "category": "Great Lakes",
+    "prompt": "The SS Edmund Fitzgerald went down in November 1975 on which Great Lake?",
+    "choices": ["Lake Michigan", "Lake Superior", "Lake Huron", "Lake Erie"],
+    "answer": 1,
+    "fact": "All 29 crew were lost. Gordon Lightfoot's 1976 song made her the most famous Great Lakes wreck.",
+    "source": "https://en.wikipedia.org/wiki/SS_Edmund_Fitzgerald"
+  },
+  {
+    "id": "fitzgerald-cargo",
+    "category": "Great Lakes",
+    "prompt": "What was the Edmund Fitzgerald carrying when she sank?",
+    "choices": ["Coal", "Grain", "Copper", "Iron ore pellets"],
+    "answer": 3,
+    "fact": "About 26,000 tons of taconite pellets, bound for Detroit.",
+    "source": "https://en.wikipedia.org/wiki/SS_Edmund_Fitzgerald"
+  },
+  {
+    "id": "eastland",
+    "category": "Great Lakes",
+    "prompt": "In 1915 the SS Eastland rolled onto her side while still tied up at the dock. In which city?",
+    "choices": ["Chicago", "Detroit", "Cleveland", "Milwaukee"],
+    "answer": 0,
+    "fact": "844 people died in the Chicago River, most of them employees heading to a company picnic.",
+    "source": "https://en.wikipedia.org/wiki/SS_Eastland"
+  },
+  {
+    "id": "lusitania",
+    "category": "War at Sea",
+    "prompt": "A German U-boat sank the RMS Lusitania in 1915 off the coast of which country?",
+    "choices": ["France", "Norway", "Ireland", "Scotland"],
+    "answer": 2,
+    "fact": "1,198 people died, 128 of them American, which helped turn US opinion against Germany.",
+    "source": "https://en.wikipedia.org/wiki/RMS_Lusitania"
+  },
+  {
+    "id": "indianapolis",
+    "category": "War at Sea",
+    "prompt": "Just before she was torpedoed in 1945, the USS Indianapolis delivered parts for what?",
+    "choices": ["The first atomic bomb used in war", "A new aircraft carrier", "Radar stations", "The Panama Canal locks"],
+    "answer": 0,
+    "fact": "Of about 1,195 men aboard, only 316 survived days in the water. Quint tells the story in Jaws.",
+    "source": "https://en.wikipedia.org/wiki/USS_Indianapolis_(CA-35)"
+  },
+  {
+    "id": "gustloff",
+    "category": "War at Sea",
+    "prompt": "The Wilhelm Gustloff, sunk in 1945, is the deadliest single ship sinking ever. Who was mostly aboard?",
+    "choices": ["Allied prisoners of war", "Civilians fleeing the advancing Soviet army", "Gold from the Reichsbank", "Navy cadets on a training cruise"],
+    "answer": 1,
+    "fact": "Estimates of the dead run past 9,000, several times the Titanic's toll.",
+    "source": "https://en.wikipedia.org/wiki/MV_Wilhelm_Gustloff"
+  },
+  {
+    "id": "kursk",
+    "category": "War at Sea",
+    "prompt": "The submarine Kursk sank in the Barents Sea in 2000. Which navy did she belong to?",
+    "choices": ["Russian", "Norwegian", "British", "American"],
+    "answer": 0,
+    "fact": "A faulty torpedo exploded during an exercise. All 118 crew died.",
+    "source": "https://en.wikipedia.org/wiki/Russian_submarine_Kursk_(K-141)"
+  },
+  {
+    "id": "halifax",
+    "category": "War at Sea",
+    "prompt": "In 1917 a munitions ship collided with another vessel and caused the biggest man-made explosion before the atomic bomb. Which harbour?",
+    "choices": ["Halifax", "Liverpool", "Boston", "Le Havre"],
+    "answer": 0,
+    "fact": "The SS Mont-Blanc blew up after colliding with the SS Imo. About 2,000 people were killed.",
+    "source": "https://en.wikipedia.org/wiki/Halifax_Explosion"
+  },
+  {
+    "id": "vasa",
+    "category": "Warships",
+    "prompt": "The Swedish warship Vasa capsized on her maiden voyage in 1628. How far did she get?",
+    "choices": ["About 20 miles", "Halfway to Finland", "Less than a mile", "She never left the dock"],
+    "answer": 2,
+    "fact": "She sank about 1,300 metres out. Raised in 1961, she is now a museum in Stockholm and around 98% original.",
+    "source": "https://en.wikipedia.org/wiki/Vasa_(ship)"
+  },
+  {
+    "id": "mary-rose",
+    "category": "Warships",
+    "prompt": "The Mary Rose sank in 1545 in front of the very king whose flagship she was. Which king?",
+    "choices": ["Richard III", "Henry VIII", "Charles I", "Edward VI"],
+    "answer": 1,
+    "fact": "She was raised from the Solent in 1982, watched live on TV by an estimated 60 million people.",
+    "source": "https://en.wikipedia.org/wiki/Mary_Rose"
+  },
+  {
+    "id": "birkenhead",
+    "category": "Warships",
+    "prompt": "The 1852 wreck of HMS Birkenhead is credited with starting which rule?",
+    "choices": ["Captain goes down with the ship", "Women and children first", "Mayday as a distress call", "No swimming after dark"],
+    "answer": 1,
+    "fact": "The soldiers aboard stood in ranks on deck so the women and children could reach the boats.",
+    "source": "https://en.wikipedia.org/wiki/HMS_Birkenhead_(1845)"
+  },
+  {
+    "id": "bounty-island",
+    "category": "Mutiny",
+    "prompt": "After the 1789 mutiny on the Bounty, where did the mutineers hide from the Royal Navy?",
+    "choices": ["Tahiti", "Easter Island", "Norfolk Island", "Pitcairn Island"],
+    "answer": 3,
+    "fact": "They burned the Bounty there. Their descendants still live on Pitcairn today.",
+    "source": "https://en.wikipedia.org/wiki/Mutiny_on_the_Bounty"
+  },
+  {
+    "id": "bounty-bligh",
+    "category": "Mutiny",
+    "prompt": "Set adrift by the mutineers, Captain Bligh sailed an open boat about 3,600 nautical miles. Where did he land?",
+    "choices": ["Timor", "New Zealand", "Hawaii", "Cape Horn"],
+    "answer": 0,
+    "fact": "It took 47 days with 18 men in a 23-foot launch. Bligh lost only one of them on the voyage.",
+    "source": "https://en.wikipedia.org/wiki/William_Bligh"
+  },
+  {
+    "id": "batavia",
+    "category": "Mutiny",
+    "prompt": "The Dutch ship Batavia wrecked in 1629 and a mutineer took over the survivors' islands. Off which coast?",
+    "choices": ["South Africa", "Western Australia", "Madagascar", "Sri Lanka"],
+    "answer": 1,
+    "fact": "Jeronimus Cornelisz and his followers murdered more than 100 survivors before rescue arrived.",
+    "source": "https://en.wikipedia.org/wiki/Batavia_(ship)"
+  },
+  {
+    "id": "essex",
+    "category": "Mysteries & Monsters",
+    "prompt": "What sank the whaleship Essex in the Pacific in 1820?",
+    "choices": ["A typhoon", "A reef", "A sperm whale", "A fire in the try-works"],
+    "answer": 2,
+    "fact": "The whale rammed the ship twice. The story inspired Herman Melville's Moby-Dick.",
+    "source": "https://en.wikipedia.org/wiki/Essex_(whaleship)"
+  },
+  {
+    "id": "mary-celeste",
+    "category": "Mysteries & Monsters",
+    "prompt": "The Mary Celeste was found drifting in 1872 with no one aboard. In which ocean?",
+    "choices": ["Pacific", "Indian", "Arctic", "Atlantic"],
+    "answer": 3,
+    "fact": "Her cargo was intact and one lifeboat was gone. The ten people aboard were never found.",
+    "source": "https://en.wikipedia.org/wiki/Mary_Celeste"
+  },
+  {
+    "id": "franklin",
+    "category": "Polar",
+    "prompt": "Franklin's lost 1845 Arctic expedition sailed in HMS Erebus and HMS what?",
+    "choices": ["Beagle", "Terror", "Endeavour", "Resolute"],
+    "answer": 1,
+    "fact": "All 129 men died. The wrecks were finally found in 2014 and 2016.",
+    "source": "https://en.wikipedia.org/wiki/Franklin%27s_lost_expedition"
+  },
+  {
+    "id": "endurance",
+    "category": "Polar",
+    "prompt": "Shackleton's Endurance was crushed by pack ice in 1915. In which sea?",
+    "choices": ["Weddell Sea", "Ross Sea", "Bering Sea", "Barents Sea"],
+    "answer": 0,
+    "fact": "All 28 men survived. The wreck was found in 2022, about 3,000 metres down and remarkably intact.",
+    "source": "https://en.wikipedia.org/wiki/Endurance_(1912_ship)"
+  },
+  {
+    "id": "andrea-doria",
+    "category": "Liners",
+    "prompt": "In 1956 the Italian liner Andrea Doria sank off Nantucket after colliding with which ship?",
+    "choices": ["Queen Mary", "Stockholm", "United States", "Île de France"],
+    "answer": 1,
+    "fact": "Rescuers took off more than 1,600 people. The Île de France turned back to help and saved over 750.",
+    "source": "https://en.wikipedia.org/wiki/SS_Andrea_Doria"
+  },
+  {
+    "id": "empress-of-ireland",
+    "category": "Liners",
+    "prompt": "The Empress of Ireland sank in 1914 in just 14 minutes. On which river?",
+    "choices": ["The Thames", "The Hudson", "The St. Lawrence", "The Mersey"],
+    "answer": 2,
+    "fact": "1,012 died. More passengers were lost than on the Titanic, though fewer crew.",
+    "source": "https://en.wikipedia.org/wiki/RMS_Empress_of_Ireland"
+  },
+  {
+    "id": "costa-concordia",
+    "category": "Liners",
+    "prompt": "The cruise ship Costa Concordia ran aground in 2012 off which Italian island?",
+    "choices": ["Capri", "Elba", "Sicily", "Giglio"],
+    "answer": 3,
+    "fact": "Captain Francesco Schettino left the ship before everyone was off. He was sentenced to 16 years.",
+    "source": "https://en.wikipedia.org/wiki/Costa_Concordia_disaster"
+  },
+  {
+    "id": "estonia",
+    "category": "Liners",
+    "prompt": "The ferry MS Estonia sank in 1994 when her bow door tore off in a storm. In which sea?",
+    "choices": ["Baltic Sea", "North Sea", "Mediterranean Sea", "Black Sea"],
+    "answer": 0,
+    "fact": "852 people died, making it one of the deadliest peacetime sinkings in Europe.",
+    "source": "https://en.wikipedia.org/wiki/MS_Estonia"
+  },
+  {
+    "id": "sultana",
+    "category": "Rivers",
+    "prompt": "The steamboat Sultana, the worst maritime disaster in US history, exploded in 1865 on which river?",
+    "choices": ["Missouri", "Ohio", "Hudson", "Mississippi"],
+    "answer": 3,
+    "fact": "Most of the roughly 1,100 dead were Union soldiers just released from Confederate prison camps.",
+    "source": "https://en.wikipedia.org/wiki/Sultana_(steamboat)"
+  },
+  {
+    "id": "central-america",
+    "category": "Treasure",
+    "prompt": "The SS Central America, lost in a hurricane in 1857, was carrying tons of what?",
+    "choices": ["Silver bars", "Gold from the California Gold Rush", "Spanish doubloons", "Pearls"],
+    "answer": 1,
+    "fact": "The lost gold helped set off the Panic of 1857. The wreck is nicknamed the Ship of Gold.",
+    "source": "https://en.wikipedia.org/wiki/SS_Central_America"
+  },
+  {
+    "id": "exxon-valdez",
+    "category": "Oil & Industry",
+    "prompt": "The Exxon Valdez spilled millions of gallons of oil in 1989 off which US state?",
+    "choices": ["Alaska", "California", "Texas", "Louisiana"],
+    "answer": 0,
+    "fact": "It ran aground on Bligh Reef in Prince William Sound, named for the same William Bligh of the Bounty.",
+    "source": "https://en.wikipedia.org/wiki/Exxon_Valdez_oil_spill"
+  },
+  {
+    "id": "torrey-canyon",
+    "category": "Oil & Industry",
+    "prompt": "After the tanker Torrey Canyon ran aground off Cornwall in 1967, what did the British government do?",
+    "choices": ["Towed it to Norway", "Bombed it", "Sank it with a submarine", "Sold the oil at auction"],
+    "answer": 1,
+    "fact": "RAF jets dropped bombs and napalm to burn off the oil. A good share of the bombs missed.",
+    "source": "https://en.wikipedia.org/wiki/Torrey_Canyon_oil_spill"
+  }
+]
