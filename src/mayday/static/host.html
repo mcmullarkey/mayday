@@ -70,6 +70,16 @@
   .row .pts { font-variant-numeric: tabular-nums; }
   .row.leader { border-color: var(--brass); background: rgba(230,180,76,.16); }
   .row.leader .place { color: var(--brass); }
+  /* Final */
+  .final { position: fixed; inset: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 4vw; padding: 4vw; align-items: center; }
+  .final .label { font-size: 1.3vw; }
+  .crown { display: grid; gap: 1.5vw; align-content: center; }
+  .crown h1 { font: 900 4vw/0.9 var(--display); margin: 0; color: var(--dim); }
+  .winners { font: 900 9vw/0.88 var(--display); color: var(--brass); margin: 0; overflow-wrap: anywhere; }
+  .winners.shared { font-size: 5.5vw; }
+  .crown p { margin: 0; font-size: 1.6vw; color: var(--dim); display: flex; align-items: center; gap: 1vw; }
+  .crown p .blink { width: 1vw; height: 1vw; }
+  .final .table { max-width: none; }
   .fact b { font-family: var(--mono); font-size: 1.1vw; text-transform: uppercase; letter-spacing: 0.1em; color: var(--f-bravo); flex: none; }
 </style>
 </head>
@@ -118,6 +128,14 @@
 <main class="standings" id="standings" hidden>
   <h1>Standings<small>After question <span id="s-number">3</span> of <span id="s-total">10</span></small></h1>
   <ol class="table" id="s-table"></ol>
+</main>
+<main class="final" id="final" hidden>
+  <section class="crown">
+    <span class="label">Last one afloat</span>
+    <div class="winners" id="f-winners"></div>
+    <p><span class="blink"></span>The Captain's phone has the controls: play again or head back to the lobby.</p>
+  </section>
+  <ol class="table" id="f-table"></ol>
 </main>
 <script type="module" src="/static/host.js"></script>
 </body>

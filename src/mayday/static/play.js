@@ -5,7 +5,7 @@ import { flagIcon } from "/static/flags.js";
 import { startCountdown, stopCountdown } from "/static/clock.js";
 
 const $ = (id) => document.getElementById(id);
-const screens = ["join-screen", "lobby-screen", "question-screen", "locked-screen", "reveal-screen", "standings-screen"];
+const screens = ["join-screen", "lobby-screen", "question-screen", "locked-screen", "reveal-screen", "standings-screen", "final-screen"];
 
 function show(id) {
   for (const s of screens) $(s).hidden = s !== id;
@@ -97,6 +97,20 @@ function renderStandings(view) {
   $("st-score").textContent = view.score.toLocaleString();
 }
 
+function renderFinal(view) {
+  show("final-screen");
+  stopCountdown();
+  const won = view.rank === 1;
+  $("f-verdict").className = `center ${won ? "verdict-right" : ""}`;
+  $("f-place").textContent = won ? "Last one afloat!" : ordinal(view.rank);
+  $("f-detail").textContent = won ? `Top of ${view.of} sailors.` : `of ${view.of} sailors.`;
+  $("f-score").textContent = view.score.toLocaleString();
+  $("f-controls").hidden = !view.captain;
+  $("f-wait").hidden = view.captain;
+  $("play-again").disabled = false;
+  $("to-lobby").disabled = false;
+}
+
 const REFUSALS = {
   wrong_code: "That code doesn't match the TV. Check the letters and try again.",
   name_taken: "Someone aboard already has that name. Pick another.",
@@ -116,7 +130,16 @@ const socket = openSocket("/ws/play", (message) => {
   if (message.t === "view" && message.screen === "question") renderQuestion(message);
   if (message.t === "view" && message.screen === "reveal") renderReveal(message);
   if (message.t === "view" && message.screen === "standings") renderStandings(message);
+  if (message.t === "view" && message.screen === "final") renderFinal(message);
 });
+
+for (const [id, intent] of [["play-again", "again"], ["to-lobby", "lobby"]]) {
+  $(id).addEventListener("click", () => {
+    $("play-again").disabled = true;
+    $("to-lobby").disabled = true;
+    socket.send({ t: intent });
+  });
+}
 
 $("cast-off").addEventListener("click", () => {
   $("cast-off").disabled = true;

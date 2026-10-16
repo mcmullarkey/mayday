@@ -12,6 +12,7 @@ import json
 import random
 import secrets
 import time
+from enum import StrEnum
 from pathlib import Path
 
 from starlette.applications import Starlette
@@ -20,8 +21,8 @@ from starlette.routing import Mount, Route, WebSocketRoute
 from starlette.staticfiles import StaticFiles
 from starlette.websockets import WebSocket, WebSocketDisconnect
 
-from mayday.game import Game, StartRefusal, join_game, start_game
-from mayday.lobby import JoinRefusal, Lobby, PlayerId
+from mayday.game import Game, back_to_lobby, join_game, play_again, start_game
+from mayday.lobby import Lobby, PlayerId
 from mayday.questions import Question, draw_questions, read_question_bank
 from mayday.room_code import new_room_code
 from mayday.trivia import AnswerRefusal, Pace, Trivia, answer, tick
@@ -98,7 +99,18 @@ def create_app(
 ) -> Starlette:
     rng = rng or random.SystemRandom()
     bank = bank if bank is not None else read_question_bank()
-    table = Table(Lobby(code=new_room_code(rng)), join_url)
+    code = new_room_code(rng)
+    table = Table(Lobby(code=code), join_url)
+
+    async def settle(ws: WebSocket, result: Game | StrEnum) -> None:
+        """A refusal goes back to the phone that asked; anything else becomes the new game."""
+        if isinstance(result, StrEnum):
+            await ws.send_json({"t": "refused", "reason": result.value})
+        else:
+            await table.apply(result)
+
+    def fresh_questions() -> tuple[Question, ...]:
+        return draw_questions(bank, rng, count=QUESTIONS_PER_GAME)
 
     async def host_socket(ws: WebSocket) -> None:
         await ws.accept()
@@ -115,29 +127,23 @@ def create_app(
     async def handle_join(ws: WebSocket, intent: dict) -> None:
         player_id = PlayerId(secrets.token_hex(8))
         result = join_game(table.game, _text(intent, "code"), _text(intent, "name"), player_id)
-        if isinstance(result, JoinRefusal):
-            await ws.send_json({"t": "refused", "reason": result.value})
-            return
-        table.phones[ws] = player_id
-        await table.apply(result)
+        if not isinstance(result, StrEnum):
+            table.phones[ws] = player_id
+        await settle(ws, result)
 
-    async def handle_start(ws: WebSocket, player_id: PlayerId) -> None:
-        questions = draw_questions(bank, rng, count=QUESTIONS_PER_GAME)
-        result = start_game(table.game, player_id, questions, time.monotonic(), pace)
-        if isinstance(result, StartRefusal):
-            await ws.send_json({"t": "refused", "reason": result.value})
-            return
-        await table.apply(result)
-
-    async def handle_answer(ws: WebSocket, player_id: PlayerId, intent: dict) -> None:
-        if not isinstance(table.game, Trivia):
-            await ws.send_json({"t": "refused", "reason": AnswerRefusal.ROUND_CLOSED.value})
-            return
-        result = answer(table.game, player_id, intent.get("choice"), time.monotonic())
-        if isinstance(result, AnswerRefusal):
-            await ws.send_json({"t": "refused", "reason": result.value})
-            return
-        await table.apply(result)
+    async def handle_captain_or_answer(ws: WebSocket, player_id: PlayerId, intent: dict) -> None:
+        now = time.monotonic()
+        match intent.get("t"):
+            case "start":
+                await settle(ws, start_game(table.game, player_id, fresh_questions(), now, pace))
+            case "again":
+                await settle(ws, play_again(table.game, player_id, fresh_questions(), now))
+            case "lobby":
+                await settle(ws, back_to_lobby(table.game, player_id, code))
+            case "answer" if isinstance(table.game, Trivia):
+                await settle(ws, answer(table.game, player_id, intent.get("choice"), now))
+            case "answer":
+                await settle(ws, AnswerRefusal.ROUND_CLOSED)
 
     async def play_socket(ws: WebSocket) -> None:
         await ws.accept()
@@ -148,10 +154,8 @@ def create_app(
                 if player_id is None:
                     if intent.get("t") == "join":
                         await handle_join(ws, intent)
-                elif intent.get("t") == "start":
-                    await handle_start(ws, player_id)
-                elif intent.get("t") == "answer":
-                    await handle_answer(ws, player_id, intent)
+                else:
+                    await handle_captain_or_answer(ws, player_id, intent)
         except WebSocketDisconnect:
             pass
         finally:

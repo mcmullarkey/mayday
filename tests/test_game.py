@@ -1,13 +1,16 @@
 import random
+from dataclasses import replace
 
-from mayday.game import StartRefusal, join_game, start_game
+from mayday.game import CaptainRefusal, back_to_lobby, join_game, play_again, start_game
 from mayday.lobby import JoinRefusal, Lobby, PlayerId
 from mayday.questions import draw_questions, read_question_bank
 from mayday.room_code import RoomCode
-from mayday.trivia import Pace, Trivia
+from mayday.trivia import Asking, Over, Pace, Trivia
 
 CODE = RoomCode("MXQT")
 QUESTIONS = draw_questions(read_question_bank(), random.Random(0), count=10)
+OTHER_QUESTIONS = draw_questions(read_question_bank(), random.Random(1), count=10)
+DANA, BEV = PlayerId("p0"), PlayerId("p1")
 
 
 def _lobby(*names: str) -> Lobby:
@@ -19,29 +22,67 @@ def _lobby(*names: str) -> Lobby:
     return game
 
 
-def test_captain_starts_trivia_on_question_one() -> None:
-    game = start_game(_lobby("Dana", "Bev"), PlayerId("p0"), QUESTIONS, now=0.0, pace=Pace())
+def _started(*names: str) -> Trivia:
+    game = start_game(_lobby(*names), DANA, QUESTIONS, now=0.0, pace=Pace())
     assert isinstance(game, Trivia)
+    return game
+
+
+def _over(*names: str) -> Trivia:
+    trivia = _started(*names)
+    return replace(trivia, index=len(QUESTIONS) - 1, round=Over(), totals={DANA: 4000, BEV: 2500})
+
+
+def test_captain_starts_trivia_on_question_one() -> None:
+    game = _started("Dana", "Bev")
     assert game.number == 1
     assert game.current == QUESTIONS[0]
     assert [str(p.name) for p in game.players] == ["Dana", "Bev"]
 
 
 def test_crew_member_cannot_start() -> None:
-    assert start_game(_lobby("Dana", "Bev"), PlayerId("p1"), QUESTIONS, now=0.0, pace=Pace()) is StartRefusal.NOT_CAPTAIN
+    assert start_game(_lobby("Dana", "Bev"), BEV, QUESTIONS, now=0.0, pace=Pace()) is CaptainRefusal.NOT_CAPTAIN
 
 
 def test_empty_lobby_cannot_start() -> None:
-    assert start_game(_lobby(), PlayerId("p0"), QUESTIONS, now=0.0, pace=Pace()) is StartRefusal.NOT_CAPTAIN
+    assert start_game(_lobby(), DANA, QUESTIONS, now=0.0, pace=Pace()) is CaptainRefusal.NOT_CAPTAIN
 
 
 def test_cannot_start_twice() -> None:
-    started = start_game(_lobby("Dana"), PlayerId("p0"), QUESTIONS, now=0.0, pace=Pace())
-    assert isinstance(started, Trivia)
-    assert start_game(started, PlayerId("p0"), QUESTIONS, now=0.0, pace=Pace()) is StartRefusal.ALREADY_STARTED
+    assert start_game(_started("Dana"), DANA, QUESTIONS, now=0.0, pace=Pace()) is CaptainRefusal.ALREADY_STARTED
 
 
 def test_join_after_start_is_refused() -> None:
-    started = start_game(_lobby("Dana"), PlayerId("p0"), QUESTIONS, now=0.0, pace=Pace())
-    assert isinstance(started, Trivia)
-    assert join_game(started, CODE, "Late", PlayerId("p9")) is JoinRefusal.GAME_STARTED
+    assert join_game(_started("Dana"), CODE, "Late", PlayerId("p9")) is JoinRefusal.GAME_STARTED
+
+
+def test_play_again_keeps_crew_and_pace_but_resets_scores_and_questions() -> None:
+    again = play_again(_over("Dana", "Bev"), DANA, OTHER_QUESTIONS, now=50.0)
+    assert isinstance(again, Trivia)
+    assert [str(p.name) for p in again.players] == ["Dana", "Bev"]
+    assert again.questions == OTHER_QUESTIONS
+    assert again.number == 1
+    assert again.totals == {DANA: 0, BEV: 0}
+    assert again.round == Asking(opened_at=50.0, deadline=70.0)
+
+
+def test_only_captain_can_play_again() -> None:
+    assert play_again(_over("Dana", "Bev"), BEV, OTHER_QUESTIONS, now=0) is CaptainRefusal.NOT_CAPTAIN
+
+
+def test_cannot_play_again_mid_game_or_from_lobby() -> None:
+    assert play_again(_started("Dana"), DANA, OTHER_QUESTIONS, now=0) is CaptainRefusal.GAME_NOT_OVER
+    assert play_again(_lobby("Dana"), DANA, OTHER_QUESTIONS, now=0) is CaptainRefusal.GAME_NOT_OVER
+
+
+def test_back_to_lobby_keeps_crew_and_reopens_room() -> None:
+    lobby = back_to_lobby(_over("Dana", "Bev"), DANA, CODE)
+    assert isinstance(lobby, Lobby)
+    assert lobby.code == CODE
+    assert [str(p.name) for p in lobby.players] == ["Dana", "Bev"]
+    assert isinstance(join_game(lobby, CODE, "Late", PlayerId("p9")), Lobby)
+
+
+def test_back_to_lobby_is_captain_only_and_after_the_game() -> None:
+    assert back_to_lobby(_over("Dana", "Bev"), BEV, CODE) is CaptainRefusal.NOT_CAPTAIN
+    assert back_to_lobby(_started("Dana"), DANA, CODE) is CaptainRefusal.GAME_NOT_OVER

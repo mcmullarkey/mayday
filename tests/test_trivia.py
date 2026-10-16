@@ -6,6 +6,7 @@ from mayday.questions import Question, parse_questions
 from mayday.trivia import (
     AnswerRefusal,
     Asking,
+    Over,
     Pace,
     Revealed,
     Standings,
@@ -158,7 +159,19 @@ def test_standings_follow_every_third_reveal() -> None:
     assert isinstance(after.round, Asking)
 
 
-def test_last_reveal_waits_with_nothing_scheduled() -> None:
+def test_last_reveal_ends_the_game_after_the_pause() -> None:
     revealed = tick(_open(100.0), now=120.0)
-    assert revealed.wakes_at is None
-    assert tick(revealed, now=10_000) == revealed
+    assert revealed.wakes_at == 128.0
+    over = tick(revealed, now=128.0)
+    assert isinstance(over.round, Over)
+    assert over.wakes_at is None
+    assert tick(over, now=10_000) == over
+
+
+def test_last_question_skips_standings_even_on_a_third() -> None:
+    questions = tuple(_question(n) for n in range(3))
+    trivia = _open(0.0, questions)
+    for _ in range(3):
+        trivia = tick(tick(trivia, now=trivia.wakes_at), now=trivia.wakes_at + PACE.question)
+    assert trivia.number == 3
+    assert isinstance(trivia.round, Over)

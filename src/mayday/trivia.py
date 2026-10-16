@@ -2,7 +2,8 @@
 
 Pure domain core. Holds the crew, the questions drawn for this game, which one is on
 screen, running totals, and the current round: asking (until a deadline), revealed
-(for a few seconds), or standings (every third question). `tick` performs whichever
+(for a few seconds), standings (every third question), or over (after the last
+question, ADR-0007). `tick` performs whichever
 timed transition is due; nothing here reads a clock, callers pass `now`.
 
 Does not: decide who may start a game (see game), draw questions (see questions),
@@ -49,7 +50,12 @@ class Standings:
     until: float
 
 
-Round = Asking | Revealed | Standings
+@dataclass(frozen=True)
+class Over:
+    """The last question has been revealed; the Captain decides what happens next."""
+
+
+Round = Asking | Revealed | Standings | Over
 
 
 class AnswerRefusal(StrEnum):
@@ -95,10 +101,10 @@ class Trivia:
         match self.round:
             case Asking(deadline=deadline):
                 return deadline
-            case Revealed(until=until):
-                return None if self.is_last_question else until
-            case Standings(until=until):
+            case Revealed(until=until) | Standings(until=until):
                 return until
+            case Over():
+                return None
 
     def choice_of(self, player_id: PlayerId) -> int | None:
         answers = self.round.answers if isinstance(self.round, Asking | Revealed) else ()
@@ -158,7 +164,11 @@ def tick(trivia: Trivia, now: float) -> Trivia:
     match trivia.round:
         case Asking() as asking:
             return _reveal(trivia, asking, asking.answers, now)
+        case Revealed() if trivia.is_last_question:
+            return replace(trivia, round=Over())
         case Revealed() if trivia.number % STANDINGS_EVERY == 0:
             return replace(trivia, round=Standings(until=now + trivia.pace.standings))
         case Revealed() | Standings():
             return _next_question(trivia, now)
+        case Over():
+            return trivia

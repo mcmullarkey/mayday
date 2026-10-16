@@ -4,7 +4,7 @@ import { flagIcon } from "/static/flags.js";
 import { startCountdown, stopCountdown } from "/static/clock.js";
 
 const $ = (id) => document.getElementById(id);
-const screens = ["lobby", "question", "reveal", "standings"];
+const screens = ["lobby", "question", "reveal", "standings", "final"];
 const ARC_LENGTH = 106.8;
 
 function show(id) {
@@ -95,20 +95,29 @@ function renderReveal(view) {
   );
 }
 
+function standingRows(standings) {
+  return standings.map((s) => {
+    const li = el("li", s.rank === 1 ? "row leader" : "row");
+    li.append(el("span", "place", s.rank), el("span", "", s.name), el("span", "pts", s.score.toLocaleString()));
+    return li;
+  });
+}
+
 function renderStandings(view) {
   show("standings");
   $("s-number").textContent = view.number;
   $("s-total").textContent = view.total;
-  $("s-table").replaceChildren(
-    ...view.standings.map((s) => {
-      const li = el("li", s.rank === 1 ? "row leader" : "row");
-      li.append(el("span", "place", s.rank), el("span", "", s.name), el("span", "pts", s.score.toLocaleString()));
-      return li;
-    }),
-  );
+  $("s-table").replaceChildren(...standingRows(view.standings));
 }
 
-const RENDER = { lobby: renderLobby, question: renderQuestion, reveal: renderReveal, standings: renderStandings };
+function renderFinal(view) {
+  show("final");
+  $("f-winners").textContent = view.winners.join(" & ");
+  $("f-winners").classList.toggle("shared", view.winners.length > 1);
+  $("f-table").replaceChildren(...standingRows(view.standings));
+}
+
+const RENDER = { lobby: renderLobby, question: renderQuestion, reveal: renderReveal, standings: renderStandings, final: renderFinal };
 
 openSocket("/ws/host", (message) => {
   if (message.t === "view") RENDER[message.screen]?.(message);

@@ -183,3 +183,33 @@ def test_standings_views_rank_the_crew() -> None:
         "of": 2,
         "score": 0,
     }
+
+
+def test_final_views_crown_everyone_tied_for_first() -> None:
+    from dataclasses import replace
+
+    from mayday.trivia import Over
+
+    over = replace(
+        open_trivia(PLAYERS, (QUESTION,), now=0, pace=Pace()),
+        round=Over(),
+        totals={DANA: 2000, BEV: 2000},
+    )
+    assert host_view(over, JOIN_URL, now=0) == {
+        "t": "view",
+        "screen": "final",
+        "winners": ["Dana", "Bev"],
+        "standings": [
+            {"rank": 1, "name": "Dana", "score": 2000},
+            {"rank": 1, "name": "Bev", "score": 2000},
+        ],
+    }
+    assert player_view(over, BEV, now=0) == {
+        "t": "view",
+        "screen": "final",
+        "rank": 1,
+        "of": 2,
+        "score": 2000,
+        "captain": False,
+    }
+    assert player_view(over, DANA, now=0)["captain"] is True

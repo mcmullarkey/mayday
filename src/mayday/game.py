@@ -1,24 +1,27 @@
-"""Game: which phase the party is in, and the transitions between phases (ADR-0004).
+"""Game: which phase the party is in, and the transitions between phases (ADR-0004/7).
 
 Pure domain core. `Game` is the sum of every phase; the functions here take a phase and
-a player's request and return the next phase or a closed refusal reason.
+a player's request and return the next phase or a closed refusal reason. Starting,
+replaying and returning to the lobby are Captain-only.
 
 Does not: hold rules internal to a phase (see lobby, trivia), talk to sockets, or pick
-questions (callers pass them in).
+questions or room codes (callers pass them in).
 """
 
 from enum import StrEnum
 
-from mayday.lobby import JoinRefusal, Lobby, PlayerId, join
+from mayday.lobby import JoinRefusal, Lobby, Player, PlayerId, join
 from mayday.questions import Question
-from mayday.trivia import Pace, Trivia, open_trivia
+from mayday.room_code import RoomCode
+from mayday.trivia import Over, Pace, Trivia, open_trivia
 
 Game = Lobby | Trivia
 
 
-class StartRefusal(StrEnum):
+class CaptainRefusal(StrEnum):
     NOT_CAPTAIN = "not_captain"
     ALREADY_STARTED = "already_started"
+    GAME_NOT_OVER = "game_not_over"
 
 
 def join_game(game: Game, code_guess: str, raw_name: str, player_id: PlayerId) -> Lobby | JoinRefusal:
@@ -27,15 +30,41 @@ def join_game(game: Game, code_guess: str, raw_name: str, player_id: PlayerId) -
     return join(game, code_guess, raw_name, player_id)
 
 
+def _is_captain(captain: Player | None, requester: PlayerId) -> bool:
+    return captain is not None and captain.id == requester
+
+
 def start_game(
     game: Game,
     requester: PlayerId,
     questions: tuple[Question, ...],
     now: float,
     pace: Pace,
-) -> Trivia | StartRefusal:
+) -> Trivia | CaptainRefusal:
     if isinstance(game, Trivia):
-        return StartRefusal.ALREADY_STARTED
-    if game.captain is None or game.captain.id != requester:
-        return StartRefusal.NOT_CAPTAIN
+        return CaptainRefusal.ALREADY_STARTED
+    if not _is_captain(game.captain, requester):
+        return CaptainRefusal.NOT_CAPTAIN
     return open_trivia(game.players, questions, now=now, pace=pace)
+
+
+def _finished(game: Game, requester: PlayerId) -> Trivia | CaptainRefusal:
+    if not isinstance(game, Trivia) or not isinstance(game.round, Over):
+        return CaptainRefusal.GAME_NOT_OVER
+    if not _is_captain(game.captain, requester):
+        return CaptainRefusal.NOT_CAPTAIN
+    return game
+
+
+def play_again(game: Game, requester: PlayerId, questions: tuple[Question, ...], now: float) -> Trivia | CaptainRefusal:
+    finished = _finished(game, requester)
+    if isinstance(finished, CaptainRefusal):
+        return finished
+    return open_trivia(finished.players, questions, now=now, pace=finished.pace)
+
+
+def back_to_lobby(game: Game, requester: PlayerId, code: RoomCode) -> Lobby | CaptainRefusal:
+    finished = _finished(game, requester)
+    if isinstance(finished, CaptainRefusal):
+        return finished
+    return Lobby(code=code, players=finished.players)

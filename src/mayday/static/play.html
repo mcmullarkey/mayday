@@ -62,6 +62,9 @@
   .tally { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid var(--line); padding-top: 12px; font-size: 15px; color: var(--dim); }
   .tally b { color: var(--foam); font: 800 22px var(--body); font-variant-numeric: tabular-nums; }
   #r-gained { font: 800 22px var(--body); color: var(--brass); }
+  .secondary { margin-top: 0; background: transparent; border: 2px solid var(--line); color: var(--foam); }
+  .captain-controls { display: grid; gap: 10px; margin-top: auto; }
+  .captain-controls button { margin-top: 0; }
   .verdict-right h1 { color: var(--brass); }
   .verdict-wrong h1 { color: var(--flare); }
 </style>
@@ -125,6 +128,20 @@
     <p id="st-detail"></p>
   </div>
   <div class="tally"><span>Your score</span><span><b id="st-score">0</b> pts</span></div>
+</section>
+<section class="screen" id="final-screen" hidden>
+  <div class="logo" style="font-size:32px">MAYDAY<span>!</span></div>
+  <div class="center" id="f-verdict">
+    <p class="label">Final standings</p>
+    <h1 id="f-place"></h1>
+    <p id="f-detail"></p>
+  </div>
+  <div class="tally"><span>Final score</span><span><b id="f-score">0</b> pts</span></div>
+  <div class="captain-controls" id="f-controls" hidden>
+    <button type="button" id="play-again">Play again</button>
+    <button type="button" class="secondary" id="to-lobby">Back to lobby</button>
+  </div>
+  <p class="hint" id="f-wait">Waiting for the Captain to choose what's next.</p>
 </section>
 <script type="module" src="/static/play.js"></script>
 </body>

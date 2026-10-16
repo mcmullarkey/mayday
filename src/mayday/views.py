@@ -14,7 +14,7 @@ from mayday.game import Game
 from mayday.lobby import MAX_PLAYERS, Lobby, Player, PlayerId
 from mayday.questions import CHOICES_PER_QUESTION
 from mayday.scoring import rank
-from mayday.trivia import Asking, Revealed, Standings, Trivia
+from mayday.trivia import Asking, Over, Revealed, Standings, Trivia
 
 
 class CrewMember(TypedDict):
@@ -125,8 +125,24 @@ class PlayerStandingsView(TypedDict):
     score: int
 
 
-HostView = HostLobbyView | HostQuestionView | HostRevealView | HostStandingsView
-PlayerView = PlayerLobbyView | PlayerQuestionView | PlayerRevealView | PlayerStandingsView
+class HostFinalView(TypedDict):
+    t: Literal["view"]
+    screen: Literal["final"]
+    winners: list[str]
+    standings: list[Placing]
+
+
+class PlayerFinalView(TypedDict):
+    t: Literal["view"]
+    screen: Literal["final"]
+    rank: int
+    of: int
+    score: int
+    captain: bool
+
+
+HostView = HostLobbyView | HostQuestionView | HostRevealView | HostStandingsView | HostFinalView
+PlayerView = PlayerLobbyView | PlayerQuestionView | PlayerRevealView | PlayerStandingsView | PlayerFinalView
 
 
 def _crew_member(player: Player, captain: Player | None) -> CrewMember:
@@ -247,19 +263,48 @@ def _ranked(trivia: Trivia) -> list[tuple[int, PlayerId, int]]:
     return rank(trivia.totals, order=tuple(p.id for p in trivia.players))
 
 
-def _host_standings(trivia: Trivia) -> HostStandingsView:
+def _placings(trivia: Trivia) -> list[Placing]:
     names = {p.id: str(p.name) for p in trivia.players}
+    return [{"rank": r, "name": names[pid], "score": score} for r, pid, score in _ranked(trivia)]
+
+
+def _place_of(trivia: Trivia, player_id: PlayerId) -> int:
+    return next(r for r, pid, _ in _ranked(trivia) if pid == player_id)
+
+
+def _host_standings(trivia: Trivia) -> HostStandingsView:
     return {
         "t": "view",
         "screen": "standings",
         "number": trivia.number,
         "total": len(trivia.questions),
-        "standings": [{"rank": r, "name": names[pid], "score": score} for r, pid, score in _ranked(trivia)],
+        "standings": _placings(trivia),
+    }
+
+
+def _host_final(trivia: Trivia) -> HostFinalView:
+    placings = _placings(trivia)
+    return {
+        "t": "view",
+        "screen": "final",
+        "winners": [p["name"] for p in placings if p["rank"] == 1],
+        "standings": placings,
+    }
+
+
+def _player_final(trivia: Trivia, player_id: PlayerId) -> PlayerFinalView:
+    return {
+        "t": "view",
+        "screen": "final",
+        "rank": _place_of(trivia, player_id),
+        "of": len(trivia.players),
+        "score": trivia.totals[player_id],
+        "captain": trivia.captain.id == player_id,
     }
 
 
 def _player_standings(trivia: Trivia, player_id: PlayerId) -> PlayerStandingsView:
-    place = next(r for r, pid, _ in _ranked(trivia) if pid == player_id)
+    place = _place_of(trivia, player_id)
     return {
         "t": "view",
         "screen": "standings",
@@ -281,6 +326,8 @@ def host_view(game: Game, join_url: str, now: float) -> HostView:
             return _host_reveal(game, revealed)
         case Trivia(round=Standings()):
             return _host_standings(game)
+        case Trivia(round=Over()):
+            return _host_final(game)
 
 
 def player_view(game: Game, player_id: PlayerId, now: float) -> PlayerView:
@@ -293,3 +340,5 @@ def player_view(game: Game, player_id: PlayerId, now: float) -> PlayerView:
             return _player_reveal(game, revealed, player_id)
         case Trivia(round=Standings()):
             return _player_standings(game, player_id)
+        case Trivia(round=Over()):
+            return _player_final(game, player_id)
