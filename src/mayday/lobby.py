@@ -49,6 +49,7 @@ class JoinRefusal(StrEnum):
     NAME_TAKEN = "name_taken"
     BAD_NAME = "bad_name"
     ROOM_FULL = "room_full"
+    GAME_STARTED = "game_started"
 
 
 @dataclass(frozen=True)

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+  <!-- International Code of Signals: A (Alfa), B (Bravo), C (Charlie), D (Delta). Answer labels. -->
+  <symbol id="flag-a" viewBox="0 0 36 26"><path d="M0 0H36L28 13L36 26H0Z" fill="#1f4fa3"/><rect width="16" height="26" fill="#ffffff"/></symbol>
+  <symbol id="flag-b" viewBox="0 0 36 26"><path d="M0 0H36L28 13L36 26H0Z" fill="#c8261f"/></symbol>
+  <symbol id="flag-c" viewBox="0 0 36 26"><rect width="36" height="26" fill="#1f4fa3"/><rect y="5.2" width="36" height="15.6" fill="#ffffff"/><rect y="10.4" width="36" height="5.2" fill="#c8261f"/></symbol>
+  <symbol id="flag-d" viewBox="0 0 36 26"><rect width="36" height="26" fill="#f0c02e"/><rect y="6.5" width="36" height="13" fill="#1f4fa3"/></symbol>
+</svg>

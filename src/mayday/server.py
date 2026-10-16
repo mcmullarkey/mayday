@@ -18,11 +18,14 @@ from starlette.routing import Mount, Route, WebSocketRoute
 from starlette.staticfiles import StaticFiles
 from starlette.websockets import WebSocket, WebSocketDisconnect
 
-from mayday.lobby import JoinRefusal, Lobby, PlayerId, join
+from mayday.game import Game, StartRefusal, join_game, start_game
+from mayday.lobby import JoinRefusal, Lobby, PlayerId
+from mayday.questions import Question, draw_questions, read_question_bank
 from mayday.room_code import new_room_code
 from mayday.views import host_view, player_view
 
 STATIC = Path(__file__).parent / "static"
+QUESTIONS_PER_GAME = 10
 
 
 def _parse_intent(raw: str) -> dict:
@@ -42,27 +45,33 @@ def _text(intent: dict, key: str) -> str:
 class Table:
     """The live game and every device watching it."""
 
-    def __init__(self, lobby: Lobby, join_url: str) -> None:
-        self.lobby = lobby
+    def __init__(self, game: Game, join_url: str) -> None:
+        self.game = game
         self.join_url = join_url
         self.hosts: set[WebSocket] = set()
         self.phones: dict[WebSocket, PlayerId] = {}
 
     async def send_views(self) -> None:
         for ws in list(self.hosts):
-            await ws.send_json(host_view(self.lobby, self.join_url))
+            await ws.send_json(host_view(self.game, self.join_url))
         for ws, player_id in list(self.phones.items()):
-            await ws.send_json(player_view(self.lobby, player_id))
+            await ws.send_json(player_view(self.game, player_id))
 
 
-def create_app(join_url: str, rng: random.Random | None = None) -> Starlette:
-    table = Table(Lobby(code=new_room_code(rng or random.SystemRandom())), join_url)
+def create_app(
+    join_url: str,
+    rng: random.Random | None = None,
+    bank: tuple[Question, ...] | None = None,
+) -> Starlette:
+    rng = rng or random.SystemRandom()
+    bank = bank if bank is not None else read_question_bank()
+    table = Table(Lobby(code=new_room_code(rng)), join_url)
 
     async def host_socket(ws: WebSocket) -> None:
         await ws.accept()
         table.hosts.add(ws)
         try:
-            await ws.send_json(host_view(table.lobby, table.join_url))
+            await ws.send_json(host_view(table.game, table.join_url))
             while True:
                 await ws.receive_text()
         except WebSocketDisconnect:
@@ -72,12 +81,21 @@ def create_app(join_url: str, rng: random.Random | None = None) -> Starlette:
 
     async def handle_join(ws: WebSocket, intent: dict) -> None:
         player_id = PlayerId(secrets.token_hex(8))
-        result = join(table.lobby, _text(intent, "code"), _text(intent, "name"), player_id)
+        result = join_game(table.game, _text(intent, "code"), _text(intent, "name"), player_id)
         if isinstance(result, JoinRefusal):
             await ws.send_json({"t": "refused", "reason": result.value})
             return
-        table.lobby = result
+        table.game = result
         table.phones[ws] = player_id
+        await table.send_views()
+
+    async def handle_start(ws: WebSocket, player_id: PlayerId) -> None:
+        questions = draw_questions(bank, rng, count=QUESTIONS_PER_GAME)
+        result = start_game(table.game, player_id, questions)
+        if isinstance(result, StartRefusal):
+            await ws.send_json({"t": "refused", "reason": result.value})
+            return
+        table.game = result
         await table.send_views()
 
     async def play_socket(ws: WebSocket) -> None:
@@ -85,8 +103,12 @@ def create_app(join_url: str, rng: random.Random | None = None) -> Starlette:
         try:
             while True:
                 intent = _parse_intent(await ws.receive_text())
-                if intent.get("t") == "join" and ws not in table.phones:
-                    await handle_join(ws, intent)
+                player_id = table.phones.get(ws)
+                if player_id is None:
+                    if intent.get("t") == "join":
+                        await handle_join(ws, intent)
+                elif intent.get("t") == "start":
+                    await handle_start(ws, player_id)
         except WebSocketDisconnect:
             pass
         finally:

@@ -35,6 +35,22 @@
   .aboard .name { font-size: 26px; font-weight: 800; }
   .aboard .badge { justify-self: center; font-size: 12px; padding: 4px 10px; }
   .aboard p { margin: 0; color: var(--dim); font-size: 15px; }
+
+  .q-head { display: flex; justify-content: space-between; align-items: baseline; }
+  .q-head b { font: 900 34px var(--display); }
+  .q-head > span { font-size: 12px; }
+  .choices { flex: 1; display: grid; grid-template-rows: repeat(4, 1fr); gap: 10px; margin: 0; }
+  .choice {
+    margin: 0; display: flex; align-items: center; gap: 12px; text-align: left;
+    padding: 0 16px; border-radius: 12px; font: 700 18px/1.15 var(--body);
+  }
+  /* Flags sit on a dark chip: each flag shares a color with its own button. */
+  .choice .flag { width: 34px; height: 24px; flex: none; padding: 5px 6px; box-sizing: content-box; background: var(--deep); border-radius: 6px; }
+  .choice-0 { background: var(--f-alfa); color: #fff; }
+  .choice-1 { background: var(--f-bravo); color: #fff; }
+  .choice-2 { background: var(--f-charlie); color: var(--deep); }
+  .choice-3 { background: var(--f-delta); color: var(--deep); }
+  .hint { margin: 0; font-size: 13px; color: var(--dim); text-align: center; }
 </style>
 </head>
 <body>
@@ -59,6 +75,13 @@
     <span class="badge" id="you-captain" hidden>Captain</span>
     <p id="lobby-note"></p>
   </div>
+  <button type="button" id="cast-off" hidden>Cast off</button>
+</section>
+
+<section class="screen" id="question-screen" hidden>
+  <div class="q-head"><b>Q<span id="q-number">1</span></b><span class="label">of <span id="q-total">10</span></span></div>
+  <div class="choices" id="choices"></div>
+  <p class="hint">Question's on the TV. Pick a flag.</p>
 </section>
 <script type="module" src="/static/play.js"></script>
 </body>

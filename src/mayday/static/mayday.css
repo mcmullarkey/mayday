@@ -33,3 +33,6 @@ body {
 .blink { border-radius: 50%; background: var(--flare); animation: blink 1.4s steps(2, start) infinite; flex: none; }
 @keyframes blink { 50% { opacity: 0.2; } }
 @media (prefers-reduced-motion: reduce) { .blink { animation: none; } }
+
+/* Answer flags, shared by TV and phone. Order matches choice index. */
+:root { --f-alfa: #1f4fa3; --f-bravo: #c8261f; --f-charlie: #e9e3d4; --f-delta: #f0c02e; }
