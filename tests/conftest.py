@@ -45,7 +45,9 @@ def server_address() -> Iterator[str]:
 @pytest.fixture
 def quick_server_address() -> Iterator[str]:
     """A server whose questions close after half a second."""
-    with running_server(question_seconds=0.5) as address:
+    from mayday.trivia import Pace
+
+    with running_server(pace=Pace(question=0.5)) as address:
         yield address
 
 

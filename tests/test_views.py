@@ -1,7 +1,7 @@
 from mayday.lobby import Lobby, Player, PlayerId, PlayerName, join
 from mayday.questions import parse_questions
 from mayday.room_code import RoomCode
-from mayday.trivia import Trivia, answer, expire, open_trivia
+from mayday.trivia import Pace, Trivia, answer, open_trivia, tick
 from mayday.views import host_view, player_view
 
 JOIN_URL = "http://192.168.0.10:8000"
@@ -66,7 +66,7 @@ PLAYERS = (Player(DANA, PlayerName("Dana")), Player(BEV, PlayerName("Bev")))
 
 def _trivia() -> Trivia:
     """Opened at t=100 with a 20 s timer; Dana has answered Huron at t=104."""
-    trivia = answer(open_trivia(PLAYERS, (QUESTION,), now=100, seconds=20), DANA, 2, now=104)
+    trivia = answer(open_trivia(PLAYERS, (QUESTION,), now=100, pace=Pace()), DANA, 2, now=104)
     assert isinstance(trivia, Trivia)
     return trivia
 
@@ -108,7 +108,7 @@ def test_remaining_time_never_goes_negative() -> None:
 
 
 def test_host_reveal_view_shows_answer_and_who_picked_what() -> None:
-    assert host_view(expire(_trivia(), now=120), JOIN_URL, now=121) == {
+    assert host_view(tick(_trivia(), now=120), JOIN_URL, now=121) == {
         "t": "view",
         "screen": "reveal",
         "number": 1,
@@ -127,7 +127,7 @@ def test_host_reveal_view_shows_answer_and_who_picked_what() -> None:
 
 
 def test_player_reveal_view_says_whether_you_were_right() -> None:
-    revealed = expire(_trivia(), now=120)
+    revealed = tick(_trivia(), now=120)
     assert player_view(revealed, DANA, now=121) == {
         "t": "view",
         "screen": "reveal",
@@ -144,10 +144,42 @@ def test_player_reveal_view_says_whether_you_were_right() -> None:
 
 
 def test_reveal_views_carry_points_for_a_right_answer() -> None:
-    trivia = answer(open_trivia(PLAYERS, (QUESTION,), now=100, seconds=20), DANA, 1, now=110)
+    trivia = answer(open_trivia(PLAYERS, (QUESTION,), now=100, pace=Pace()), DANA, 1, now=110)
     assert isinstance(trivia, Trivia)
-    revealed = expire(trivia, now=120)
+    revealed = tick(trivia, now=120)
     assert host_view(revealed, JOIN_URL, now=121)["scores"][0] == {"name": "Dana", "gained": 750, "score": 750}
     mine = player_view(revealed, DANA, now=121)
     assert (mine["correct"], mine["gained"], mine["score"]) == (True, 750, 750)
     assert mine["total"] == 1
+
+
+
+def test_standings_views_rank_the_crew() -> None:
+    from dataclasses import replace
+
+    from mayday.trivia import Standings
+
+    trivia = replace(
+        open_trivia(PLAYERS, (QUESTION,), now=0, pace=Pace()),
+        round=Standings(until=5),
+        totals={DANA: 3000, BEV: 0},
+    )
+    assert host_view(trivia, JOIN_URL, now=0) == {
+        "t": "view",
+        "screen": "standings",
+        "number": 1,
+        "total": 1,
+        "standings": [
+            {"rank": 1, "name": "Dana", "score": 3000},
+            {"rank": 2, "name": "Bev", "score": 0},
+        ],
+    }
+    assert player_view(trivia, BEV, now=0) == {
+        "t": "view",
+        "screen": "standings",
+        "number": 1,
+        "total": 1,
+        "rank": 2,
+        "of": 2,
+        "score": 0,
+    }

@@ -24,12 +24,11 @@ from mayday.game import Game, StartRefusal, join_game, start_game
 from mayday.lobby import JoinRefusal, Lobby, PlayerId
 from mayday.questions import Question, draw_questions, read_question_bank
 from mayday.room_code import new_room_code
-from mayday.trivia import AnswerRefusal, Asking, Trivia, answer, expire
+from mayday.trivia import AnswerRefusal, Pace, Trivia, answer, tick
 from mayday.views import host_view, player_view
 
 STATIC = Path(__file__).parent / "static"
 QUESTIONS_PER_GAME = 10
-QUESTION_SECONDS = 20.0
 
 
 def _parse_intent(raw: str) -> dict:
@@ -54,7 +53,7 @@ class Table:
         self.join_url = join_url
         self.hosts: set[WebSocket] = set()
         self.phones: dict[WebSocket, PlayerId] = {}
-        self._deadline_task: asyncio.Task | None = None
+        self._clock_task: asyncio.Task | None = None
 
     async def send_views(self) -> None:
         now = time.monotonic()
@@ -63,20 +62,24 @@ class Table:
         for ws, player_id in list(self.phones.items()):
             await _send_quietly(ws, player_view(self.game, player_id, now))
 
-    def watch_deadline(self) -> None:
-        """Close the open question when its time runs out (ADR-0005)."""
-        if self._deadline_task is not None:
-            self._deadline_task.cancel()
-        self._deadline_task = asyncio.create_task(self._expire_at_deadline())
+    async def apply(self, game: Game) -> None:
+        """Every state change goes through here: store it, re-arm the clock, push views."""
+        self.game = game
+        self._run_clock()
+        await self.send_views()
 
-    async def _expire_at_deadline(self) -> None:
-        while isinstance(self.game, Trivia) and isinstance(self.game.round, Asking):
-            remaining = self.game.round.deadline - time.monotonic()
-            if remaining > 0:
-                await asyncio.sleep(remaining)
-                continue
-            self.game = expire(self.game, time.monotonic())
-            await self.send_views()
+    def _run_clock(self) -> None:
+        """Sleep until the game's next timed transition (ADR-0006), restarting on every change."""
+        if self._clock_task is not None and self._clock_task is not asyncio.current_task():
+            self._clock_task.cancel()
+        self._clock_task = asyncio.create_task(self._tick_when_due())
+
+    async def _tick_when_due(self) -> None:
+        if not isinstance(self.game, Trivia) or (wakes_at := self.game.wakes_at) is None:
+            return
+        await asyncio.sleep(max(0.0, wakes_at - time.monotonic()))
+        if isinstance(self.game, Trivia):
+            await self.apply(tick(self.game, time.monotonic()))
 
 
 async def _send_quietly(ws: WebSocket, message: dict) -> None:
@@ -91,7 +94,7 @@ def create_app(
     join_url: str,
     rng: random.Random | None = None,
     bank: tuple[Question, ...] | None = None,
-    question_seconds: float = QUESTION_SECONDS,
+    pace: Pace = Pace(),
 ) -> Starlette:
     rng = rng or random.SystemRandom()
     bank = bank if bank is not None else read_question_bank()
@@ -115,19 +118,16 @@ def create_app(
         if isinstance(result, JoinRefusal):
             await ws.send_json({"t": "refused", "reason": result.value})
             return
-        table.game = result
         table.phones[ws] = player_id
-        await table.send_views()
+        await table.apply(result)
 
     async def handle_start(ws: WebSocket, player_id: PlayerId) -> None:
         questions = draw_questions(bank, rng, count=QUESTIONS_PER_GAME)
-        result = start_game(table.game, player_id, questions, time.monotonic(), question_seconds)
+        result = start_game(table.game, player_id, questions, time.monotonic(), pace)
         if isinstance(result, StartRefusal):
             await ws.send_json({"t": "refused", "reason": result.value})
             return
-        table.game = result
-        table.watch_deadline()
-        await table.send_views()
+        await table.apply(result)
 
     async def handle_answer(ws: WebSocket, player_id: PlayerId, intent: dict) -> None:
         if not isinstance(table.game, Trivia):
@@ -137,8 +137,7 @@ def create_app(
         if isinstance(result, AnswerRefusal):
             await ws.send_json({"t": "refused", "reason": result.value})
             return
-        table.game = result
-        await table.send_views()
+        await table.apply(result)
 
     async def play_socket(ws: WebSocket) -> None:
         await ws.accept()

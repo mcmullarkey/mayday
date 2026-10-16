@@ -4,7 +4,7 @@ import { flagIcon } from "/static/flags.js";
 import { startCountdown, stopCountdown } from "/static/clock.js";
 
 const $ = (id) => document.getElementById(id);
-const screens = ["lobby", "question", "reveal"];
+const screens = ["lobby", "question", "reveal", "standings"];
 const ARC_LENGTH = 106.8;
 
 function show(id) {
@@ -95,7 +95,20 @@ function renderReveal(view) {
   );
 }
 
-const RENDER = { lobby: renderLobby, question: renderQuestion, reveal: renderReveal };
+function renderStandings(view) {
+  show("standings");
+  $("s-number").textContent = view.number;
+  $("s-total").textContent = view.total;
+  $("s-table").replaceChildren(
+    ...view.standings.map((s) => {
+      const li = el("li", s.rank === 1 ? "row leader" : "row");
+      li.append(el("span", "place", s.rank), el("span", "", s.name), el("span", "pts", s.score.toLocaleString()));
+      return li;
+    }),
+  );
+}
+
+const RENDER = { lobby: renderLobby, question: renderQuestion, reveal: renderReveal, standings: renderStandings };
 
 openSocket("/ws/host", (message) => {
   if (message.t === "view") RENDER[message.screen]?.(message);

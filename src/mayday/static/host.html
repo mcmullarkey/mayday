@@ -60,6 +60,16 @@
   .answer.wrong { border-color: rgba(243,238,226,.08); }
   .answer.wrong > :not(.who) { opacity: 0.4; }
   .fact { display: flex; gap: 1.5vw; align-items: baseline; background: var(--foam); color: var(--deep); padding: 1.1vw 1.6vw; border-radius: 0.6vw; font-size: 1.6vw; font-weight: 500; margin: 0; }
+  /* Standings */
+  .standings { position: fixed; inset: 0; display: grid; grid-template-rows: auto 1fr; gap: 2.5vw; padding: 3vw 4vw; }
+  .standings h1 { font: 900 6vw/0.9 var(--display); margin: 0; }
+  .standings h1 small { display: block; font: 500 1.2vw var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); margin-top: 1vw; }
+  .table { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.9vw; align-content: start; max-width: 70vw; }
+  .row { display: grid; grid-template-columns: 6vw 1fr auto; align-items: center; gap: 1.5vw; padding: 0.9vw 1.6vw; border-radius: 0.7vw; background: rgba(243,238,226,.07); border: 0.12vw solid var(--line); font-size: 2.3vw; font-weight: 700; }
+  .row .place { font: 900 3vw var(--display); color: var(--dim); }
+  .row .pts { font-variant-numeric: tabular-nums; }
+  .row.leader { border-color: var(--brass); background: rgba(230,180,76,.16); }
+  .row.leader .place { color: var(--brass); }
   .fact b { font-family: var(--mono); font-size: 1.1vw; text-transform: uppercase; letter-spacing: 0.1em; color: var(--f-bravo); flex: none; }
 </style>
 </head>
@@ -104,6 +114,10 @@
   <p class="q-text" id="r-prompt"></p>
   <ol class="answers" id="r-answers"></ol>
   <p class="fact"><b>From the wreck</b><span id="r-fact"></span></p>
+</main>
+<main class="standings" id="standings" hidden>
+  <h1>Standings<small>After question <span id="s-number">3</span> of <span id="s-total">10</span></small></h1>
+  <ol class="table" id="s-table"></ol>
 </main>
 <script type="module" src="/static/host.js"></script>
 </body>

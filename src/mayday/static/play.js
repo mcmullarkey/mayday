@@ -5,7 +5,7 @@ import { flagIcon } from "/static/flags.js";
 import { startCountdown, stopCountdown } from "/static/clock.js";
 
 const $ = (id) => document.getElementById(id);
-const screens = ["join-screen", "lobby-screen", "question-screen", "locked-screen", "reveal-screen"];
+const screens = ["join-screen", "lobby-screen", "question-screen", "locked-screen", "reveal-screen", "standings-screen"];
 
 function show(id) {
   for (const s of screens) $(s).hidden = s !== id;
@@ -83,6 +83,20 @@ function renderReveal(view) {
   $("r-points").textContent = view.score.toLocaleString();
 }
 
+function ordinal(n) {
+  const suffix = n % 100 >= 11 && n % 100 <= 13 ? "th" : { 1: "st", 2: "nd", 3: "rd" }[n % 10] ?? "th";
+  return `${n}${suffix}`;
+}
+
+function renderStandings(view) {
+  show("standings-screen");
+  stopCountdown();
+  $("st-number").textContent = view.number;
+  $("st-place").textContent = ordinal(view.rank);
+  $("st-detail").textContent = view.rank === 1 ? `Leading ${view.of} sailors. Look up!` : `of ${view.of} sailors. Look up!`;
+  $("st-score").textContent = view.score.toLocaleString();
+}
+
 const REFUSALS = {
   wrong_code: "That code doesn't match the TV. Check the letters and try again.",
   name_taken: "Someone aboard already has that name. Pick another.",
@@ -101,6 +115,7 @@ const socket = openSocket("/ws/play", (message) => {
   if (message.t === "view" && message.screen === "lobby") renderLobby(message);
   if (message.t === "view" && message.screen === "question") renderQuestion(message);
   if (message.t === "view" && message.screen === "reveal") renderReveal(message);
+  if (message.t === "view" && message.screen === "standings") renderStandings(message);
 });
 
 $("cast-off").addEventListener("click", () => {

@@ -12,6 +12,7 @@ import socket
 import uvicorn
 
 from mayday.server import create_app
+from mayday.trivia import Pace
 
 
 def find_lan_ip() -> str:
@@ -33,4 +34,4 @@ def main() -> None:
     join_url = f"http://{find_lan_ip()}:{args.port}"
     print(f"\n  TV (open on this laptop, fullscreen): http://localhost:{args.port}/host")
     print(f"  Phones join at:                      {join_url}\n")
-    uvicorn.run(create_app(join_url=join_url, question_seconds=args.question_seconds), host="0.0.0.0", port=args.port, log_level="warning")
+    uvicorn.run(create_app(join_url=join_url, pace=Pace(question=args.question_seconds)), host="0.0.0.0", port=args.port, log_level="warning")

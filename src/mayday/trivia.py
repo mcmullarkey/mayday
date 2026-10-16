@@ -1,11 +1,12 @@
-"""Trivia: the sea-disaster quiz once the Captain has cast off (ADR-0004, ADR-0005).
+"""Trivia: the sea-disaster quiz once the Captain has cast off (ADR-0004/5/6).
 
 Pure domain core. Holds the crew, the questions drawn for this game, which one is on
-screen, and that question's round: still asking (with a deadline) or revealed. Every
-transition takes `now` as an argument; nothing here reads a clock.
+screen, running totals, and the current round: asking (until a deadline), revealed
+(for a few seconds), or standings (every third question). `tick` performs whichever
+timed transition is due; nothing here reads a clock, callers pass `now`.
 
 Does not: decide who may start a game (see game), draw questions (see questions),
-schedule timers (see server), or render anything (see views).
+price answers (see scoring), schedule timers (see server), or render (see views).
 """
 
 from dataclasses import dataclass, field, replace
@@ -16,6 +17,17 @@ from mayday.answer import Answer
 from mayday.lobby import Player, PlayerId
 from mayday.questions import CHOICES_PER_QUESTION, Question
 from mayday.scoring import points_for
+
+STANDINGS_EVERY = 3
+
+
+@dataclass(frozen=True)
+class Pace:
+    """Seconds each round lasts."""
+
+    question: float = 20.0
+    reveal: float = 8.0
+    standings: float = 5.0
 
 
 @dataclass(frozen=True)
@@ -29,9 +41,15 @@ class Asking:
 class Revealed:
     answers: tuple[Answer, ...]
     gained: dict[PlayerId, int]  # points each player earned on this question
+    until: float
 
 
-Round = Asking | Revealed
+@dataclass(frozen=True)
+class Standings:
+    until: float
+
+
+Round = Asking | Revealed | Standings
 
 
 class AnswerRefusal(StrEnum):
@@ -45,6 +63,7 @@ class Trivia:
     players: tuple[Player, ...]
     questions: tuple[Question, ...]
     round: Round
+    pace: Pace
     index: int = 0
     totals: dict[PlayerId, int] = field(default_factory=dict)
 
@@ -63,30 +82,53 @@ class Trivia:
         return self.index + 1
 
     @property
+    def is_last_question(self) -> bool:
+        return self.number == len(self.questions)
+
+    @property
     def captain(self) -> Player:
         return self.players[0]
 
+    @property
+    def wakes_at(self) -> float | None:
+        """When `tick` next has something to do; None if nothing is scheduled."""
+        match self.round:
+            case Asking(deadline=deadline):
+                return deadline
+            case Revealed(until=until):
+                return None if self.is_last_question else until
+            case Standings(until=until):
+                return until
+
     def choice_of(self, player_id: PlayerId) -> int | None:
-        return next((a.choice for a in self.round.answers if a.player_id == player_id), None)
+        answers = self.round.answers if isinstance(self.round, Asking | Revealed) else ()
+        return next((a.choice for a in answers if a.player_id == player_id), None)
 
 
-def open_trivia(players: tuple[Player, ...], questions: tuple[Question, ...], now: float, seconds: float) -> Trivia:
+def _asking(now: float, pace: Pace) -> Asking:
+    return Asking(opened_at=now, deadline=now + pace.question)
+
+
+def open_trivia(players: tuple[Player, ...], questions: tuple[Question, ...], now: float, pace: Pace) -> Trivia:
     return Trivia(
         players=players,
         questions=questions,
-        round=Asking(opened_at=now, deadline=now + seconds),
+        round=_asking(now, pace),
+        pace=pace,
         totals={p.id: 0 for p in players},
     )
 
 
-def _reveal(trivia: Trivia, asking: Asking, answers: tuple[Answer, ...]) -> Trivia:
+def _reveal(trivia: Trivia, asking: Asking, answers: tuple[Answer, ...], now: float) -> Trivia:
     by_player = {a.player_id: a for a in answers}
     duration = asking.deadline - asking.opened_at
-    gained = {
-        p.id: points_for(by_player.get(p.id), trivia.current.answer, duration) for p in trivia.players
-    }
+    gained = {p.id: points_for(by_player.get(p.id), trivia.current.answer, duration) for p in trivia.players}
     totals = {pid: trivia.totals.get(pid, 0) + gained[pid] for pid in gained}
-    return replace(trivia, round=Revealed(answers, gained), totals=totals)
+    return replace(trivia, round=Revealed(answers, gained, until=now + trivia.pace.reveal), totals=totals)
+
+
+def _next_question(trivia: Trivia, now: float) -> Trivia:
+    return replace(trivia, index=trivia.index + 1, round=_asking(now, trivia.pace))
 
 
 def _is_choice(choice: object) -> TypeGuard[int]:
@@ -104,12 +146,19 @@ def answer(trivia: Trivia, player_id: PlayerId, choice: object, now: float) -> T
         return AnswerRefusal.ALREADY_ANSWERED
     answers = (*asking.answers, Answer(player_id, choice, now - asking.opened_at))
     if len(answers) == len(trivia.players):
-        return _reveal(trivia, asking, answers)
+        return _reveal(trivia, asking, answers, now)
     return replace(trivia, round=replace(asking, answers=answers))
 
 
-def expire(trivia: Trivia, now: float) -> Trivia:
-    asking = trivia.round
-    if isinstance(asking, Asking) and now >= asking.deadline:
-        return _reveal(trivia, asking, asking.answers)
-    return trivia
+def tick(trivia: Trivia, now: float) -> Trivia:
+    """Perform the timed transition that is due at `now`, if any (ADR-0006)."""
+    wakes_at = trivia.wakes_at
+    if wakes_at is None or now < wakes_at:
+        return trivia
+    match trivia.round:
+        case Asking() as asking:
+            return _reveal(trivia, asking, asking.answers, now)
+        case Revealed() if trivia.number % STANDINGS_EVERY == 0:
+            return replace(trivia, round=Standings(until=now + trivia.pace.standings))
+        case Revealed() | Standings():
+            return _next_question(trivia, now)

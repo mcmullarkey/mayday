@@ -31,13 +31,19 @@ def _send(ws: ClientConnection, intent: dict) -> None:
     ws.send(json.dumps(intent))
 
 
+def _question(ws: ClientConnection, number: int) -> dict:
+    """Skip views left over from earlier questions until question `number` opens."""
+    while (view := receive_screen(ws, "question"))["number"] != number:
+        pass
+    return view
+
+
 def _play_question(tv: ClientConnection, dana: ClientConnection, bev: ClientConnection, number: int) -> None:
     """Dana answers right, Bev answers wrong."""
-    question = receive_screen(tv, "question")
-    assert question["number"] == number
+    question = _question(tv, number)
     right = question["choices"].index(RIGHT[question["prompt"]])
     for phone in (dana, bev):
-        assert receive_screen(phone, "question")["number"] == number
+        _question(phone, number)
     _send(dana, {"t": "answer", "choice": right})
     _send(bev, {"t": "answer", "choice": (right + 1) % 4})
     assert receive_screen(tv, "reveal")["number"] == number

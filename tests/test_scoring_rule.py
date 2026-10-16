@@ -26,3 +26,11 @@ def test_no_answer_scores_nothing() -> None:
 def test_bonus_never_goes_negative_or_over_max() -> None:
     assert points_for(Answer(P, 1, 25.0), correct=1, duration=20) == 500
     assert points_for(Answer(P, 1, -1.0), correct=1, duration=20) == MAX_POINTS
+
+
+def test_rank_orders_by_score_and_shares_ties() -> None:
+    from mayday.scoring import rank
+
+    a, b, c, d = (PlayerId(x) for x in "abcd")
+    ranked = rank({a: 500, b: 900, c: 500, d: 0}, order=(a, b, c, d))
+    assert ranked == [(1, b, 900), (2, a, 500), (2, c, 500), (4, d, 0)]

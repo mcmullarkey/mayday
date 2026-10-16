@@ -11,7 +11,7 @@ from enum import StrEnum
 
 from mayday.lobby import JoinRefusal, Lobby, PlayerId, join
 from mayday.questions import Question
-from mayday.trivia import Trivia, open_trivia
+from mayday.trivia import Pace, Trivia, open_trivia
 
 Game = Lobby | Trivia
 
@@ -32,10 +32,10 @@ def start_game(
     requester: PlayerId,
     questions: tuple[Question, ...],
     now: float,
-    question_seconds: float,
+    pace: Pace,
 ) -> Trivia | StartRefusal:
     if isinstance(game, Trivia):
         return StartRefusal.ALREADY_STARTED
     if game.captain is None or game.captain.id != requester:
         return StartRefusal.NOT_CAPTAIN
-    return open_trivia(game.players, questions, now=now, seconds=question_seconds)
+    return open_trivia(game.players, questions, now=now, pace=pace)
