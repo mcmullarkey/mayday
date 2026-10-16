@@ -50,6 +50,7 @@ class JoinRefusal(StrEnum):
     BAD_NAME = "bad_name"
     ROOM_FULL = "room_full"
     GAME_STARTED = "game_started"
+    TOO_MANY_GUESSES = "too_many_guesses"
 
 
 @dataclass(frozen=True)

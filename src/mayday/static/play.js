@@ -116,6 +116,8 @@ const REFUSALS = {
   name_taken: "Someone aboard already has that name. Pick another.",
   bad_name: "Names need 1 to 12 characters.",
   room_full: "This ship is full: 8 crew already aboard.",
+  game_started: "A game is underway. Wait for the Captain to head back to the lobby.",
+  too_many_guesses: "Too many wrong codes. Wait a few minutes, then check the TV and try again.",
 };
 
 function renderRefusal(reason) {

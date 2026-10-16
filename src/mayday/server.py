@@ -22,7 +22,8 @@ from starlette.staticfiles import StaticFiles
 from starlette.websockets import WebSocket, WebSocketDisconnect
 
 from mayday.game import Game, back_to_lobby, join_game, play_again, start_game
-from mayday.lobby import Lobby, PlayerId
+from mayday.guesses import GuessLog
+from mayday.lobby import JoinRefusal, Lobby, PlayerId
 from mayday.questions import Question, draw_questions, read_question_bank
 from mayday.room_code import new_room_code
 from mayday.trivia import AnswerRefusal, Pace, Trivia, answer, tick
@@ -101,11 +102,14 @@ def create_app(
     rng: random.Random | None = None,
     bank: tuple[Question, ...] | None = None,
     pace: Pace = Pace(),
+    host_key: str | None = None,
 ) -> Starlette:
+    """`host_key`, when set, must be passed as `?key=` to open the TV socket (ADR-0008)."""
     rng = rng or random.SystemRandom()
     bank = bank if bank is not None else read_question_bank()
     code = new_room_code(rng)
     table = Table(Lobby(code=code), join_url)
+    guesses = GuessLog()
 
     async def settle(ws: WebSocket, result: Game | StrEnum) -> None:
         """A refusal goes back to the phone that asked; anything else becomes the new game."""
@@ -117,8 +121,14 @@ def create_app(
     def fresh_questions() -> tuple[Question, ...]:
         return draw_questions(bank, rng, count=QUESTIONS_PER_GAME)
 
+    def may_host(ws: WebSocket) -> bool:
+        return host_key is None or secrets.compare_digest(ws.query_params.get("key", ""), host_key)
+
     async def host_socket(ws: WebSocket) -> None:
         await ws.accept()
+        if not may_host(ws):
+            await ws.close(code=4401, reason="host key required")
+            return
         table.hosts.add(ws)
         try:
             await ws.send_json(host_view(table.game, table.join_url, time.monotonic()))
@@ -130,8 +140,15 @@ def create_app(
             table.hosts.discard(ws)
 
     async def handle_join(ws: WebSocket, intent: dict) -> None:
+        nonlocal guesses
+        who, now = (ws.client.host if ws.client else "unknown"), time.monotonic()
+        if guesses.locked(who, now):
+            await settle(ws, JoinRefusal.TOO_MANY_GUESSES)
+            return
         player_id = PlayerId(secrets.token_hex(8))
         result = join_game(table.game, _text(intent, "code"), _text(intent, "name"), player_id)
+        if result is JoinRefusal.WRONG_CODE:
+            guesses = guesses.record_wrong(who, now)
         if not isinstance(result, StrEnum):
             table.phones[ws] = player_id
         await settle(ws, result)

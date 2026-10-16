@@ -119,6 +119,20 @@ function renderFinal(view) {
 
 const RENDER = { lobby: renderLobby, question: renderQuestion, reveal: renderReveal, standings: renderStandings, final: renderFinal };
 
-openSocket("/ws/host", (message) => {
-  if (message.t === "view") RENDER[message.screen]?.(message);
-});
+// Hosted mode (ADR-0008): the TV's address carries ?key=..., which the server checks.
+const key = new URLSearchParams(location.search).get("key");
+const hostPath = key ? `/ws/host?key=${encodeURIComponent(key)}` : "/ws/host";
+
+openSocket(
+  hostPath,
+  (message) => {
+    if (message.t === "view") RENDER[message.screen]?.(message);
+  },
+  (code) => {
+    if (code === 4401) {
+      $("room-code").textContent = "····";
+      $("join-url").textContent = "This TV needs the host key";
+      $("status").textContent = "Open this page as /host?key=YOUR-KEY";
+    }
+  },
+);
