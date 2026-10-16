@@ -14,7 +14,7 @@ function renderLobby(view) {
   $("you-name").textContent = view.you.name;
   $("you-captain").hidden = !view.you.captain;
   const others = view.crew_count - 1;
-  const crew = others === 1 ? "1 other sailor" : `${others} other sailors`;
+  const crew = others === 0 ? "Nobody else" : others === 1 ? "1 other sailor" : `${others} other sailors`;
   $("lobby-note").textContent = view.you.captain
     ? `You're the Captain. ${crew} aboard so far. Look up at the TV.`
     : `${crew} aboard. Waiting for the Captain to cast off.`;
