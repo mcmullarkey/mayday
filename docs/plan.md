@@ -13,6 +13,8 @@ WebSockets, then a rodney browser check.
 3. The Captain starts and a question appears on the TV and every phone.
 4. Answers lock in and the timer cuts the round off.
 5. The reveal shows who was right and the scores move.
-6. A phone that drops comes back as the same player.
+6. After the reveal the game moves on: next question, with standings every third.
 7. A full 10-question game ends with a winner and replay.
-8. Friends join from cellular (hosted deploy).
+8. A phone that drops comes back as the same player.
+9. The TV shows a QR code that opens the join page with the code filled in.
+10. Friends join from cellular (hosted deploy).
