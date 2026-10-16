@@ -16,6 +16,7 @@ from enum import StrEnum
 from pathlib import Path
 
 from starlette.applications import Starlette
+from starlette.middleware import Middleware
 from starlette.requests import Request
 from starlette.responses import FileResponse, Response
 from starlette.routing import Mount, Route, WebSocketRoute
@@ -47,6 +48,28 @@ def _parse_intent(raw: str) -> dict:
 def _text(intent: dict, key: str) -> str:
     value = intent.get(key)
     return value if isinstance(value, str) else ""
+
+
+class AlwaysRevalidate:
+    """ASGI middleware: HTTP responses carry `Cache-Control: no-cache` unless they set their
+    own, so after a redeploy no browser runs a cached old script against a new page."""
+
+    def __init__(self, app) -> None:
+        self.app = app
+
+    async def __call__(self, scope, receive, send) -> None:
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+
+        async def send_with_header(message) -> None:
+            if message["type"] == "http.response.start":
+                headers = message.setdefault("headers", [])
+                if not any(name.lower() == b"cache-control" for name, _ in headers):
+                    headers.append((b"cache-control", b"no-cache"))
+            await send(message)
+
+        await self.app(scope, receive, send_with_header)
 
 
 class Table:
@@ -224,5 +247,6 @@ def create_app(
             WebSocketRoute("/ws/host", host_socket),
             WebSocketRoute("/ws/play", play_socket),
             Mount("/static", StaticFiles(directory=STATIC), name="static"),
-        ]
+        ],
+        middleware=[Middleware(AlwaysRevalidate)],
     )

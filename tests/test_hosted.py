@@ -13,11 +13,14 @@ from conftest import receive_view, running_server
 def test_tv_needs_the_host_key_when_one_is_set() -> None:
     with running_server(host_key="lighthouse") as address:
         with connect(f"ws://{address}/ws/host") as stranger:
+            assert json.loads(stranger.recv(timeout=2))["reason"] == "host_key_required"
             with pytest.raises(ConnectionClosed) as closed:
                 stranger.recv(timeout=2)
             assert closed.value.rcvd is not None and closed.value.rcvd.code == 4401
 
         with connect(f"ws://{address}/ws/host?key=wrong") as stranger:
+            # Proxies (Render) can hold back the close frame, so the refusal comes first as a message.
+            assert json.loads(stranger.recv(timeout=2)) == {"t": "refused", "reason": "host_key_required"}
             with pytest.raises(ConnectionClosed):
                 stranger.recv(timeout=2)
 
