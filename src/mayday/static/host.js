@@ -126,19 +126,23 @@ const RENDER = { lobby: renderLobby, question: renderQuestion, reveal: renderRev
 
 const hostPath = key ? `/ws/host?key=${encodeURIComponent(key)}` : "/ws/host";
 
+function renderNeedsKey() {
+  show("lobby");
+  $("qr").hidden = true;
+  $("room-code").textContent = "····";
+  $("join-url").textContent = key ? "That host key is wrong" : "This TV needs the host key";
+  $("status").textContent = "Open this page as /host?key=YOUR-KEY";
+}
+
 openSocket(
   hostPath,
   (message) => {
+    if (message.t === "refused" && message.reason === "host_key_required") renderNeedsKey();
     if (message.t === "view") RENDER[message.screen]?.(message);
   },
   {
     onClose: (code) => {
-      if (code === 4401) {
-        show("lobby");
-        $("room-code").textContent = "····";
-        $("join-url").textContent = "This TV needs the host key";
-        $("status").textContent = "Open this page as /host?key=YOUR-KEY";
-      }
+      if (code === 4401) renderNeedsKey();
     },
   },
 );

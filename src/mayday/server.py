@@ -160,6 +160,8 @@ def create_app(
     async def host_socket(ws: WebSocket) -> None:
         await ws.accept()
         if not may_host(ws):
+            # Say why before closing: proxies can delay the close frame (ADR-0008).
+            await ws.send_json({"t": "refused", "reason": "host_key_required"})
             await ws.close(code=4401, reason="host key required")
             return
         table.hosts.add(ws)
