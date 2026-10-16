@@ -27,6 +27,10 @@ Option 3, as JSON over one WebSocket per device.
 - Client → server: intents, e.g. `{"t": "join", "code": "MXQT", "name": "Bev"}`.
 - Server → client: `{"t": "view", "screen": "<name>", ...}` carrying everything that
   screen needs. Projection functions (`host_view`, `player_view`) are pure.
+- Server → client, when an intent is not allowed: `{"t": "refused", "reason": "<code>"}`.
+  Reasons are a closed set owned by the core (join: `wrong_code`, `name_taken`,
+  `bad_name`, `room_full`). The phone maps each to its own wording; the state, and so
+  every view, is unchanged.
 
 ## Consequences
 
