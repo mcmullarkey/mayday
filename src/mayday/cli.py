@@ -27,9 +27,10 @@ def find_lan_ip() -> str:
 def main() -> None:
     parser = argparse.ArgumentParser(prog="mayday", description="Run the Mayday! party server.")
     parser.add_argument("--port", type=int, default=8000)
+    parser.add_argument("--question-seconds", type=float, default=20.0, help="time limit per question")
     args = parser.parse_args()
 
     join_url = f"http://{find_lan_ip()}:{args.port}"
     print(f"\n  TV (open on this laptop, fullscreen): http://localhost:{args.port}/host")
     print(f"  Phones join at:                      {join_url}\n")
-    uvicorn.run(create_app(join_url=join_url), host="0.0.0.0", port=args.port, log_level="warning")
+    uvicorn.run(create_app(join_url=join_url, question_seconds=args.question_seconds), host="0.0.0.0", port=args.port, log_level="warning")

@@ -1,12 +1,15 @@
 // TV page: renders the views the server sends to /ws/host. No game rules here.
 import { openSocket } from "/static/net.js";
 import { flagIcon } from "/static/flags.js";
+import { startCountdown, stopCountdown } from "/static/clock.js";
 
 const $ = (id) => document.getElementById(id);
-const screens = ["lobby", "question"];
+const screens = ["lobby", "question", "reveal"];
+const ARC_LENGTH = 106.8;
 
 function show(id) {
   for (const s of screens) $(s).hidden = s !== id;
+  if (id !== "question") stopCountdown();
 }
 
 function el(tag, className, text) {
@@ -61,16 +64,37 @@ function renderQuestion(view) {
       return li;
     }),
   );
+  startCountdown(view.remaining_ms, view.duration_ms, (seconds, fraction) => {
+    $("q-seconds").textContent = seconds;
+    $("q-arc").style.strokeDasharray = `${ARC_LENGTH * fraction} ${ARC_LENGTH}`;
+  });
   $("q-crew").replaceChildren(
     ...view.players.map((p) => {
-      const li = el("li", "mate");
+      const li = el("li", p.answered ? "mate in" : "mate");
       li.append(el("span", "pip"), el("span", "", p.name));
       return li;
     }),
   );
 }
 
-const RENDER = { lobby: renderLobby, question: renderQuestion };
+function renderReveal(view) {
+  show("reveal");
+  $("r-number").textContent = view.number;
+  $("r-total").textContent = view.total;
+  $("r-prompt").textContent = view.prompt;
+  $("r-fact").textContent = view.fact;
+  $("r-answers").replaceChildren(
+    ...view.choices.map((choice, i) => {
+      const li = el("li", i === view.answer ? "answer right" : "answer wrong");
+      const who = el("span", "who");
+      who.append(...view.picks[i].map((name) => el("span", "", name)));
+      li.append(flagIcon(i), el("span", "", choice), who);
+      return li;
+    }),
+  );
+}
+
+const RENDER = { lobby: renderLobby, question: renderQuestion, reveal: renderReveal };
 
 openSocket("/ws/host", (message) => {
   if (message.t === "view") RENDER[message.screen]?.(message);

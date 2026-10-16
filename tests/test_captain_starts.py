@@ -46,13 +46,10 @@ def test_captain_casts_off_and_question_one_appears_everywhere(server_address: s
 
         for phone in (dana, bev):
             on_phone = receive_view(phone)
-            assert on_phone == {
-                "t": "view",
-                "screen": "question",
-                "number": 1,
-                "total": 10,
-                "choices": question["choices"],
-            }
+            assert on_phone["screen"] == "question"
+            assert (on_phone["number"], on_phone["total"]) == (1, 10)
+            assert on_phone["choices"] == question["choices"]
+            assert "prompt" not in on_phone
 
 
 def test_only_the_captain_casts_off_and_latecomers_are_turned_away(server_address: str) -> None:

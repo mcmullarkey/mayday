@@ -45,12 +45,22 @@
     padding: 0 16px; border-radius: 12px; font: 700 18px/1.15 var(--body);
   }
   /* Flags sit on a dark chip: each flag shares a color with its own button. */
-  .choice .flag { width: 34px; height: 24px; flex: none; padding: 5px 6px; box-sizing: content-box; background: var(--deep); border-radius: 6px; }
+  .choice .flag, .pill .flag { width: 34px; height: 24px; flex: none; padding: 5px 6px; box-sizing: content-box; background: var(--deep); border-radius: 6px; }
   .choice-0 { background: var(--f-alfa); color: #fff; }
   .choice-1 { background: var(--f-bravo); color: #fff; }
   .choice-2 { background: var(--f-charlie); color: var(--deep); }
   .choice-3 { background: var(--f-delta); color: var(--deep); }
   .hint { margin: 0; font-size: 13px; color: var(--dim); text-align: center; }
+  .bar { height: 5px; border-radius: 99px; background: rgba(243,238,226,.15); overflow: hidden; }
+  .bar i { display: block; height: 100%; background: var(--flare); transform-origin: left; }
+  .q-head .secs { font: 500 14px var(--mono); color: var(--flare); }
+
+  .center { flex: 1; display: grid; align-content: center; justify-items: center; gap: 16px; text-align: center; }
+  .center h1 { font: 900 60px/0.92 var(--display); margin: 0; }
+  .center p { margin: 0; color: var(--dim); font-size: 15px; }
+  .pill { display: flex; align-items: center; gap: 12px; padding: 14px 18px; border-radius: 12px; font: 700 18px var(--body); }
+  .verdict-right h1 { color: var(--brass); }
+  .verdict-wrong h1 { color: var(--flare); }
 </style>
 </head>
 <body>
@@ -79,9 +89,29 @@
 </section>
 
 <section class="screen" id="question-screen" hidden>
-  <div class="q-head"><b>Q<span id="q-number">1</span></b><span class="label">of <span id="q-total">10</span></span></div>
+  <div class="q-head"><b>Q<span id="q-number">1</span></b><span class="secs" id="q-secs"></span></div>
+  <div class="bar"><i id="q-bar"></i></div>
   <div class="choices" id="choices"></div>
   <p class="hint">Question's on the TV. Pick a flag.</p>
+</section>
+
+<section class="screen" id="locked-screen" hidden>
+  <div class="q-head"><b>Q<span id="l-number">1</span></b><span class="secs" id="l-secs"></span></div>
+  <div class="bar"><i id="l-bar"></i></div>
+  <div class="center">
+    <h1>Locked<br>in</h1>
+    <div id="l-choice"></div>
+    <p>Eyes on the TV.</p>
+  </div>
+</section>
+
+<section class="screen" id="reveal-screen" hidden>
+  <div class="q-head"><b>Q<span id="r-number">1</span></b><span class="label">of <span id="r-total">10</span></span></div>
+  <div class="center" id="r-verdict">
+    <h1 id="r-headline"></h1>
+    <p id="r-detail"></p>
+    <div id="r-answer"></div>
+  </div>
 </section>
 <script type="module" src="/static/play.js"></script>
 </body>

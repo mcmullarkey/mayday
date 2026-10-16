@@ -2,12 +2,29 @@
 // No game rules here: the server decides everything.
 import { openSocket } from "/static/net.js";
 import { flagIcon } from "/static/flags.js";
+import { startCountdown, stopCountdown } from "/static/clock.js";
 
 const $ = (id) => document.getElementById(id);
-const screens = ["join-screen", "lobby-screen", "question-screen"];
+const screens = ["join-screen", "lobby-screen", "question-screen", "locked-screen", "reveal-screen"];
 
 function show(id) {
   for (const s of screens) $(s).hidden = s !== id;
+}
+
+function choicePill(choices, index) {
+  const pill = document.createElement("div");
+  pill.className = `pill choice-${index}`;
+  const label = document.createElement("span");
+  label.textContent = choices[index];
+  pill.append(flagIcon(index), label);
+  return pill;
+}
+
+function runTimer(view, secsId, barId) {
+  startCountdown(view.remaining_ms, view.duration_ms, (seconds, fraction) => {
+    $(secsId).textContent = `${seconds}s`;
+    $(barId).style.transform = `scaleX(${fraction})`;
+  });
 }
 
 function renderLobby(view) {
@@ -24,9 +41,10 @@ function renderLobby(view) {
 }
 
 function renderQuestion(view) {
+  if (view.your_choice !== null) return renderLocked(view);
   show("question-screen");
+  runTimer(view, "q-secs", "q-bar");
   $("q-number").textContent = view.number;
-  $("q-total").textContent = view.total;
   $("choices").replaceChildren(
     ...view.choices.map((choice, i) => {
       const button = document.createElement("button");
@@ -35,9 +53,32 @@ function renderQuestion(view) {
       const label = document.createElement("span");
       label.textContent = choice;
       button.append(flagIcon(i), label);
+      button.addEventListener("click", () => {
+        for (const b of $("choices").children) b.disabled = true;
+        socket.send({ t: "answer", choice: i });
+      });
       return button;
     }),
   );
+}
+
+function renderLocked(view) {
+  show("locked-screen");
+  runTimer(view, "l-secs", "l-bar");
+  $("l-number").textContent = view.number;
+  $("l-choice").replaceChildren(choicePill(view.choices, view.your_choice));
+}
+
+function renderReveal(view) {
+  show("reveal-screen");
+  stopCountdown();
+  $("r-number").textContent = view.number;
+  $("r-total").textContent = view.total;
+  const missed = view.your_choice === null;
+  $("r-verdict").className = `center ${view.correct ? "verdict-right" : "verdict-wrong"}`;
+  $("r-headline").textContent = view.correct ? "Right!" : missed ? "Too slow" : "Sunk";
+  $("r-detail").textContent = view.correct ? "Nicely navigated." : "The answer was";
+  $("r-answer").replaceChildren(...(view.correct ? [] : [choicePill(view.choices, view.answer)]));
 }
 
 const REFUSALS = {
@@ -57,6 +98,7 @@ const socket = openSocket("/ws/play", (message) => {
   if (message.t === "refused") renderRefusal(message.reason);
   if (message.t === "view" && message.screen === "lobby") renderLobby(message);
   if (message.t === "view" && message.screen === "question") renderQuestion(message);
+  if (message.t === "view" && message.screen === "reveal") renderReveal(message);
 });
 
 $("cast-off").addEventListener("click", () => {

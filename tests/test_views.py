@@ -1,9 +1,24 @@
-from mayday.lobby import Lobby, PlayerId, join
+from mayday.lobby import Lobby, Player, PlayerId, PlayerName, join
+from mayday.questions import parse_questions
 from mayday.room_code import RoomCode
-from mayday.trivia import Trivia
+from mayday.trivia import Trivia, answer, expire, open_trivia
 from mayday.views import host_view, player_view
 
 JOIN_URL = "http://192.168.0.10:8000"
+[QUESTION] = parse_questions(
+    [
+        {
+            "id": "fitz",
+            "category": "Great Lakes",
+            "prompt": "Which lake?",
+            "choices": ["Michigan", "Superior", "Huron", "Erie"],
+            "answer": 1,
+            "fact": "29 lost.",
+            "source": "https://example.org",
+        }
+    ]
+)
+CHOICES = ["Michigan", "Superior", "Huron", "Erie"]
 
 
 def _lobby_with(*names: str) -> Lobby:
@@ -16,7 +31,7 @@ def _lobby_with(*names: str) -> Lobby:
 
 
 def test_host_lobby_view_shows_code_join_url_and_crew() -> None:
-    view = host_view(_lobby_with("Dana", "Bev"), JOIN_URL)
+    view = host_view(_lobby_with("Dana", "Bev"), JOIN_URL, now=0)
     assert view == {
         "t": "view",
         "screen": "lobby",
@@ -31,7 +46,7 @@ def test_host_lobby_view_shows_code_join_url_and_crew() -> None:
 
 
 def test_player_lobby_view_shows_self_and_never_the_room_code() -> None:
-    view = player_view(_lobby_with("Dana", "Bev"), PlayerId("p1"))
+    view = player_view(_lobby_with("Dana", "Bev"), PlayerId("p1"), now=0)
     assert view == {
         "t": "view",
         "screen": "lobby",
@@ -42,52 +57,81 @@ def test_player_lobby_view_shows_self_and_never_the_room_code() -> None:
 
 
 def test_player_view_marks_captain() -> None:
-    assert player_view(_lobby_with("Dana"), PlayerId("p0"))["you"]["captain"] is True
+    assert player_view(_lobby_with("Dana"), PlayerId("p0"), now=0)["you"]["captain"] is True
 
 
-def _trivia() -> "Trivia":
-    from mayday.game import start_game
-    from mayday.questions import parse_questions
-
-    [question] = parse_questions(
-        [
-            {
-                "id": "fitz",
-                "category": "Great Lakes",
-                "prompt": "Which lake?",
-                "choices": ["Michigan", "Superior", "Huron", "Erie"],
-                "answer": 1,
-                "fact": "29 lost.",
-                "source": "https://example.org",
-            }
-        ]
-    )
-    game = start_game(_lobby_with("Dana", "Bev"), PlayerId("p0"), (question,))
-    assert isinstance(game, Trivia)
-    return game
+DANA, BEV = PlayerId("p0"), PlayerId("p1")
+PLAYERS = (Player(DANA, PlayerName("Dana")), Player(BEV, PlayerName("Bev")))
 
 
-def test_host_question_view_shows_prompt_choices_and_crew_but_not_answer() -> None:
-    assert host_view(_trivia(), JOIN_URL) == {
+def _trivia() -> Trivia:
+    """Opened at t=100 with a 20 s timer; Dana has answered Huron at t=104."""
+    trivia = answer(open_trivia(PLAYERS, (QUESTION,), now=100, seconds=20), DANA, 2, now=104)
+    assert isinstance(trivia, Trivia)
+    return trivia
+
+
+def test_host_question_view_shows_who_answered_but_not_what() -> None:
+    assert host_view(_trivia(), JOIN_URL, now=105.25) == {
         "t": "view",
         "screen": "question",
         "number": 1,
         "total": 1,
         "category": "Great Lakes",
         "prompt": "Which lake?",
-        "choices": ["Michigan", "Superior", "Huron", "Erie"],
+        "choices": CHOICES,
+        "remaining_ms": 14_750,
+        "duration_ms": 20_000,
         "players": [
-            {"name": "Dana", "captain": True},
-            {"name": "Bev", "captain": False},
+            {"name": "Dana", "captain": True, "answered": True},
+            {"name": "Bev", "captain": False, "answered": False},
         ],
     }
 
 
-def test_player_question_view_shows_only_choices() -> None:
-    assert player_view(_trivia(), PlayerId("p1")) == {
+def test_player_question_view_shows_choices_and_own_lock() -> None:
+    assert player_view(_trivia(), DANA, now=105) == {
         "t": "view",
         "screen": "question",
         "number": 1,
         "total": 1,
-        "choices": ["Michigan", "Superior", "Huron", "Erie"],
+        "choices": CHOICES,
+        "remaining_ms": 15_000,
+        "duration_ms": 20_000,
+        "your_choice": 2,
     }
+    assert player_view(_trivia(), BEV, now=105)["your_choice"] is None
+
+
+def test_remaining_time_never_goes_negative() -> None:
+    assert host_view(_trivia(), JOIN_URL, now=130)["remaining_ms"] == 0
+
+
+def test_host_reveal_view_shows_answer_and_who_picked_what() -> None:
+    assert host_view(expire(_trivia(), now=120), JOIN_URL, now=121) == {
+        "t": "view",
+        "screen": "reveal",
+        "number": 1,
+        "total": 1,
+        "category": "Great Lakes",
+        "prompt": "Which lake?",
+        "choices": CHOICES,
+        "answer": 1,
+        "picks": [[], [], ["Dana"], []],
+        "fact": "29 lost.",
+    }
+
+
+def test_player_reveal_view_says_whether_you_were_right() -> None:
+    revealed = expire(_trivia(), now=120)
+    assert player_view(revealed, DANA, now=121) == {
+        "t": "view",
+        "screen": "reveal",
+        "number": 1,
+        "total": 1,
+        "choices": CHOICES,
+        "answer": 1,
+        "your_choice": 2,
+        "correct": False,
+    }
+    assert player_view(revealed, BEV, now=121)["correct"] is False
