@@ -67,6 +67,12 @@ class PlayerQuestionView(TypedDict):
     your_choice: int | None
 
 
+class Score(TypedDict):
+    name: str
+    gained: int
+    score: int
+
+
 class HostRevealView(TypedDict):
     t: Literal["view"]
     screen: Literal["reveal"]
@@ -78,6 +84,7 @@ class HostRevealView(TypedDict):
     answer: int
     picks: list[list[str]]
     fact: str
+    scores: list[Score]
 
 
 class PlayerRevealView(TypedDict):
@@ -89,6 +96,8 @@ class PlayerRevealView(TypedDict):
     answer: int
     your_choice: int | None
     correct: bool
+    gained: int
+    score: int
 
 
 HostView = HostLobbyView | HostQuestionView | HostRevealView
@@ -185,10 +194,14 @@ def _host_reveal(trivia: Trivia, revealed: Revealed) -> HostRevealView:
         "answer": question.answer,
         "picks": _picks(trivia, revealed),
         "fact": question.fact,
+        "scores": [
+            {"name": str(p.name), "gained": revealed.gained[p.id], "score": trivia.totals[p.id]}
+            for p in trivia.players
+        ],
     }
 
 
-def _player_reveal(trivia: Trivia, player_id: PlayerId) -> PlayerRevealView:
+def _player_reveal(trivia: Trivia, revealed: Revealed, player_id: PlayerId) -> PlayerRevealView:
     question = trivia.current
     your_choice = trivia.choice_of(player_id)
     return {
@@ -200,6 +213,8 @@ def _player_reveal(trivia: Trivia, player_id: PlayerId) -> PlayerRevealView:
         "answer": question.answer,
         "your_choice": your_choice,
         "correct": your_choice == question.answer,
+        "gained": revealed.gained[player_id],
+        "score": trivia.totals[player_id],
     }
 
 
@@ -219,5 +234,5 @@ def player_view(game: Game, player_id: PlayerId, now: float) -> PlayerView:
             return _player_lobby(game, player_id)
         case Trivia(round=Asking() as asking):
             return _player_question(game, asking, player_id, now)
-        case Trivia(round=Revealed()):
-            return _player_reveal(game, player_id)
+        case Trivia(round=Revealed() as revealed):
+            return _player_reveal(game, revealed, player_id)

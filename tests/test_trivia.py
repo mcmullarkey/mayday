@@ -77,9 +77,30 @@ def test_expire_at_deadline_reveals_with_answers_so_far() -> None:
     trivia = answer(_open(100.0), DANA, 2, now=101)
     assert isinstance(trivia, Trivia)
     revealed = expire(trivia, now=120.0)
-    assert revealed.round == Revealed(answers=(Answer(DANA, 2, 1.0),))
+    assert isinstance(revealed.round, Revealed)
+    assert revealed.round.answers == (Answer(DANA, 2, 1.0),)
 
 
 def test_expire_is_idempotent_after_reveal() -> None:
     revealed = expire(_open(100.0), now=120.0)
     assert expire(revealed, now=500.0) == revealed
+
+
+def test_reveal_scores_each_player_and_adds_to_totals() -> None:
+    QUESTION_ANSWER = QUESTION.answer
+    trivia = answer(_open(100.0), DANA, QUESTION_ANSWER, now=105)
+    assert isinstance(trivia, Trivia)
+    trivia = answer(trivia, BEV, (QUESTION_ANSWER + 1) % 4, now=106)
+    assert isinstance(trivia, Trivia)
+    assert isinstance(trivia.round, Revealed)
+    assert trivia.round.gained == {DANA: 875, BEV: 0}
+    assert trivia.totals == {DANA: 875, BEV: 0}
+
+
+def test_timeout_reveal_scores_silent_players_zero() -> None:
+    revealed = expire(_open(100.0), now=120.0)
+    assert revealed.totals == {DANA: 0, BEV: 0}
+
+
+def test_fresh_game_totals_start_at_zero() -> None:
+    assert _open().totals == {DANA: 0, BEV: 0}

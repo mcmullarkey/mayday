@@ -79,6 +79,8 @@ function renderReveal(view) {
   $("r-headline").textContent = view.correct ? "Right!" : missed ? "Too slow" : "Sunk";
   $("r-detail").textContent = view.correct ? "Nicely navigated." : "The answer was";
   $("r-answer").replaceChildren(...(view.correct ? [] : [choicePill(view.choices, view.answer)]));
+  $("r-gained").textContent = view.gained ? `+${view.gained}` : "+0";
+  $("r-points").textContent = view.score.toLocaleString();
 }
 
 const REFUSALS = {

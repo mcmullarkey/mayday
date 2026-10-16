@@ -83,11 +83,12 @@ function renderReveal(view) {
   $("r-total").textContent = view.total;
   $("r-prompt").textContent = view.prompt;
   $("r-fact").textContent = view.fact;
+  const gained = Object.fromEntries(view.scores.map((s) => [s.name, s.gained]));
   $("r-answers").replaceChildren(
     ...view.choices.map((choice, i) => {
       const li = el("li", i === view.answer ? "answer right" : "answer wrong");
       const who = el("span", "who");
-      who.append(...view.picks[i].map((name) => el("span", "", name)));
+      who.append(...view.picks[i].map((name) => el("span", "", gained[name] ? `${name} +${gained[name]}` : name)));
       li.append(flagIcon(i), el("span", "", choice), who);
       return li;
     }),

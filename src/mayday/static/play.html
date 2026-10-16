@@ -59,6 +59,9 @@
   .center h1 { font: 900 60px/0.92 var(--display); margin: 0; }
   .center p { margin: 0; color: var(--dim); font-size: 15px; }
   .pill { display: flex; align-items: center; gap: 12px; padding: 14px 18px; border-radius: 12px; font: 700 18px var(--body); }
+  .tally { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid var(--line); padding-top: 12px; font-size: 15px; color: var(--dim); }
+  .tally b { color: var(--foam); font: 800 22px var(--body); font-variant-numeric: tabular-nums; }
+  #r-gained { font: 800 22px var(--body); color: var(--brass); }
   .verdict-right h1 { color: var(--brass); }
   .verdict-wrong h1 { color: var(--flare); }
 </style>
@@ -112,6 +115,7 @@
     <p id="r-detail"></p>
     <div id="r-answer"></div>
   </div>
+  <div class="tally"><span id="r-gained"></span><span><b id="r-points">0</b> pts</span></div>
 </section>
 <script type="module" src="/static/play.js"></script>
 </body>

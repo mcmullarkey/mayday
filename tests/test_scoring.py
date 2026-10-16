@@ -50,10 +50,11 @@ def test_reveal_scores_right_answers_by_speed_and_shows_totals() -> None:
         dana_score, bev_score = reveal["scores"]
         assert dana_score["name"] == "Dana"
         assert 950 <= dana_score["gained"] <= 1000
-        assert dana_score["total"] == dana_score["gained"]
-        assert bev_score == {"name": "Bev", "gained": 0, "total": 0}
+        assert dana_score["score"] == dana_score["gained"]
+        assert bev_score == {"name": "Bev", "gained": 0, "score": 0}
 
         dana_reveal = receive_screen(dana, "reveal")
-        assert (dana_reveal["gained"], dana_reveal["total"]) == (dana_score["gained"], dana_score["total"])
+        assert (dana_reveal["gained"], dana_reveal["score"]) == (dana_score["gained"], dana_score["score"])
+        assert dana_reveal["total"] == 1
         bev_reveal = receive_screen(bev, "reveal")
-        assert (bev_reveal["gained"], bev_reveal["total"]) == (0, 0)
+        assert (bev_reveal["gained"], bev_reveal["score"]) == (0, 0)

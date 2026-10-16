@@ -8,19 +8,14 @@ Does not: decide who may start a game (see game), draw questions (see questions)
 schedule timers (see server), or render anything (see views).
 """
 
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, field, replace
 from enum import StrEnum
 from typing import TypeGuard
 
+from mayday.answer import Answer
 from mayday.lobby import Player, PlayerId
 from mayday.questions import CHOICES_PER_QUESTION, Question
-
-
-@dataclass(frozen=True)
-class Answer:
-    player_id: PlayerId
-    choice: int
-    seconds: float  # since the question opened
+from mayday.scoring import points_for
 
 
 @dataclass(frozen=True)
@@ -33,6 +28,7 @@ class Asking:
 @dataclass(frozen=True)
 class Revealed:
     answers: tuple[Answer, ...]
+    gained: dict[PlayerId, int]  # points each player earned on this question
 
 
 Round = Asking | Revealed
@@ -50,6 +46,7 @@ class Trivia:
     questions: tuple[Question, ...]
     round: Round
     index: int = 0
+    totals: dict[PlayerId, int] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         if not self.players or not self.questions:
@@ -74,7 +71,22 @@ class Trivia:
 
 
 def open_trivia(players: tuple[Player, ...], questions: tuple[Question, ...], now: float, seconds: float) -> Trivia:
-    return Trivia(players=players, questions=questions, round=Asking(opened_at=now, deadline=now + seconds))
+    return Trivia(
+        players=players,
+        questions=questions,
+        round=Asking(opened_at=now, deadline=now + seconds),
+        totals={p.id: 0 for p in players},
+    )
+
+
+def _reveal(trivia: Trivia, asking: Asking, answers: tuple[Answer, ...]) -> Trivia:
+    by_player = {a.player_id: a for a in answers}
+    duration = asking.deadline - asking.opened_at
+    gained = {
+        p.id: points_for(by_player.get(p.id), trivia.current.answer, duration) for p in trivia.players
+    }
+    totals = {pid: trivia.totals.get(pid, 0) + gained[pid] for pid in gained}
+    return replace(trivia, round=Revealed(answers, gained), totals=totals)
 
 
 def _is_choice(choice: object) -> TypeGuard[int]:
@@ -91,12 +103,13 @@ def answer(trivia: Trivia, player_id: PlayerId, choice: object, now: float) -> T
     if trivia.choice_of(player_id) is not None:
         return AnswerRefusal.ALREADY_ANSWERED
     answers = (*asking.answers, Answer(player_id, choice, now - asking.opened_at))
-    everyone_in = len(answers) == len(trivia.players)
-    return replace(trivia, round=Revealed(answers) if everyone_in else replace(asking, answers=answers))
+    if len(answers) == len(trivia.players):
+        return _reveal(trivia, asking, answers)
+    return replace(trivia, round=replace(asking, answers=answers))
 
 
 def expire(trivia: Trivia, now: float) -> Trivia:
     asking = trivia.round
     if isinstance(asking, Asking) and now >= asking.deadline:
-        return replace(trivia, round=Revealed(asking.answers))
+        return _reveal(trivia, asking, asking.answers)
     return trivia

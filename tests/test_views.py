@@ -119,6 +119,10 @@ def test_host_reveal_view_shows_answer_and_who_picked_what() -> None:
         "answer": 1,
         "picks": [[], [], ["Dana"], []],
         "fact": "29 lost.",
+        "scores": [
+            {"name": "Dana", "gained": 0, "score": 0},
+            {"name": "Bev", "gained": 0, "score": 0},
+        ],
     }
 
 
@@ -133,5 +137,17 @@ def test_player_reveal_view_says_whether_you_were_right() -> None:
         "answer": 1,
         "your_choice": 2,
         "correct": False,
+        "gained": 0,
+        "score": 0,
     }
     assert player_view(revealed, BEV, now=121)["correct"] is False
+
+
+def test_reveal_views_carry_points_for_a_right_answer() -> None:
+    trivia = answer(open_trivia(PLAYERS, (QUESTION,), now=100, seconds=20), DANA, 1, now=110)
+    assert isinstance(trivia, Trivia)
+    revealed = expire(trivia, now=120)
+    assert host_view(revealed, JOIN_URL, now=121)["scores"][0] == {"name": "Dana", "gained": 750, "score": 750}
+    mine = player_view(revealed, DANA, now=121)
+    assert (mine["correct"], mine["gained"], mine["score"]) == (True, 750, 750)
+    assert mine["total"] == 1
