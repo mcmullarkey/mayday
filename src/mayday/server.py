@@ -16,7 +16,8 @@ from enum import StrEnum
 from pathlib import Path
 
 from starlette.applications import Starlette
-from starlette.responses import FileResponse
+from starlette.requests import Request
+from starlette.responses import FileResponse, Response
 from starlette.routing import Mount, Route, WebSocketRoute
 from starlette.staticfiles import StaticFiles
 from starlette.websockets import WebSocket, WebSocketDisconnect
@@ -24,6 +25,7 @@ from starlette.websockets import WebSocket, WebSocketDisconnect
 from mayday.game import Game, back_to_lobby, join_game, play_again, start_game
 from mayday.guesses import GuessLog
 from mayday.lobby import JoinRefusal, Lobby, PlayerId
+from mayday.qr import join_link, qr_svg
 from mayday.questions import Question, draw_questions, read_question_bank
 from mayday.room_code import new_room_code
 from mayday.trivia import AnswerRefusal, Pace, Trivia, answer, tick
@@ -122,8 +124,15 @@ def create_app(
     def fresh_questions() -> tuple[Question, ...]:
         return draw_questions(bank, rng, count=QUESTIONS_PER_GAME)
 
-    def may_host(ws: WebSocket) -> bool:
-        return host_key is None or secrets.compare_digest(ws.query_params.get("key", ""), host_key)
+    def may_host(conn: WebSocket | Request) -> bool:
+        return host_key is None or secrets.compare_digest(conn.query_params.get("key", ""), host_key)
+
+    async def qr_code(request: Request) -> Response:
+        """The TV's QR code; it carries the room code, so hosted it needs the key (ADR-0008)."""
+        if not may_host(request):
+            return Response("host key required", status_code=401)
+        svg = qr_svg(join_link(table.join_url, code))
+        return Response(svg, media_type="image/svg+xml", headers={"Cache-Control": "no-store"})
 
     async def host_socket(ws: WebSocket) -> None:
         await ws.accept()
@@ -211,6 +220,7 @@ def create_app(
         routes=[
             Route("/", phone_page),
             Route("/host", host_page),
+            Route("/qr.svg", qr_code),
             WebSocketRoute("/ws/host", host_socket),
             WebSocketRoute("/ws/play", play_socket),
             Mount("/static", StaticFiles(directory=STATIC), name="static"),

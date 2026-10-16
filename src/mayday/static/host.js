@@ -4,6 +4,8 @@ import { flagIcon } from "/static/flags.js";
 import { startCountdown, stopCountdown } from "/static/clock.js";
 
 const $ = (id) => document.getElementById(id);
+// Hosted mode (ADR-0008): the TV's address carries ?key=..., which the server checks.
+const key = new URLSearchParams(location.search).get("key");
 const screens = ["lobby", "question", "reveal", "standings", "final"];
 const ARC_LENGTH = 106.8;
 
@@ -40,6 +42,9 @@ function berth(number, player) {
 
 function renderLobby(view) {
   show("lobby");
+  const qrSrc = `/qr.svg?code=${view.code}${key ? `&key=${encodeURIComponent(key)}` : ""}`;
+  if ($("qr").getAttribute("src") !== qrSrc) $("qr").src = qrSrc;
+  $("qr").hidden = false;
   $("join-url").textContent = view.join_url.replace(/^https?:\/\//, "");
   $("room-code").textContent = view.code;
   $("berth-count").textContent = `${view.players.length} / ${view.max_players} berths`;
@@ -119,8 +124,6 @@ function renderFinal(view) {
 
 const RENDER = { lobby: renderLobby, question: renderQuestion, reveal: renderReveal, standings: renderStandings, final: renderFinal };
 
-// Hosted mode (ADR-0008): the TV's address carries ?key=..., which the server checks.
-const key = new URLSearchParams(location.search).get("key");
 const hostPath = key ? `/ws/host?key=${encodeURIComponent(key)}` : "/ws/host";
 
 openSocket(

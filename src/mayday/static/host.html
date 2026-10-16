@@ -14,6 +14,8 @@
   .left { display: grid; align-content: space-between; }
   .left .logo { font-size: 8.5vw; }
   .sub { font-size: 1.1vw; margin-top: 0.8vw; }
+  .joinbox { display: flex; align-items: center; gap: 2.5vw; }
+  .qr { width: 14vw; aspect-ratio: 1; border-radius: 0.6vw; flex: none; }
   .join { display: grid; gap: 0.6vw; }
   .join .label { font-size: 1.1vw; }
   .url { font-family: var(--mono); font-size: 2.2vw; }
@@ -90,11 +92,14 @@
       <div class="logo">MAYDAY<span>!</span></div>
       <div class="label sub">Sea Disaster Trivia</div>
     </div>
-    <div class="join">
-      <span class="label">On your phone, go to</span>
-      <span class="url" id="join-url">…</span>
-      <span class="label">Room code</span>
-      <span class="code" id="room-code">····</span>
+    <div class="joinbox">
+      <img class="qr" id="qr" alt="QR code: scan to join with the code filled in" hidden>
+      <div class="join">
+        <span class="label">Scan, or on your phone go to</span>
+        <span class="url" id="join-url">…</span>
+        <span class="label">Room code</span>
+        <span class="code" id="room-code">····</span>
+      </div>
     </div>
   </section>
   <section class="berths" aria-label="Crew manifest">
