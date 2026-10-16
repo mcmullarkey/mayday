@@ -1,5 +1,7 @@
 # Build plan
 
+Status 2026-10-16: slices 1–10 built. Live at https://mayday-qsu4.onrender.com (TV: /host?key=...).
+
 Design proposal: https://claude.ai/artifact/AxsNQiLCisbMNpGGNYhScr
 
 Decisions settled (2026-10-16): Python + Starlette, home network first, night-sea look,
