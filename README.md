@@ -16,6 +16,20 @@ uv run mayday
 Open the printed host URL on the laptop (fullscreen it on the TV). Phones open the
 join URL shown on the TV.
 
+Options: `--port 8000`, `--question-seconds 20`.
+
+## Host it online (friends on cellular)
+
+Runs as a free Render web service (see `docs/adr/0008-hosted-mode-on-render.md`).
+
+- Build: `pip install uv && uv sync --frozen --no-dev`
+- Start: `uv run mayday --port $PORT --public-url $RENDER_EXTERNAL_URL`
+- Env: `MAYDAY_HOST_KEY` (a secret only the TV knows), `PYTHON_VERSION=3.12.7`
+
+Open the TV at `https://<service>.onrender.com/host?key=<MAYDAY_HOST_KEY>` a minute
+before people arrive (free services sleep when idle). Phones go to
+`https://<service>.onrender.com` and type the code from the TV.
+
 ## Develop
 
 ```sh
