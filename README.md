@@ -36,4 +36,11 @@ before people arrive (free services sleep when idle). Phones go to
 uv run pytest
 ```
 
+Questions live in `src/mayday/questions/sea_disasters.json`. Each one cites Wikipedia
+with exact quotes; re-check them all against live Wikipedia (about 5 minutes):
+
+```sh
+MAYDAY_FACTCHECK=1 uv run pytest tests/test_question_bank.py
+```
+
 Design decisions live in `docs/adr/`. Build order lives in `docs/plan.md`.
