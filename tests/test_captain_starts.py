@@ -1,4 +1,4 @@
-"""Slice 3: when the Captain casts off, question 1 appears on the TV and on every phone,
+"""Slice 3: when the Captain casts off, question 1 (prompt and choices) appears on the TV and every phone,
 and the room is closed to new crew."""
 
 import json
@@ -49,7 +49,7 @@ def test_captain_casts_off_and_question_one_appears_everywhere(server_address: s
             assert on_phone["screen"] == "question"
             assert (on_phone["number"], on_phone["total"]) == (1, 10)
             assert on_phone["choices"] == question["choices"]
-            assert "prompt" not in on_phone
+            assert on_phone["prompt"] == question["prompt"]  # playtest 1: read it on your phone too
 
 
 def test_only_the_captain_casts_off_and_latecomers_are_turned_away(server_address: str) -> None:
