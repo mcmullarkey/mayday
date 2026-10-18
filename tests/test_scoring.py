@@ -17,7 +17,7 @@ from mayday.questions import parse_questions
             "choices": ["Lake Michigan", "Lake Superior", "Lake Huron", "Lake Erie"],
             "answer": 1,
             "fact": "All 29 crew were lost.",
-            "source": "https://en.wikipedia.org/wiki/SS_Edmund_Fitzgerald",
+            "sources": [{"url": "https://en.wikipedia.org/wiki/SS_Edmund_Fitzgerald", "quotes": ["a quote"]}],
         }
     ]
 )

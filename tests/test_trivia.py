@@ -29,7 +29,7 @@ def _question(n: int) -> Question:
                 "choices": ["Michigan", "Superior", "Huron", "Erie"],
                 "answer": 1,
                 "fact": "29 lost.",
-                "source": "https://example.org",
+                "sources": [{"url": "https://example.org", "quotes": ["a quote"]}],
             }
         ]
     )

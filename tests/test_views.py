@@ -14,7 +14,7 @@ JOIN_URL = "http://192.168.0.10:8000"
             "choices": ["Michigan", "Superior", "Huron", "Erie"],
             "answer": 1,
             "fact": "29 lost.",
-            "source": "https://example.org",
+            "sources": [{"url": "https://example.org", "quotes": ["a quote"]}],
         }
     ]
 )

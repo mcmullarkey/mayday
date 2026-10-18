@@ -2,298 +2,505 @@
   {
     "id": "titanic-year",
     "category": "Titanic",
-    "prompt": "In what year did the RMS Titanic sink?",
+    "prompt": "The \"unsinkable\" Titanic went down on 15 April of a year that ends in a dozen. Which year?",
     "choices": ["1905", "1912", "1915", "1921"],
     "answer": 1,
-    "fact": "She hit the iceberg late on 14 April and was gone by 2:20 a.m. on the 15th. More than 1,500 people died.",
-    "source": "https://en.wikipedia.org/wiki/Titanic"
+    "fact": "Of the 2,208 passengers and crew aboard, approximately 1,500 died.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Titanic", "quotes": ["sank in the early hours of 15 April 1912", "Of the 2,208 passengers and crew aboard, approximately 1,500 died"]}]
   },
   {
     "id": "titanic-lifeboats",
     "category": "Titanic",
-    "prompt": "How many lifeboats did the Titanic carry?",
+    "prompt": "Titanic had lifeboat seats for only about half the people aboard. How many lifeboats was that? Hint: it's a score.",
     "choices": ["12", "32", "20", "48"],
     "answer": 2,
-    "fact": "Room for about 1,178 people, roughly half of those aboard. It was still more than the law required.",
-    "source": "https://en.wikipedia.org/wiki/Lifeboats_of_the_Titanic"
+    "fact": "Shockingly, that was legal: Titanic actually complied with the safety rules of the day.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Lifeboats_of_the_Titanic", "quotes": ["The ship had been supplied with 20 lifeboats", "could accommodate 1,178 people, a little over half of the 2,207 on board", "Titanic in fact complied with maritime safety regulations at the time"]}]
   },
   {
     "id": "titanic-rescue",
     "category": "Titanic",
-    "prompt": "Which ship raced through the ice to pick up the Titanic's survivors?",
+    "prompt": "Which rescue ship seized the day (carpe diem!) and threaded the ice fields to pick up Titanic's survivors?",
     "choices": ["Californian", "Olympic", "Mauretania", "Carpathia"],
     "answer": 3,
-    "fact": "The Californian was close enough to see Titanic's distress rockets, and did nothing.",
-    "source": "https://en.wikipedia.org/wiki/RMS_Carpathia"
+    "fact": "The Californian, much closer, saw Titanic's flares but failed to assist.",
+    "sources": [
+      {"url": "https://en.wikipedia.org/wiki/RMS_Carpathia", "quotes": ["she became famous for rescuing survivors of the rival White Star Line's RMS Titanic", "the crew rescued over 700 survivors"]},
+      {"url": "https://en.wikipedia.org/wiki/Titanic", "quotes": ["SS Californian, which was the last to have been in contact before the collision, saw Titanic's flares but failed to assist"]}
+    ]
   },
   {
     "id": "titanic-bandleader",
     "category": "Titanic",
-    "prompt": "What was the name of the Titanic's bandleader, who kept playing as the ship went down?",
+    "prompt": "Titanic's bandleader kept playing as the ship sank. Fittingly, his surname had a whole \"heart\" in it. Who was he?",
     "choices": ["Wallace Hartley", "Edward Smith", "Bruce Ismay", "Harold Bride"],
     "answer": 0,
-    "fact": "His violin was recovered and sold at auction in 2013 for about £900,000 before fees.",
-    "source": "https://en.wikipedia.org/wiki/Wallace_Hartley"
+    "fact": "His violin turned up in a British attic and sold at auction in 2013 for £900,000.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Wallace_Hartley", "quotes": ["The bandleader on the Titanic during its maiden voyage", "a violin found in a British man's attic", "on 19 October 2013 for £900,000"]}]
   },
   {
     "id": "titanic-depth",
     "category": "Titanic",
-    "prompt": "Roughly how deep does the Titanic wreck lie?",
+    "prompt": "The Titanic wreck lies a little over two miles straight down. Which depth is that?",
     "choices": ["1,000 feet", "5,000 feet", "12,500 feet", "30,000 feet"],
     "answer": 2,
-    "fact": "About 3,800 metres down. Robert Ballard and Jean-Louis Michel found it in 1985.",
-    "source": "https://en.wikipedia.org/wiki/Wreck_of_the_Titanic"
+    "fact": "A French–American team led by Jean-Louis Michel and Robert Ballard found it in 1985.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Wreck_of_the_Titanic", "quotes": ["lies at a depth of about 12,500 feet", "In 1985, the wreck was discovered by a joint French–American expedition led by Jean-Louis Michel of IFREMER and Robert Ballard"]}]
   },
   {
     "id": "titanic-solas",
     "category": "Titanic",
-    "prompt": "Which international rulebook was written because the Titanic sank?",
-    "choices": ["The Geneva Convention", "Safety of Life at Sea (SOLAS)", "The Law of the Sea", "The Plimsoll Act"],
+    "prompt": "After Titanic, nations wrote a safety treaty whose acronym sounds like the Spanish for \"alone.\" What is it?",
+    "choices": ["The Geneva Convention", "SOLAS", "The Law of the Sea", "The Plimsoll Act"],
     "answer": 1,
-    "fact": "The first SOLAS convention, in 1914, required lifeboat space for everyone aboard and a 24-hour radio watch.",
-    "source": "https://en.wikipedia.org/wiki/International_Convention_for_the_Safety_of_Life_at_Sea"
+    "fact": "The 1914 version never took effect: the First World War broke out first.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/International_Convention_for_the_Safety_of_Life_at_Sea", "quotes": ["The first version of SOLAS Treaty was passed in 1914 in response to the sinking of RMS Titanic", "The 1914 treaty never entered into force due to the outbreak of the First World War"]}]
   },
   {
     "id": "britannic",
     "category": "Titanic",
-    "prompt": "Which of Titanic's sister ships sank in 1916 after hitting a mine while serving as a hospital ship?",
+    "prompt": "Which of Titanic's sisters, with the most British name imaginable, hit a mine in 1916 while serving as a hospital ship?",
     "choices": ["Olympic", "Lusitania", "Britannic", "Carpathia"],
     "answer": 2,
-    "fact": "Stewardess Violet Jessop survived both the Titanic and the Britannic.",
-    "source": "https://en.wikipedia.org/wiki/HMHS_Britannic"
+    "fact": "She sank in 55 minutes. Stewardess-turned-nurse Violet Jessop survived both her and the Titanic.",
+    "sources": [
+      {"url": "https://en.wikipedia.org/wiki/HMHS_Britannic", "quotes": ["Britannic struck an Imperial German naval mine near the Greek island of Kea and sank 55 minutes later"]},
+      {"url": "https://en.wikipedia.org/wiki/Violet_Jessop", "quotes": ["She is notable for having survived the sinking of both RMS Titanic in 1912 and sister ship HMHS Britannic in 1916"]}
+    ]
   },
   {
-    "id": "fitzgerald-lake",
+    "id": "fitz-lake",
     "category": "Great Lakes",
-    "prompt": "The SS Edmund Fitzgerald went down in November 1975 on which Great Lake?",
+    "prompt": "The Edmund Fitzgerald sank in 1975 on the Great Lake whose name makes it sound like it's bragging. Which one?",
     "choices": ["Lake Michigan", "Lake Superior", "Lake Huron", "Lake Erie"],
     "answer": 1,
-    "fact": "All 29 crew were lost. Gordon Lightfoot's 1976 song made her the most famous Great Lakes wreck.",
-    "source": "https://en.wikipedia.org/wiki/SS_Edmund_Fitzgerald"
+    "fact": "All 29 crew were lost. Canadian singer Gordon Lightfoot's 1976 ballad made the wreck famous.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/SS_Edmund_Fitzgerald", "quotes": ["sank in Lake Superior during a storm on November 10, 1975, with the loss of the entire crew of 29 men", "Canadian singer Gordon Lightfoot's popular 1976 ballad"]}]
   },
   {
-    "id": "fitzgerald-cargo",
+    "id": "fitz-cargo",
     "category": "Great Lakes",
-    "prompt": "What was the Edmund Fitzgerald carrying when she sank?",
-    "choices": ["Coal", "Grain", "Copper", "Iron ore pellets"],
+    "prompt": "For 17 years the Edmund Fitzgerald hauled a cargo you could call iron-ic. What was it?",
+    "choices": ["Coal", "Grain", "Copper", "Taconite iron ore"],
     "answer": 3,
-    "fact": "About 26,000 tons of taconite pellets, bound for Detroit.",
-    "source": "https://en.wikipedia.org/wiki/SS_Edmund_Fitzgerald"
+    "fact": "Her wreck was found soon after the sinking, in two large pieces.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/SS_Edmund_Fitzgerald", "quotes": ["For 17 years, Edmund Fitzgerald carried taconite (a variety of iron ore)", "found to be in two large pieces"]}]
   },
   {
     "id": "eastland",
     "category": "Great Lakes",
-    "prompt": "In 1915 the SS Eastland rolled onto her side while still tied up at the dock. In which city?",
+    "prompt": "In 1915 the SS Eastland rolled over while still tied to the dock in the Windy City. Which city?",
     "choices": ["Chicago", "Detroit", "Cleveland", "Milwaukee"],
     "answer": 0,
-    "fact": "844 people died in the Chicago River, most of them employees heading to a company picnic.",
-    "source": "https://en.wikipedia.org/wiki/SS_Eastland"
+    "fact": "844 people died; many were Western Electric employees chartered to a company picnic.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/SS_Eastland", "quotes": ["the ship capsized while tied to a dock in the Chicago River", "844 passengers and crew were killed", "to take employees from Western Electric Company's Hawthorne Works in Cicero, Illinois to a picnic"]}]
   },
   {
     "id": "lusitania",
     "category": "War at Sea",
-    "prompt": "A German U-boat sank the RMS Lusitania in 1915 off the coast of which country?",
+    "prompt": "A U-boat torpedoed the Lusitania in 1915 off the Old Head of Kinsale, in the land of shamrocks and soda bread. Which country?",
     "choices": ["France", "Norway", "Ireland", "Scotland"],
     "answer": 2,
-    "fact": "1,198 people died, 128 of them American, which helped turn US opinion against Germany.",
-    "source": "https://en.wikipedia.org/wiki/RMS_Lusitania"
+    "fact": "1,197 people died, including 128 US citizens, which pushed America toward joining the war.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/RMS_Lusitania", "quotes": ["off the Old Head of Kinsale, Ireland", "while 1,197 perished", "The sinking killed 128 US citizens"]}]
   },
   {
     "id": "indianapolis",
     "category": "War at Sea",
-    "prompt": "Just before she was torpedoed in 1945, the USS Indianapolis delivered parts for what?",
-    "choices": ["The first atomic bomb used in war", "A new aircraft carrier", "Radar stations", "The Panama Canal locks"],
-    "answer": 0,
-    "fact": "Of about 1,195 men aboard, only 316 survived days in the water. Quint tells the story in Jaws.",
-    "source": "https://en.wikipedia.org/wiki/USS_Indianapolis_(CA-35)"
+    "prompt": "In July 1945 the USS Indianapolis secretly delivered parts for something nicknamed \"Little Boy.\" What was it?",
+    "choices": ["A new aircraft carrier", "The first nuclear weapon used in combat", "A radar station", "A midget submarine"],
+    "answer": 1,
+    "fact": "Days later she was torpedoed. Of 1,195 crewmen, only 316 survived. Quint tells the story in Jaws.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/USS_Indianapolis_(CA-35)", "quotes": ["to deliver uranium and other components for \"Little Boy\", the first nuclear weapon used in combat", "Of 1,195 crewmen aboard", "Only 316 survived", "In a scene in the 1975 movie Jaws"]}]
   },
   {
     "id": "gustloff",
     "category": "War at Sea",
-    "prompt": "The Wilhelm Gustloff, sunk in 1945, is the deadliest single ship sinking ever. Who was mostly aboard?",
-    "choices": ["Allied prisoners of war", "Civilians fleeing the advancing Soviet army", "Gold from the Reichsbank", "Navy cadets on a training cruise"],
-    "answer": 1,
-    "fact": "Estimates of the dead run past 9,000, several times the Titanic's toll.",
-    "source": "https://en.wikipedia.org/wiki/MV_Wilhelm_Gustloff"
+    "prompt": "The Wilhelm Gustloff, sunk in the Baltic in January 1945, holds one very grim record. Which?",
+    "choices": ["Deadliest maritime disaster in modern history", "Largest ship ever sunk", "Last ship sunk in the war", "First ship sunk by a missile"],
+    "answer": 0,
+    "fact": "She was evacuating civilians and military personnel. One estimate puts the dead at 9,343.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/MV_Wilhelm_Gustloff", "quotes": ["making its sinking the deadliest maritime disaster in modern history", "it was evacuating civilians and German military personnel", "By one estimate, 9,343 people died"]}]
   },
   {
     "id": "kursk",
     "category": "War at Sea",
-    "prompt": "The submarine Kursk sank in the Barents Sea in 2000. Which navy did she belong to?",
+    "prompt": "The nuclear submarine Kursk sank in the Barents Sea in 2000. The Barents only borders Norway and one other country. Whose navy was she in?",
     "choices": ["Russian", "Norwegian", "British", "American"],
     "answer": 0,
-    "fact": "A faulty torpedo exploded during an exercise. All 118 crew died.",
-    "source": "https://en.wikipedia.org/wiki/Russian_submarine_Kursk_(K-141)"
+    "fact": "All 118 people on board were killed.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Russian_submarine_Kursk_(K-141)", "quotes": ["submarine of the Russian Navy", "sank in the Barents Sea, killing all 118 personnel on board"]}]
   },
   {
     "id": "halifax",
     "category": "War at Sea",
-    "prompt": "In 1917 a munitions ship collided with another vessel and caused the biggest man-made explosion before the atomic bomb. Which harbour?",
+    "prompt": "In 1917 a munitions ship blew up in a harbour so Canadian it should've come with maple syrup and an apology. Which one?",
     "choices": ["Halifax", "Liverpool", "Boston", "Le Havre"],
     "answer": 0,
-    "fact": "The SS Mont-Blanc blew up after colliding with the SS Imo. About 2,000 people were killed.",
-    "source": "https://en.wikipedia.org/wiki/Halifax_Explosion"
+    "fact": "At least 1,782 people were killed. It was the largest human-made explosion at the time.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Halifax_Explosion", "quotes": ["collided in the harbour of Halifax, Nova Scotia, Canada", "At least 1,782 people", "The blast was the largest human-made explosion at the time"]}]
   },
   {
     "id": "vasa",
     "category": "Warships",
-    "prompt": "The Swedish warship Vasa capsized on her maiden voyage in 1628. How far did she get?",
-    "choices": ["About 20 miles", "Halfway to Finland", "Less than a mile", "She never left the dock"],
-    "answer": 2,
-    "fact": "She sank about 1,300 metres out. Raised in 1961, she is now a museum in Stockholm and around 98% original.",
-    "source": "https://en.wikipedia.org/wiki/Vasa_(ship)"
+    "prompt": "Sweden's mighty warship Vasa was so top-heavy that on her 1628 maiden voyage she made it... how far?",
+    "choices": ["About 1,300 metres", "About 20 miles", "Halfway to Finland", "She never left the dock"],
+    "answer": 0,
+    "fact": "She was raised in 1961 after 333 years on the seabed and now sits in Stockholm's Vasa Museum.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Vasa_(ship)", "quotes": ["The ship sank after sailing roughly 1,300 m (1,400 yd) into her maiden voyage", "was too top-heavy", "salvaged with a largely intact hull in 1961 after spending 333 years on the seabed", "moved permanently to the Vasa Museum"]}]
   },
   {
     "id": "mary-rose",
     "category": "Warships",
-    "prompt": "The Mary Rose sank in 1545 in front of the very king whose flagship she was. Which king?",
+    "prompt": "The Mary Rose served an English king far more famous for his six wives than his navy. Which king?",
     "choices": ["Richard III", "Henry VIII", "Charles I", "Edward VI"],
     "answer": 1,
-    "fact": "She was raised from the Solent in 1982, watched live on TV by an estimated 60 million people.",
-    "source": "https://en.wikipedia.org/wiki/Mary_Rose"
+    "fact": "She sank in 1545 leading an attack on a French invasion fleet, and was raised in 1982.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Mary_Rose", "quotes": ["in the English Tudor navy of King Henry VIII", "She led the attack on the galleys of a French invasion fleet, but sank off Spithead in the Solent", "was raised on 11 October 1982"]}]
   },
   {
     "id": "birkenhead",
     "category": "Warships",
-    "prompt": "The 1852 wreck of HMS Birkenhead is credited with starting which rule?",
-    "choices": ["Captain goes down with the ship", "Women and children first", "Mayday as a distress call", "No swimming after dark"],
+    "prompt": "When HMS Birkenhead sank in 1852, the soldiers stood in ranks so others could reach the boats. It's an early example of which rule?",
+    "choices": ["The captain goes down with the ship", "Women and children first", "Mayday as a distress call", "No swimming after dark"],
     "answer": 1,
-    "fact": "The soldiers aboard stood in ranks on deck so the women and children could reach the boats.",
-    "source": "https://en.wikipedia.org/wiki/HMS_Birkenhead_(1845)"
+    "fact": "Only 193 of an estimated 643 people on board survived.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/HMS_Birkenhead_(1845)", "quotes": ["one of the earliest known instances of the unofficial \"women and children first\" protocol", "the soldiers famously stood in ranks on board", "Only 193 of the estimated 643 people on board survived"]}]
   },
   {
     "id": "bounty-island",
     "category": "Mutiny",
-    "prompt": "After the 1789 mutiny on the Bounty, where did the mutineers hide from the Royal Navy?",
+    "prompt": "After the 1789 mutiny on the Bounty, the mutineers hid on an island named after the 15-year-old who first spotted it. Which island?",
     "choices": ["Tahiti", "Easter Island", "Norfolk Island", "Pitcairn Island"],
     "answer": 3,
-    "fact": "They burned the Bounty there. Their descendants still live on Pitcairn today.",
-    "source": "https://en.wikipedia.org/wiki/Mutiny_on_the_Bounty"
+    "fact": "Descendants of the mutineers and their Tahitian companions still live on Pitcairn.",
+    "sources": [
+      {"url": "https://en.wikipedia.org/wiki/Mutiny_on_the_Bounty", "quotes": ["had hidden on Pitcairn Island", "Descendants of the mutineers and their accompanying Tahitians have lived on Pitcairn into the 21st century"]},
+      {"url": "https://en.wikipedia.org/wiki/Pitcairn_Islands", "quotes": ["The island was named after midshipman Robert Pitcairn, a 15-year-old crew member who was the first to sight the island"]}
+    ]
   },
   {
     "id": "bounty-bligh",
     "category": "Mutiny",
-    "prompt": "Set adrift by the mutineers, Captain Bligh sailed an open boat about 3,600 nautical miles. Where did he land?",
+    "prompt": "Cast adrift by the Bounty mutineers, Captain Bligh sailed an open boat 3,618 nautical miles to the nearest European settlement. Where?",
     "choices": ["Timor", "New Zealand", "Hawaii", "Cape Horn"],
     "answer": 0,
-    "fact": "It took 47 days with 18 men in a 23-foot launch. Bligh lost only one of them on the voyage.",
-    "source": "https://en.wikipedia.org/wiki/William_Bligh"
+    "fact": "It took 47 days, and the only man lost was killed on the island of Tofua.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/William_Bligh", "quotes": ["reached Kupang in Timor after a journey of 3,618 nautical miles", "Bligh succeeded in reaching Timor after a 47-day voyage, the only casualty being the crewman killed on Tofua"]}]
   },
   {
     "id": "batavia",
     "category": "Mutiny",
-    "prompt": "The Dutch ship Batavia wrecked in 1629 and a mutineer took over the survivors' islands. Off which coast?",
+    "prompt": "In 1629 the Dutch ship Batavia wrecked on islands off a coast now better known for kangaroos. Which coast?",
     "choices": ["South Africa", "Western Australia", "Madagascar", "Sri Lanka"],
     "answer": 1,
-    "fact": "Jeronimus Cornelisz and his followers murdered more than 100 survivors before rescue arrived.",
-    "source": "https://en.wikipedia.org/wiki/Batavia_(ship)"
+    "fact": "A mutineer, Jeronimus Cornelisz, took over the survivors; his followers murdered at least 110 people.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Batavia_(1628_ship)", "quotes": ["Batavia was wrecked on the Houtman Abrolhos, a chain of small islands off Western Australia", "Cornelisz's followers murdered at least 110 men, women, and children"]}]
   },
   {
     "id": "essex",
-    "category": "Mysteries & Monsters",
-    "prompt": "What sank the whaleship Essex in the Pacific in 1820?",
-    "choices": ["A typhoon", "A reef", "A sperm whale", "A fire in the try-works"],
+    "category": "Mysteries",
+    "prompt": "In 1820 the whaleship Essex was sunk by the very thing she was hunting. What hit her?",
+    "choices": ["A typhoon", "A reef", "A sperm whale", "A rival whaler"],
     "answer": 2,
-    "fact": "The whale rammed the ship twice. The story inspired Herman Melville's Moby-Dick.",
-    "source": "https://en.wikipedia.org/wiki/Essex_(whaleship)"
+    "fact": "The tragedy helped inspire Herman Melville's 1851 novel Moby-Dick.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Essex_(whaleship)", "quotes": ["the ship was attacked and sunk by a sperm whale", "one of the inspirations for Herman Melville's 1851 novel, Moby-Dick"]}]
   },
   {
     "id": "mary-celeste",
-    "category": "Mysteries & Monsters",
-    "prompt": "The Mary Celeste was found drifting in 1872 with no one aboard. In which ocean?",
+    "category": "Mysteries",
+    "prompt": "In 1872 the Mary Celeste was found drifting, seaworthy and totally deserted, off Portugal's Azores islands. In which ocean?",
     "choices": ["Pacific", "Indian", "Arctic", "Atlantic"],
     "answer": 3,
-    "fact": "Her cargo was intact and one lifeboat was gone. The ten people aboard were never found.",
-    "source": "https://en.wikipedia.org/wiki/Mary_Celeste"
+    "fact": "Her lifeboat was missing. A young Arthur Conan Doyle later wrote a story inspired by her.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Mary_Celeste", "quotes": ["discovered adrift and deserted in the Atlantic Ocean off the Azores", "with the lifeboat missing", "This was an early work of Arthur Conan Doyle"]}]
   },
   {
     "id": "franklin",
     "category": "Polar",
-    "prompt": "Franklin's lost 1845 Arctic expedition sailed in HMS Erebus and HMS what?",
-    "choices": ["Beagle", "Terror", "Endeavour", "Resolute"],
+    "prompt": "Franklin's lost 1845 Arctic expedition sailed in HMS Erebus and a ship with an even scarier name. What was it?",
+    "choices": ["HMS Beagle", "HMS Terror", "HMS Endeavour", "HMS Resolute"],
     "answer": 1,
-    "fact": "All 129 men died. The wrecks were finally found in 2014 and 2016.",
-    "source": "https://en.wikipedia.org/wiki/Franklin%27s_lost_expedition"
+    "fact": "Both ships and all 129 men became icebound. The wrecks were finally found in 2014 and 2016.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Franklin's_lost_expedition", "quotes": ["a total of 129 officers and men, became icebound", "In 2014, a search team led by Parks Canada located the wreck of Erebus", "had found the wreck of HMS Terror"]}]
   },
   {
     "id": "endurance",
     "category": "Polar",
-    "prompt": "Shackleton's Endurance was crushed by pack ice in 1915. In which sea?",
+    "prompt": "Shackleton's Endurance was crushed by pack ice in 1915, in an Antarctic sea whose name rhymes with \"meddle.\" Which?",
     "choices": ["Weddell Sea", "Ross Sea", "Bering Sea", "Barents Sea"],
     "answer": 0,
-    "fact": "All 28 men survived. The wreck was found in 2022, about 3,000 metres down and remarkably intact.",
-    "source": "https://en.wikipedia.org/wiki/Endurance_(1912_ship)"
+    "fact": "Everyone survived. The wreck was found in 2022, 3,008 metres down, in \"a brilliant state of preservation.\"",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Endurance_(1912_ship)", "quotes": ["sank in the Weddell Sea off Antarctica", "All of the crew survived", "She lies 3,008 metres", "a brilliant state of preservation"]}]
   },
   {
     "id": "andrea-doria",
     "category": "Liners",
-    "prompt": "In 1956 the Italian liner Andrea Doria sank off Nantucket after colliding with which ship?",
+    "prompt": "In thick fog in 1956, the Italian liner Andrea Doria was struck by a Swedish liner named after Sweden's capital. Which ship?",
     "choices": ["Queen Mary", "Stockholm", "United States", "Île de France"],
     "answer": 1,
-    "fact": "Rescuers took off more than 1,600 people. The Île de France turned back to help and saved over 750.",
-    "source": "https://en.wikipedia.org/wiki/SS_Andrea_Doria"
+    "fact": "Rescuers saved 1,660 of her 1,706 passengers and crew.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/SS_Andrea_Doria", "quotes": ["the eastbound passenger liner Stockholm of the Swedish American Line", "the rescue of 1,660 of her 1,706 passengers and crew"]}]
   },
   {
     "id": "empress-of-ireland",
     "category": "Liners",
-    "prompt": "The Empress of Ireland sank in 1914 in just 14 minutes. On which river?",
-    "choices": ["The Thames", "The Hudson", "The St. Lawrence", "The Mersey"],
-    "answer": 2,
-    "fact": "1,012 died. More passengers were lost than on the Titanic, though fewer crew.",
-    "source": "https://en.wikipedia.org/wiki/RMS_Empress_of_Ireland"
+    "prompt": "The Empress of Ireland carried more than enough lifeboats in 1914. What she lacked was time. How fast did she sink?",
+    "choices": ["14 minutes", "2 hours", "6 hours", "2 days"],
+    "answer": 0,
+    "fact": "1,012 died: the worst peacetime maritime disaster in Canadian history.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/RMS_Empress_of_Ireland", "quotes": ["carried more than enough lifeboats for all aboard, she foundered in only 14 minutes", "1,012 died, making it the worst peacetime maritime disaster in Canadian history"]}]
   },
   {
     "id": "costa-concordia",
     "category": "Liners",
-    "prompt": "The cruise ship Costa Concordia ran aground in 2012 off which Italian island?",
+    "prompt": "In 2012 the Costa Concordia hit rocks while showing off with a \"sail-by salute\" to an Italian island whose name sounds like a giggle. Which?",
     "choices": ["Capri", "Elba", "Sicily", "Giglio"],
     "answer": 3,
-    "fact": "Captain Francesco Schettino left the ship before everyone was off. He was sentenced to 16 years.",
-    "source": "https://en.wikipedia.org/wiki/Costa_Concordia_disaster"
+    "fact": "Captain Francesco Schettino left the ship prematurely and was sentenced to 16 years.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Costa_Concordia_disaster", "quotes": ["deviated from her planned route at Isola del Giglio, Italy in order to perform a sail-by salute", "who left the ship prematurely", "sentenced to 16 years in prison"]}]
   },
   {
     "id": "estonia",
     "category": "Liners",
-    "prompt": "The ferry MS Estonia sank in 1994 when her bow door tore off in a storm. In which sea?",
+    "prompt": "In 1994 the ferry Estonia sank in a sea shared by Estonia, Sweden and Finland. Which sea?",
     "choices": ["Baltic Sea", "North Sea", "Mediterranean Sea", "Black Sea"],
     "answer": 0,
-    "fact": "852 people died, making it one of the deadliest peacetime sinkings in Europe.",
-    "source": "https://en.wikipedia.org/wiki/MS_Estonia"
+    "fact": "852 died. Failed locks on the bow visor let water flood the car deck.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/MS_Estonia", "quotes": ["in the Baltic Sea between Sweden, Finland and Estonia", "claiming 852 lives", "failure of the locks on the bow visor allowed water to flood the car deck"]}]
   },
   {
     "id": "sultana",
     "category": "Rivers",
-    "prompt": "The steamboat Sultana, the worst maritime disaster in US history, exploded in 1865 on which river?",
+    "prompt": "The steamboat Sultana exploded in 1865 on the river every American kid learns to spell out loud. Which river?",
     "choices": ["Missouri", "Ohio", "Hudson", "Mississippi"],
     "answer": 3,
-    "fact": "Most of the roughly 1,100 dead were Union soldiers just released from Confederate prison camps.",
-    "source": "https://en.wikipedia.org/wiki/Sultana_(steamboat)"
+    "fact": "1,164 people died, most of them Union soldiers just released from Confederate prison camps.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Sultana_(steamboat)", "quotes": ["exploded and sank on the Mississippi River on April 27, 1865, killing 1,164 people", "the worst maritime disaster in United States history", "recently released Union prisoners of war"]}]
   },
   {
     "id": "central-america",
     "category": "Treasure",
-    "prompt": "The SS Central America, lost in a hurricane in 1857, was carrying tons of what?",
-    "choices": ["Silver bars", "Gold from the California Gold Rush", "Spanish doubloons", "Pearls"],
+    "prompt": "The SS Central America sank in an 1857 hurricane. Her nickname, \"the Ship of ___,\" gives away her cargo. Fill in the blank.",
+    "choices": ["Silver", "Gold", "Pearls", "Spice"],
     "answer": 1,
-    "fact": "The lost gold helped set off the Panic of 1857. The wreck is nicknamed the Ship of Gold.",
-    "source": "https://en.wikipedia.org/wiki/SS_Central_America"
+    "fact": "She went down with about 30,000 pounds of gold, which helped set off the Panic of 1857.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/SS_Central_America", "quotes": ["known as the Ship of Gold", "30,000 pounds (13,600 kg) of gold, contributing to the Panic of 1857"]}]
   },
   {
     "id": "exxon-valdez",
     "category": "Oil & Industry",
-    "prompt": "The Exxon Valdez spilled millions of gallons of oil in 1989 off which US state?",
+    "prompt": "In 1989 the tanker Exxon Valdez spilled over 10 million gallons of oil in the biggest, chilliest US state. Which?",
     "choices": ["Alaska", "California", "Texas", "Louisiana"],
     "answer": 0,
-    "fact": "It ran aground on Bligh Reef in Prince William Sound, named for the same William Bligh of the Bounty.",
-    "source": "https://en.wikipedia.org/wiki/Exxon_Valdez_oil_spill"
+    "fact": "She ran onto Bligh Reef in Prince William Sound, 6 miles west of Tatitlek, Alaska.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Exxon_Valdez_oil_spill", "quotes": ["occurred in Alaska's Prince William Sound on March 24, 1989", "struck Prince William Sound's Bligh Reef, 6 mi (9.7 km) west of Tatitlek, Alaska", "The tanker spilled more than 10 million US gallons"]}]
   },
   {
     "id": "torrey-canyon",
     "category": "Oil & Industry",
-    "prompt": "After the tanker Torrey Canyon ran aground off Cornwall in 1967, what did the British government do?",
-    "choices": ["Towed it to Norway", "Bombed it", "Sank it with a submarine", "Sold the oil at auction"],
+    "prompt": "When the tanker Torrey Canyon ran aground off Cornwall in 1967, how did Britain try to get rid of the oil? Think explosively.",
+    "choices": ["Towed it to Norway", "Bombed the wreck from the air", "Sank it with a submarine", "Sold the oil at auction"],
     "answer": 1,
-    "fact": "RAF jets dropped bombs and napalm to burn off the oil. A good share of the bombs missed.",
-    "source": "https://en.wikipedia.org/wiki/Torrey_Canyon_oil_spill"
+    "fact": "Jets from the Royal Navy and RAF also dropped napalm to set the oil alight.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Torrey_Canyon_oil_spill", "quotes": ["the bombing of the wreck by aircraft from the Royal Navy and Royal Air Force", "(napalm) to ignite the oil"]}]
+  },
+  {
+    "id": "kraken",
+    "category": "Legends & Monsters",
+    "prompt": "Norwegian sailors feared the Kraken, a monster so big it got mistaken for islands. Which real animal, with arms to spare, probably inspired it?",
+    "choices": ["Blue whale", "Giant squid", "Whale shark", "Saltwater crocodile"],
+    "answer": 1,
+    "fact": "Giant squid may grow to 10.5 metres (34 feet) long.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Kraken", "quotes": ["the legend of the Kraken may have originated from sightings of giant squid, which may grow to 10.5 metres (34 ft) in length", "mistaken for a group of small islands"]}]
+  },
+  {
+    "id": "nessie-photo",
+    "category": "Legends & Monsters",
+    "prompt": "The famous 1934 \"surgeon's photograph\" of the Loch Ness Monster was a hoax. What was \"Nessie\" really? Five-and-dime shoppers may know.",
+    "choices": ["A floating log", "A toy submarine with a putty head", "A swimming elephant", "A seal"],
+    "answer": 1,
+    "fact": "The toy came from Woolworth's, and the \"monster\" was only about 60 to 90 cm long.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Loch_Ness_Monster", "quotes": ["The toy submarine was bought from F. W. Woolworth, and its head and neck were made from wood putty", "the object was small, about 60 to 90 cm"]}]
+  },
+  {
+    "id": "flying-dutchman",
+    "category": "Legends & Monsters",
+    "prompt": "The Flying Dutchman is a ghost ship doomed to sail forever, never making port. Its legend haunts a cape with a ridiculously optimistic name. Which?",
+    "choices": ["Cape Horn", "Cape of Good Hope", "Cape Cod", "Cape Canaveral"],
+    "answer": 1,
+    "fact": "Richard Wagner turned the legend into an opera in 1843.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Flying_Dutchman", "quotes": ["allegedly never able to make port and doomed to sail the sea forever", "lost off the Cape of Good Hope", "Richard Wagner's opera The Flying Dutchman (1843)"]}]
+  },
+  {
+    "id": "flight-19",
+    "category": "Legends & Monsters",
+    "prompt": "Flight 19, a squadron of US Navy torpedo bombers, vanished over the Bermuda Triangle in 1945. How many planes? A high-five's worth.",
+    "choices": ["3", "5", "9", "14"],
+    "answer": 1,
+    "fact": "A flying boat sent to search for them was lost too, with all 13 of its crew.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Flight_19", "quotes": ["a group of five Grumman TBF Avenger torpedo bombers that disappeared over the Bermuda Triangle", "as were all 13 crew members of a Martin PBM Mariner"]}]
+  },
+  {
+    "id": "bermuda-lloyds",
+    "category": "Legends & Monsters",
+    "prompt": "Insurers at Lloyd's of London checked whether ships really sink more often in the Bermuda Triangle. What did they find? Follow the money.",
+    "choices": ["Three times the usual rate", "No unusually large number sink there", "Only ships with names starting with B", "They refuse to insure ships there"],
+    "answer": 1,
+    "fact": "Lloyd's doesn't charge higher rates for sailing through it, and Coast Guard records agree.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Bermuda_Triangle", "quotes": ["Lloyd's determined that large numbers of ships had not sunk there", "Lloyd's does not charge higher rates for passing through this area", "United States Coast Guard records confirm their conclusion"]}]
+  },
+  {
+    "id": "sirens",
+    "category": "Legends & Monsters",
+    "prompt": "To hear the Sirens' song and live, Odysseus had himself tied to the mast. What did his crew plug their ears with? Ask a bee.",
+    "choices": ["Seaweed", "Beeswax", "Cotton", "Sand"],
+    "answer": 1,
+    "fact": "He ordered his men to leave him tied up, no matter how much he begged.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Siren_(mythology)", "quotes": ["he had all of his sailors plug their ears with beeswax and tie him to the mast", "He ordered his men to leave him tied tightly to the mast, no matter how much he might beg"]}]
+  },
+  {
+    "id": "davy-jones",
+    "category": "Legends & Monsters",
+    "prompt": "Old sailors talked about being sent to \"Davy Jones' locker.\" Spoiler: it's not a gym. What did it mean?",
+    "choices": ["Being thrown in the brig", "Drowning at sea", "Getting promoted to captain", "Losing at cards"],
+    "answer": 1,
+    "fact": "The locker is the ocean depths: the final resting place of drowned sailors.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Davy_Jones'_Locker", "quotes": ["a metaphor for the oceanic abyss, the final resting place of drowned sailors and travellers", "It is a euphemism for drowning or shipwrecks"]}]
+  },
+  {
+    "id": "mermaid-columbus",
+    "category": "Legends & Monsters",
+    "prompt": "Christopher Columbus reported seeing mermaids in the Caribbean. They were probably a chunky, gentle animal nicknamed the \"sea cow.\" Which?",
+    "choices": ["Dolphins", "Manatees", "Sea lions", "Sharks"],
+    "answer": 1,
+    "fact": "There's no evidence mermaids exist outside folklore, but sightings are still reported today.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Mermaid", "quotes": ["such as those reported by Christopher Columbus during his exploration of the Caribbean, may have been sightings of manatees", "reports of mermaid sightings continue to the present day"]}]
+  },
+  {
+    "id": "charybdis",
+    "category": "Legends & Monsters",
+    "prompt": "Greek sailors had to pass between Scylla and Charybdis. Charybdis gulped the sea three times a day, making what? Think of the world's scariest drain.",
+    "choices": ["Tsunamis", "Whirlpools", "Fog banks", "Waterspouts"],
+    "answer": 1,
+    "fact": "Ancient writers placed her in the Strait of Messina, between Sicily and mainland Italy.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Charybdis", "quotes": ["creating large whirlpools capable of dragging a ship underwater", "locate her in the Strait of Messina"]}]
+  },
+  {
+    "id": "bloop",
+    "category": "Legends & Monsters",
+    "prompt": "In 1997 NOAA recorded an ultra-loud underwater noise nicknamed \"the Bloop.\" Not a sea monster, sadly. What most likely made it? It's cool. Very cool.",
+    "choices": ["A blue whale", "An undersea volcano", "Glacial ice cracking and calving", "A secret submarine"],
+    "answer": 2,
+    "fact": "Early speculation said a marine animal; by 2012 NOAA said it matched icequakes from glaciers.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Bloop", "quotes": ["detected by the U.S. National Oceanic and Atmospheric Administration (NOAA) in 1997", "earlier speculation that the sound originated from a marine animal", "originating from glacial movements such as ice calving"]}]
+  },
+  {
+    "id": "megalodon",
+    "category": "Legends & Monsters",
+    "prompt": "Megalodon, the giant shark whose name means \"big tooth,\" is extinct. Sorry, monster movies. Roughly when did it die out?",
+    "choices": ["About 500 years ago", "About 10,000 years ago", "About 3.6 million years ago", "About 66 million years ago"],
+    "answer": 2,
+    "fact": "It lived from about 23 million to 3.6 million years ago.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Otodus_megalodon", "quotes": ["meaning \"big tooth\"", "lived approximately 23 to 3.58 million years ago"]}]
+  },
+  {
+    "id": "blue-hole",
+    "category": "Into the Deep",
+    "prompt": "Egypt's Blue Hole is a notoriously deadly dive site. What do divers call the tunnel to the open sea whose ceiling sits 55 metres down?",
+    "choices": ["The Arch", "The Throat", "The Drain", "The Chimney"],
+    "answer": 0,
+    "fact": "Estimates of how many divers have died there run as high as 200.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Blue_Hole_(Red_Sea)", "quotes": ["a few kilometres north of Dahab, Egypt", "known as \"the Arch\", whose ceiling is at a depth of 55 m", "another claims as many as 200"]}]
+  },
+  {
+    "id": "christ-abyss",
+    "category": "Into the Deep",
+    "prompt": "Off Italy's Riviera, divers can visit a bronze statue standing 17 metres underwater. He's better known for walking on water. Who is it?",
+    "choices": ["Neptune", "Jesus Christ", "Christopher Columbus", "A mermaid"],
+    "answer": 1,
+    "fact": "It's called Christ of the Abyss and was placed there in 1954.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Christ_of_the_Abyss", "quotes": ["is a submerged bronze statue of Jesus Christ by Guido Galletti", "placed in the Mediterranean Sea on 22 August 1954, at approximately 17 metres"]}]
+  },
+  {
+    "id": "rapture",
+    "category": "Into the Deep",
+    "prompt": "Dive too deep and nitrogen can make you feel drunk. Jacques Cousteau poetically called it \"the rapture of the...\" what?",
+    "choices": ["Deep", "Waves", "Kraken", "Moon"],
+    "answer": 0,
+    "fact": "It's also nicknamed the \"Martini effect.\"",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Nitrogen_narcosis", "quotes": ["Jacques-Yves Cousteau in 1953 famously described it as", "or the \"rapture of the deep\"", "Martini effect"]}]
+  },
+  {
+    "id": "bends",
+    "category": "Into the Deep",
+    "prompt": "Decompression sickness earned the nickname \"the bends\" among workers building which New York landmark? Hint: it spans the East River.",
+    "choices": ["Statue of Liberty", "Brooklyn Bridge", "Empire State Building", "Holland Tunnel"],
+    "answer": 1,
+    "fact": "Sufferers bent forward at the hips, reminding people of a fashionable pose called the Grecian Bend.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Decompression_sickness", "quotes": ["during construction of the Brooklyn Bridge", "During this project, decompression sickness became known as \"The Grecian Bends\" or simply \"the bends\" because affected individuals characteristically bent forward at the hips"]}]
+  },
+  {
+    "id": "challenger-deep",
+    "category": "Into the Deep",
+    "prompt": "The Challenger Deep is the deepest known spot in the ocean. Drop Mount Everest in and it would vanish with room to spare. About how deep is it?",
+    "choices": ["About 3,800 m", "About 6,000 m", "About 10,900 m", "About 25,000 m"],
+    "answer": 2,
+    "fact": "A 2011 study put it at 10,920 metres, give or take 9.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Challenger_Deep", "quotes": ["10,903 to 11,009 m", "A 2011 study placed the depth at 5,971 ± 5 fathoms (10,920 ± 9 m"]}]
+  },
+  {
+    "id": "lake-nyos",
+    "category": "Strange Waters",
+    "prompt": "In 1986 Cameroon's Lake Nyos suddenly burped out a deadly cloud of gas: the same gas that makes soda fizzy. Which gas?",
+    "choices": ["Methane", "Carbon dioxide", "Chlorine", "Steam"],
+    "answer": 1,
+    "fact": "This \"limnic eruption\" killed 1,746 people and 3,500 livestock.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Lake_Nyos_disaster", "quotes": ["a limnic eruption at Lake Nyos in northwestern Cameroon killed 1,746 people and 3,500 livestock", "tons of carbon dioxide"]}]
+  },
+  {
+    "id": "point-nemo",
+    "category": "Strange Waters",
+    "prompt": "Point Nemo is the spot in the ocean farthest from any land. The nearest humans are sometimes people who aren't on Earth at all. Who?",
+    "choices": ["Lighthouse keepers", "Astronauts on the International Space Station", "Antarctic researchers", "Submarine crews"],
+    "answer": 1,
+    "fact": "\"Nemo\" is Latin for \"nobody,\" and the area is a \"spacecraft cemetery\" for old satellites.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Point_Nemo", "quotes": ["sometimes the closest human beings are astronauts aboard the International Space Station", "Latin for \"nobody\"", "spacecraft cemetery"]}]
+  },
+  {
+    "id": "baikal",
+    "category": "Strange Waters",
+    "prompt": "Siberia's Lake Baikal, the world's deepest lake, holds more water than all five North American Great Lakes combined. What share of the world's fresh surface water is that?",
+    "choices": ["About 2%", "About 8%", "About 22–23%", "About 50%"],
+    "answer": 2,
+    "fact": "At 25 to 30 million years old, it's also the world's oldest lake.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Lake_Baikal", "quotes": ["the deepest lake in the world", "22–23% of the world's fresh surface water, more than all of the North American Great Lakes combined", "It is also the world's oldest lake at 25–30 million years"]}]
+  },
+  {
+    "id": "natron",
+    "category": "Strange Waters",
+    "prompt": "Tanzania's Lake Natron is so alkaline that creatures that die in it end up... how? Medusa would approve.",
+    "choices": ["Bleached bone-white", "Calcified like stone statues", "Dissolved completely", "Glowing in the dark"],
+    "answer": 1,
+    "fact": "Somehow it's still the only regular breeding area for East Africa's 2.5 million lesser flamingoes.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Lake_Natron", "quotes": ["Lake Natron is a highly alkaline salt lake", "known to calcify the bodies of any living thing that died in the lake", "the only regular breeding area in East Africa for the 2.5 million lesser flamingoes"]}]
+  },
+  {
+    "id": "milky-seas",
+    "category": "Strange Waters",
+    "prompt": "Sailors report patches of ocean that glow white at night, bright enough to be seen from space. What makes a \"milky sea\" glow? Think tiny.",
+    "choices": ["Moonlight on foam", "Luminous bacteria", "Underwater volcanoes", "Swarms of jellyfish"],
+    "answer": 1,
+    "fact": "The glow can stretch for miles and shows up on satellites orbiting Earth.",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/Milky_seas_effect", "quotes": ["milky seas originate from luminous bacteria", "visible from satellites orbiting Earth"]}]
+  },
+  {
+    "id": "lyubov-orlova",
+    "category": "Strange Waters",
+    "prompt": "British tabloids warned that the abandoned cruise ship Lyubov Orlova might be nearing England full of what? Debunked, but deliciously creepy.",
+    "choices": ["Ghosts", "Cannibal rats", "Giant crabs", "Stowaway pirates"],
+    "answer": 1,
+    "fact": "The rumours were debunked, but a Canadian band still wrote the song \"Ghost Ship of Cannibal Rats.\"",
+    "sources": [{"url": "https://en.wikipedia.org/wiki/MV_Lyubov_Orlova", "quotes": ["the ship might be nearing the coast of England and be infested with cannibal rats", "The rumours were subsequently debunked", "Ghost Ship of Cannibal Rats"]}]
   }
 ]

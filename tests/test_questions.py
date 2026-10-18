@@ -11,7 +11,7 @@ RAW = {
     "choices": ["Michigan", "Superior", "Huron", "Erie"],
     "answer": 1,
     "fact": "29 lost.",
-    "source": "https://example.org",
+    "sources": [{"url": "https://example.org", "quotes": ["a quote"]}],
 }
 
 
@@ -62,3 +62,16 @@ def test_draw_never_asks_for_more_than_the_bank_has() -> None:
 
 def test_packaged_bank_loads() -> None:
     assert len(read_question_bank()) >= 10
+
+
+def test_question_needs_a_source_with_a_quote() -> None:
+    with pytest.raises(ValueError):
+        parse_questions([{**RAW, "sources": []}])
+    with pytest.raises(ValueError):
+        parse_questions([{**RAW, "sources": [{"url": "https://en.wikipedia.org/wiki/X", "quotes": []}]}])
+
+
+def test_sources_parse_into_url_and_quotes() -> None:
+    [q] = parse_questions([RAW])
+    assert q.sources[0].url == "https://example.org"
+    assert q.sources[0].quotes == ("a quote",)

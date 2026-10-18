@@ -18,7 +18,7 @@ BANK = parse_questions(
             "choices": ["right", "wrong a", "wrong b", "wrong c"],
             "answer": 0,
             "fact": "A fact.",
-            "source": "https://example.org",
+            "sources": [{"url": "https://example.org", "quotes": ["a quote"]}],
         }
     ]
 )

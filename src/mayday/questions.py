@@ -1,7 +1,8 @@
 """Questions: the trivia bank and how a game draws from it (ADR-0004).
 
-Contains the validated Question record, parsing from the bank's JSON shape, the random
-draw for one game (rng passed in), and the one function that reads the packaged file.
+Contains the validated Question record (with its Wikipedia sources and quotes, ADR-0011),
+parsing from the bank's JSON shape, the random draw for one game (rng passed in), and
+the one function that reads the packaged file.
 
 Does not: track which question is on screen or score answers (see trivia).
 """
@@ -15,6 +16,18 @@ CHOICES_PER_QUESTION = 4
 
 
 @dataclass(frozen=True)
+class Source:
+    """A page that backs a question up, with verbatim quotes from it (ADR-0011)."""
+
+    url: str
+    quotes: tuple[str, ...]
+
+    def __post_init__(self) -> None:
+        if not self.url or not self.quotes or not all(q.strip() for q in self.quotes):
+            raise ValueError(f"source {self.url!r} needs a URL and at least one quote")
+
+
+@dataclass(frozen=True)
 class Question:
     id: str
     category: str
@@ -22,9 +35,11 @@ class Question:
     choices: tuple[str, ...]
     answer: int
     fact: str
-    source: str
+    sources: tuple[Source, ...]
 
     def __post_init__(self) -> None:
+        if not self.sources:
+            raise ValueError(f"question {self.id!r} needs at least one source")
         if not self.id or not self.prompt:
             raise ValueError(f"question {self.id!r} needs an id and a prompt")
         if len(self.choices) != CHOICES_PER_QUESTION:
@@ -46,7 +61,7 @@ def parse_questions(raw: list[dict]) -> tuple[Question, ...]:
             choices=tuple(item["choices"]),
             answer=item["answer"],
             fact=item["fact"],
-            source=item["source"],
+            sources=tuple(Source(url=s["url"], quotes=tuple(s["quotes"])) for s in item["sources"]),
         )
         for item in raw
     )
