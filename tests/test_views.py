@@ -66,7 +66,7 @@ PLAYERS = (Player(DANA, PlayerName("Dana")), Player(BEV, PlayerName("Bev")))
 
 def _trivia() -> Trivia:
     """Opened at t=100 with a 20 s timer; Dana has answered Huron at t=104."""
-    trivia = answer(open_trivia(PLAYERS, (QUESTION,), now=100, pace=Pace()), DANA, 2, now=104)
+    trivia = answer(open_trivia(PLAYERS, (QUESTION,), now=100, pace=Pace(question=20)), DANA, 2, now=104)
     assert isinstance(trivia, Trivia)
     return trivia
 
@@ -144,7 +144,7 @@ def test_player_reveal_view_says_whether_you_were_right() -> None:
 
 
 def test_reveal_views_carry_points_for_a_right_answer() -> None:
-    trivia = answer(open_trivia(PLAYERS, (QUESTION,), now=100, pace=Pace()), DANA, 1, now=110)
+    trivia = answer(open_trivia(PLAYERS, (QUESTION,), now=100, pace=Pace(question=20)), DANA, 1, now=110)
     assert isinstance(trivia, Trivia)
     revealed = tick(trivia, now=120)
     assert host_view(revealed, JOIN_URL, now=121)["scores"][0] == {"name": "Dana", "gained": 750, "score": 750}
@@ -160,7 +160,7 @@ def test_standings_views_rank_the_crew() -> None:
     from mayday.trivia import Standings
 
     trivia = replace(
-        open_trivia(PLAYERS, (QUESTION,), now=0, pace=Pace()),
+        open_trivia(PLAYERS, (QUESTION,), now=0, pace=Pace(question=20)),
         round=Standings(until=5),
         totals={DANA: 3000, BEV: 0},
     )
@@ -191,7 +191,7 @@ def test_final_views_crown_everyone_tied_for_first() -> None:
     from mayday.trivia import Over
 
     over = replace(
-        open_trivia(PLAYERS, (QUESTION,), now=0, pace=Pace()),
+        open_trivia(PLAYERS, (QUESTION,), now=0, pace=Pace(question=20)),
         round=Over(),
         totals={DANA: 2000, BEV: 2000},
     )

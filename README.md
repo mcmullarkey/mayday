@@ -16,7 +16,7 @@ uv run mayday
 Open the printed host URL on the laptop (fullscreen it on the TV). Phones open the
 join URL shown on the TV.
 
-Options: `--port 8000`, `--question-seconds 20`.
+Options: `--port 8000`, `--question-seconds 30`.
 
 ## Host it online (friends on cellular)
 

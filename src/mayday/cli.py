@@ -30,7 +30,7 @@ def find_lan_ip() -> str:
 def main() -> None:
     parser = argparse.ArgumentParser(prog="mayday", description="Run the Mayday! party server.")
     parser.add_argument("--port", type=int, default=8000)
-    parser.add_argument("--question-seconds", type=float, default=20.0, help="time limit per question")
+    parser.add_argument("--question-seconds", type=float, default=30.0, help="time limit per question")
     parser.add_argument("--public-url", help="address phones should open (hosted); default: this laptop on the LAN")
     args = parser.parse_args()
 

@@ -26,7 +26,7 @@ STANDINGS_EVERY = 3
 class Pace:
     """Seconds each round lasts."""
 
-    question: float = 20.0
+    question: float = 30.0
     reveal: float = 8.0
     standings: float = 5.0
 

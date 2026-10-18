@@ -25,7 +25,7 @@ Option 3.
 - `Round = Asking | Revealed | Standings`. Each carries the time it ends
   (`deadline` / `until`).
 - Durations live in a `Pace(question, reveal, standings)` value held by `Trivia`,
-  defaulting to 20 s / 8 s / 5 s. `create_app(pace=...)` overrides it; tests run fast.
+  defaulting to 30 s / 8 s / 5 s (20 s until playtest 1). `create_app(pace=...)` overrides it; tests run fast.
 - `tick` replaces ADR-0005's `expire`: Asking → Revealed at the deadline;
   Revealed → Standings (after questions 3, 6, 9) or the next Asking; Standings → next
   Asking. Calling `tick` early, or twice, changes nothing.

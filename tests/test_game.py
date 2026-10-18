@@ -63,7 +63,7 @@ def test_play_again_keeps_crew_and_pace_but_resets_scores_and_questions() -> Non
     assert again.questions == OTHER_QUESTIONS
     assert again.number == 1
     assert again.totals == {DANA: 0, BEV: 0}
-    assert again.round == Asking(opened_at=50.0, deadline=70.0)
+    assert again.round == Asking(opened_at=50.0, deadline=80.0)
 
 
 def test_only_captain_can_play_again() -> None:
