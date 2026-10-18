@@ -1,4 +1,4 @@
-"""Slice 4: when sailors tap a flag their answer locks in and the TV shows who's in;
+"""Slice 4 (30 s per question since playtest 1): when sailors tap a flag their answer locks in and the TV shows who's in;
 the round closes when everyone has answered or the timer runs out, and the TV reveals
 the right answer with who picked what."""
 
@@ -33,7 +33,7 @@ def test_everyone_answering_closes_the_round_early(server_address: str) -> None:
         connect(f"ws://{server_address}/ws/play") as bev,
     ):
         question = _board(server_address, tv, dana, bev)
-        assert 19_000 < question["remaining_ms"] <= 20_000
+        assert 29_000 < question["remaining_ms"] <= 30_000
         assert [p["answered"] for p in question["players"]] == [False, False]
 
         _send(dana, {"t": "answer", "choice": 2})
