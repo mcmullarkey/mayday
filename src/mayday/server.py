@@ -23,7 +23,7 @@ from starlette.routing import Mount, Route, WebSocketRoute
 from starlette.staticfiles import StaticFiles
 from starlette.websockets import WebSocket, WebSocketDisconnect
 
-from mayday.game import Game, back_to_lobby, join_game, play_again, start_game
+from mayday.game import Game, back_to_lobby, join_game, play_again, skip_rules, start_game
 from mayday.guesses import GuessLog
 from mayday.lobby import JoinRefusal, Lobby, PlayerId
 from mayday.qr import join_link, qr_svg
@@ -208,6 +208,8 @@ def create_app(
         match intent.get("t"):
             case "start":
                 await settle(ws, start_game(table.game, player_id, fresh_questions(), now, pace))
+            case "skip":
+                await settle(ws, skip_rules(table.game, player_id, now))
             case "again":
                 await settle(ws, play_again(table.game, player_id, fresh_questions(), now))
             case "lobby":

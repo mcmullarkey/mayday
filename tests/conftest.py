@@ -17,7 +17,10 @@ from websockets.sync.client import ClientConnection
 @contextmanager
 def running_server(**app_options) -> Iterator[str]:
     from mayday.server import create_app
+    from mayday.trivia import Pace
 
+    # Rules screens flash by unless a test sets its own pace.
+    app_options.setdefault("pace", Pace(rules=0.01))
     app = create_app(join_url="http://192.168.0.10:8000", **app_options)
     config = uvicorn.Config(app, host="127.0.0.1", port=0, log_level="warning")
     server = uvicorn.Server(config)
@@ -47,7 +50,7 @@ def quick_server_address() -> Iterator[str]:
     """A server whose questions close after half a second."""
     from mayday.trivia import Pace
 
-    with running_server(pace=Pace(question=0.5)) as address:
+    with running_server(pace=Pace(question=0.5, rules=0.01)) as address:
         yield address
 
 

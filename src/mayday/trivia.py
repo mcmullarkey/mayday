@@ -1,7 +1,8 @@
 """Trivia: the sea-disaster quiz once the Captain has cast off (ADR-0004/5/6).
 
 Pure domain core. Holds the crew, the questions drawn for this game, which one is on
-screen, running totals, and the current round: asking (until a deadline), revealed
+screen, running totals, and the current round: the rules briefing (ADR-0010), asking
+(until a deadline), revealed
 (for a few seconds), standings (every third question), or over (after the last
 question, ADR-0007). `tick` performs whichever
 timed transition is due; nothing here reads a clock, callers pass `now`.
@@ -20,6 +21,7 @@ from mayday.questions import CHOICES_PER_QUESTION, Question
 from mayday.scoring import points_for
 
 STANDINGS_EVERY = 3
+RULES_SLIDES = 3
 
 
 @dataclass(frozen=True)
@@ -29,6 +31,15 @@ class Pace:
     question: float = 30.0
     reveal: float = 8.0
     standings: float = 5.0
+    rules: float = 6.0  # per briefing slide
+
+
+@dataclass(frozen=True)
+class Briefing:
+    """Rules slide `slide` (1-based) of RULES_SLIDES, on screen until `until`."""
+
+    slide: int
+    until: float
 
 
 @dataclass(frozen=True)
@@ -55,7 +66,7 @@ class Over:
     """The last question has been revealed; the Captain decides what happens next."""
 
 
-Round = Asking | Revealed | Standings | Over
+Round = Briefing | Asking | Revealed | Standings | Over
 
 
 class AnswerRefusal(StrEnum):
@@ -101,7 +112,7 @@ class Trivia:
         match self.round:
             case Asking(deadline=deadline):
                 return deadline
-            case Revealed(until=until) | Standings(until=until):
+            case Briefing(until=until) | Revealed(until=until) | Standings(until=until):
                 return until
             case Over():
                 return None
@@ -115,11 +126,17 @@ def _asking(now: float, pace: Pace) -> Asking:
     return Asking(opened_at=now, deadline=now + pace.question)
 
 
-def open_trivia(players: tuple[Player, ...], questions: tuple[Question, ...], now: float, pace: Pace) -> Trivia:
+def open_trivia(
+    players: tuple[Player, ...],
+    questions: tuple[Question, ...],
+    now: float,
+    pace: Pace,
+    briefing: bool = False,
+) -> Trivia:
     return Trivia(
         players=players,
         questions=questions,
-        round=_asking(now, pace),
+        round=Briefing(slide=1, until=now + pace.rules) if briefing else _asking(now, pace),
         pace=pace,
         totals={p.id: 0 for p in players},
     )
@@ -162,6 +179,10 @@ def tick(trivia: Trivia, now: float) -> Trivia:
     if wakes_at is None or now < wakes_at:
         return trivia
     match trivia.round:
+        case Briefing(slide=slide) if slide < RULES_SLIDES:
+            return replace(trivia, round=Briefing(slide=slide + 1, until=now + trivia.pace.rules))
+        case Briefing():
+            return replace(trivia, round=_asking(now, trivia.pace))
         case Asking() as asking:
             return _reveal(trivia, asking, asking.answers, now)
         case Revealed() if trivia.is_last_question:
@@ -172,3 +193,10 @@ def tick(trivia: Trivia, now: float) -> Trivia:
             return _next_question(trivia, now)
         case Over():
             return trivia
+
+
+def skip_briefing(trivia: Trivia, now: float) -> Trivia:
+    """Jump from any rules slide straight to question 1; anything else is left alone."""
+    if isinstance(trivia.round, Briefing):
+        return replace(trivia, round=_asking(now, trivia.pace))
+    return trivia

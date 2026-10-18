@@ -1,8 +1,9 @@
 """Game: which phase the party is in, and the transitions between phases (ADR-0004/7).
 
 Pure domain core. `Game` is the sum of every phase; the functions here take a phase and
-a player's request and return the next phase or a closed refusal reason. Starting,
-replaying and returning to the lobby are Captain-only.
+a player's request and return the next phase or a closed refusal reason. Starting
+(with the rules briefing), skipping the rules, replaying (without them) and returning
+to the lobby are Captain-only.
 
 Does not: hold rules internal to a phase (see lobby, trivia), talk to sockets, or pick
 questions or room codes (callers pass them in).
@@ -13,7 +14,7 @@ from enum import StrEnum
 from mayday.lobby import JoinRefusal, Lobby, Player, PlayerId, join
 from mayday.questions import Question
 from mayday.room_code import RoomCode
-from mayday.trivia import Over, Pace, Trivia, open_trivia
+from mayday.trivia import Briefing, Over, Pace, Trivia, open_trivia, skip_briefing
 
 Game = Lobby | Trivia
 
@@ -22,6 +23,7 @@ class CaptainRefusal(StrEnum):
     NOT_CAPTAIN = "not_captain"
     ALREADY_STARTED = "already_started"
     GAME_NOT_OVER = "game_not_over"
+    NOTHING_TO_SKIP = "nothing_to_skip"
 
 
 def join_game(game: Game, code_guess: str, raw_name: str, player_id: PlayerId) -> Lobby | JoinRefusal:
@@ -45,7 +47,15 @@ def start_game(
         return CaptainRefusal.ALREADY_STARTED
     if not _is_captain(game.captain, requester):
         return CaptainRefusal.NOT_CAPTAIN
-    return open_trivia(game.players, questions, now=now, pace=pace)
+    return open_trivia(game.players, questions, now=now, pace=pace, briefing=True)
+
+
+def skip_rules(game: Game, requester: PlayerId, now: float) -> Trivia | CaptainRefusal:
+    if not isinstance(game, Trivia) or not isinstance(game.round, Briefing):
+        return CaptainRefusal.NOTHING_TO_SKIP
+    if not _is_captain(game.captain, requester):
+        return CaptainRefusal.NOT_CAPTAIN
+    return skip_briefing(game, now)
 
 
 def _finished(game: Game, requester: PlayerId) -> Trivia | CaptainRefusal:

@@ -6,12 +6,12 @@ import { startCountdown, stopCountdown } from "/static/clock.js";
 const $ = (id) => document.getElementById(id);
 // Hosted mode (ADR-0008): the TV's address carries ?key=..., which the server checks.
 const key = new URLSearchParams(location.search).get("key");
-const screens = ["lobby", "question", "reveal", "standings", "final"];
+const screens = ["lobby", "rules", "question", "reveal", "standings", "final"];
 const ARC_LENGTH = 106.8;
 
 function show(id) {
   for (const s of screens) $(s).hidden = s !== id;
-  if (id !== "question") stopCountdown();
+  if (id !== "question" && id !== "rules") stopCountdown();
 }
 
 function el(tag, className, text) {
@@ -54,6 +54,55 @@ function renderLobby(view) {
   $("status").textContent = captain
     ? `Waiting for ${captain.name} to cast off`
     : "Waiting for crew to climb aboard";
+}
+
+// Slide copy lives here; every number comes from the server's view so it can't drift.
+const SLIDES = [
+  (v) => ({
+    title: "How to <em>play</em>",
+    flags: true,
+    points: [
+      "Each question shows up here and on your phone.",
+      "Tap a flag on your phone to lock in your answer. No take-backs.",
+    ],
+  }),
+  (v) => ({
+    title: `<em>${v.question_seconds}</em> seconds a question`,
+    points: [
+      "The clock runs here and on your phone.",
+      "If everyone locks in early, we move straight on.",
+    ],
+  }),
+  (v) => ({
+    title: "Fast <em>and</em> right wins",
+    points: [
+      `Right answer: ${v.base_points} points, plus up to ${v.speed_points} more the faster you lock in.`,
+      "Wrong or too slow: 0. Nobody ever loses points.",
+      `Standings every ${v.standings_every} questions. ${v.total} questions in all.`,
+    ],
+  }),
+];
+
+function renderRules(view) {
+  show("rules");
+  $("ru-slide").textContent = view.slide;
+  $("ru-slides").textContent = view.slides;
+  const slide = SLIDES[view.slide - 1](view);
+  const title = el("h1");
+  title.innerHTML = slide.title; // static copy plus server integers, no player input
+  const list = el("ul");
+  list.append(...slide.points.map((text) => el("li", "", text)));
+  const parts = [title];
+  if (slide.flags) {
+    const flags = el("div", "flags");
+    flags.append(...[0, 1, 2, 3].map((i) => flagIcon(i)));
+    parts.push(flags);
+  }
+  parts.push(list);
+  $("ru-body").replaceChildren(...parts);
+  startCountdown(view.remaining_ms, view.duration_ms, (_seconds, fraction) => {
+    $("ru-bar").style.transform = `scaleX(${fraction})`;
+  });
 }
 
 function renderQuestion(view) {
@@ -122,7 +171,7 @@ function renderFinal(view) {
   $("f-table").replaceChildren(...standingRows(view.standings));
 }
 
-const RENDER = { lobby: renderLobby, question: renderQuestion, reveal: renderReveal, standings: renderStandings, final: renderFinal };
+const RENDER = { lobby: renderLobby, rules: renderRules, question: renderQuestion, reveal: renderReveal, standings: renderStandings, final: renderFinal };
 
 const hostPath = key ? `/ws/host?key=${encodeURIComponent(key)}` : "/ws/host";
 

@@ -5,7 +5,7 @@ import { flagIcon } from "/static/flags.js";
 import { startCountdown, stopCountdown } from "/static/clock.js";
 
 const $ = (id) => document.getElementById(id);
-const screens = ["join-screen", "lobby-screen", "question-screen", "locked-screen", "reveal-screen", "standings-screen", "final-screen"];
+const screens = ["join-screen", "lobby-screen", "rules-screen", "question-screen", "locked-screen", "reveal-screen", "standings-screen", "final-screen"];
 
 function show(id) {
   for (const s of screens) $(s).hidden = s !== id;
@@ -38,6 +38,14 @@ function renderLobby(view) {
     : `${crew} aboard. Waiting for the Captain to cast off.`;
   $("cast-off").hidden = !view.you.captain;
   $("cast-off").disabled = false;
+}
+
+function renderRules(view) {
+  show("rules-screen");
+  $("ru-slide").textContent = view.slide;
+  $("ru-slides").textContent = view.slides;
+  $("skip-rules").hidden = !view.captain;
+  $("skip-rules").disabled = false;
 }
 
 function renderQuestion(view) {
@@ -161,6 +169,7 @@ function handleMessage(message) {
   }
   if (message.t === "refused") renderRefusal(message.reason);
   if (message.t === "view" && message.screen === "lobby") renderLobby(message);
+  if (message.t === "view" && message.screen === "rules") renderRules(message);
   if (message.t === "view" && message.screen === "question") renderQuestion(message);
   if (message.t === "view" && message.screen === "reveal") renderReveal(message);
   if (message.t === "view" && message.screen === "standings") renderStandings(message);
@@ -181,6 +190,11 @@ for (const [id, intent] of [["play-again", "again"], ["to-lobby", "lobby"]]) {
     socket.send({ t: intent });
   });
 }
+
+$("skip-rules").addEventListener("click", () => {
+  $("skip-rules").disabled = true;
+  socket.send({ t: "skip" });
+});
 
 $("cast-off").addEventListener("click", () => {
   $("cast-off").disabled = true;

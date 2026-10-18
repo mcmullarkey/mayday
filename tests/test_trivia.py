@@ -6,6 +6,7 @@ from mayday.questions import Question, parse_questions
 from mayday.trivia import (
     AnswerRefusal,
     Asking,
+    Briefing,
     Over,
     Pace,
     Revealed,
@@ -13,6 +14,7 @@ from mayday.trivia import (
     Trivia,
     answer,
     open_trivia,
+    skip_briefing,
     tick,
 )
 
@@ -175,3 +177,40 @@ def test_last_question_skips_standings_even_on_a_third() -> None:
         trivia = tick(tick(trivia, now=trivia.wakes_at), now=trivia.wakes_at + PACE.question)
     assert trivia.number == 3
     assert isinstance(trivia.round, Over)
+
+
+# Rules briefing (ADR-0010)
+
+
+def _briefed(now: float = 0.0) -> Trivia:
+    return open_trivia(PLAYERS, (QUESTION,), now=now, pace=Pace(question=30, rules=6), briefing=True)
+
+
+def test_briefing_opens_on_slide_one() -> None:
+    trivia = _briefed(0.0)
+    assert trivia.round == Briefing(slide=1, until=6.0)
+    assert trivia.wakes_at == 6.0
+    assert trivia.choice_of(DANA) is None
+
+
+def test_briefing_steps_through_slides_then_asks_question_one() -> None:
+    trivia = _briefed(0.0)
+    trivia = tick(trivia, now=6.0)
+    assert trivia.round == Briefing(slide=2, until=12.0)
+    trivia = tick(tick(trivia, now=12.0), now=18.0)
+    assert trivia.round == Asking(opened_at=18.0, deadline=48.0)
+    assert trivia.number == 1
+
+
+def test_no_answers_during_the_briefing() -> None:
+    assert answer(_briefed(), DANA, 0, now=1.0) is AnswerRefusal.ROUND_CLOSED
+
+
+def test_skip_briefing_asks_question_one_now() -> None:
+    skipped = skip_briefing(_briefed(0.0), now=2.5)
+    assert skipped.round == Asking(opened_at=2.5, deadline=32.5)
+
+
+def test_skip_outside_briefing_changes_nothing() -> None:
+    asking = _open(100.0)
+    assert skip_briefing(asking, now=101) == asking

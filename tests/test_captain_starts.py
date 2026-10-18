@@ -6,7 +6,7 @@ from importlib.resources import files
 
 from websockets.sync.client import ClientConnection, connect
 
-from conftest import receive_reply, receive_view
+from conftest import receive_reply, receive_screen, receive_view
 
 BANK = json.loads(files("mayday").joinpath("questions/sea_disasters.json").read_text())
 PROMPTS = {q["prompt"] for q in BANK}
@@ -37,16 +37,14 @@ def test_captain_casts_off_and_question_one_appears_everywhere(server_address: s
 
         _send(dana, {"t": "start"})
 
-        question = receive_view(tv)
-        assert question["screen"] == "question"
+        question = receive_screen(tv, "question")  # after the rules briefing (ADR-0010)
         assert (question["number"], question["total"]) == (1, 10)
         assert question["prompt"] in PROMPTS
         assert len(question["choices"]) == 4
         assert [p["name"] for p in question["players"]] == ["Dana", "Bev"]
 
         for phone in (dana, bev):
-            on_phone = receive_view(phone)
-            assert on_phone["screen"] == "question"
+            on_phone = receive_screen(phone, "question")
             assert (on_phone["number"], on_phone["total"]) == (1, 10)
             assert on_phone["choices"] == question["choices"]
             assert on_phone["prompt"] == question["prompt"]  # playtest 1: read it on your phone too
@@ -69,7 +67,7 @@ def test_only_the_captain_casts_off_and_latecomers_are_turned_away(server_addres
         assert _recv(bev) == {"t": "refused", "reason": "not_captain"}
 
         _send(dana, {"t": "start"})
-        assert receive_view(bev)["screen"] == "question"
+        assert receive_screen(bev, "question")["number"] == 1
 
         _send(late, {"t": "join", "code": code, "name": "Late Larry"})
         assert _recv(late) == {"t": "refused", "reason": "game_started"}

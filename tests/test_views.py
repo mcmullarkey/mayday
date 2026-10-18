@@ -215,3 +215,28 @@ def test_final_views_crown_everyone_tied_for_first() -> None:
         "captain": False,
     }
     assert player_view(over, DANA, now=0)["captain"] is True
+
+
+def test_rules_views_carry_the_real_numbers() -> None:
+    trivia = open_trivia(PLAYERS, (QUESTION,), now=0, pace=Pace(question=30, rules=6), briefing=True)
+    assert host_view(trivia, JOIN_URL, now=1.5) == {
+        "t": "view",
+        "screen": "rules",
+        "slide": 1,
+        "slides": 3,
+        "remaining_ms": 4_500,
+        "duration_ms": 6_000,
+        "total": 1,
+        "question_seconds": 30,
+        "base_points": 500,
+        "speed_points": 500,
+        "standings_every": 3,
+    }
+    assert player_view(trivia, DANA, now=1.5) == {
+        "t": "view",
+        "screen": "rules",
+        "slide": 1,
+        "slides": 3,
+        "captain": True,
+    }
+    assert player_view(trivia, BEV, now=1.5)["captain"] is False

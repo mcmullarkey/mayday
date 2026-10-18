@@ -72,6 +72,24 @@
   .row .pts { font-variant-numeric: tabular-nums; }
   .row.leader { border-color: var(--brass); background: rgba(230,180,76,.16); }
   .row.leader .place { color: var(--brass); }
+  /* Rules briefing (ADR-0010) */
+  .rules { position: fixed; inset: 0; display: grid; grid-template-rows: auto 1fr auto; gap: 2vw; padding: 3vw 4vw; }
+  .rules-top { display: flex; justify-content: space-between; align-items: center; }
+  .rules-top .logo { font-size: 3vw; }
+  .rules-top .label { font-size: 1.3vw; }
+  .slide { align-self: center; display: grid; gap: 2.2vw; max-width: 78vw; }
+  .slide h1 { font: 900 7vw/0.9 var(--display); margin: 0; }
+  .slide h1 em { font-style: normal; color: var(--brass); }
+  .slide ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 1.2vw; }
+  .slide li { font-size: 2.6vw; font-weight: 600; line-height: 1.25; display: flex; gap: 1.4vw; align-items: baseline; }
+  .slide li::before { content: ""; width: 1.1vw; height: 1.1vw; border-radius: 50%; background: var(--flare); flex: none; transform: translateY(-0.2vw); }
+  .slide .flags { display: flex; gap: 1.2vw; }
+  .slide .flags svg { width: 6vw; height: 4.3vw; }
+  .rules-foot { display: grid; gap: 1vw; }
+  .rules-bar { height: 0.5vw; border-radius: 99px; background: rgba(243,238,226,.15); overflow: hidden; }
+  .rules-bar i { display: block; height: 100%; background: var(--brass); transform-origin: left; }
+  .rules-foot p { margin: 0; font-size: 1.4vw; color: var(--dim); }
+
   /* Final */
   .final { position: fixed; inset: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 4vw; padding: 4vw; align-items: center; }
   .final .label { font-size: 1.3vw; }
@@ -130,6 +148,18 @@
   <ol class="answers" id="r-answers"></ol>
   <p class="fact"><b>From the wreck</b><span id="r-fact"></span></p>
 </main>
+<main class="rules" id="rules" hidden>
+  <div class="rules-top">
+    <span class="label">Rule <span id="ru-slide">1</span> of <span id="ru-slides">3</span></span>
+    <div class="logo">MAYDAY<span>!</span></div>
+  </div>
+  <section class="slide" id="ru-body"></section>
+  <div class="rules-foot">
+    <div class="rules-bar"><i id="ru-bar"></i></div>
+    <p>The Captain can skip the rules from their phone.</p>
+  </div>
+</main>
+
 <main class="standings" id="standings" hidden>
   <h1>Standings<small>After question <span id="s-number">3</span> of <span id="s-total">10</span></small></h1>
   <ol class="table" id="s-table"></ol>

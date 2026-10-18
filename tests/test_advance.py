@@ -24,7 +24,7 @@ BANK = parse_questions(
     ]
 )
 RIGHT = {q.prompt: q.correct_choice for q in BANK}
-FAST = Pace(question=10, reveal=0.3, standings=0.3)
+FAST = Pace(question=10, reveal=0.3, standings=0.3, rules=0.01)
 
 
 def _send(ws: ClientConnection, intent: dict) -> None:

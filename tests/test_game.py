@@ -1,7 +1,7 @@
 import random
 from dataclasses import replace
 
-from mayday.game import CaptainRefusal, back_to_lobby, join_game, play_again, start_game
+from mayday.game import CaptainRefusal, back_to_lobby, join_game, play_again, skip_rules, start_game
 from mayday.lobby import JoinRefusal, Lobby, PlayerId
 from mayday.questions import draw_questions, read_question_bank
 from mayday.room_code import RoomCode
@@ -86,3 +86,23 @@ def test_back_to_lobby_keeps_crew_and_reopens_room() -> None:
 def test_back_to_lobby_is_captain_only_and_after_the_game() -> None:
     assert back_to_lobby(_over("Dana", "Bev"), BEV, CODE) is CaptainRefusal.NOT_CAPTAIN
     assert back_to_lobby(_started("Dana"), DANA, CODE) is CaptainRefusal.GAME_NOT_OVER
+
+
+def test_new_game_opens_with_the_rules_briefing() -> None:
+    from mayday.trivia import Briefing
+
+    assert isinstance(_started("Dana").round, Briefing)
+
+
+def test_captain_skips_the_rules() -> None:
+    skipped = skip_rules(_started("Dana", "Bev"), DANA, now=3.0)
+    assert isinstance(skipped, Trivia)
+    assert isinstance(skipped.round, Asking)
+
+
+def test_only_captain_skips_and_only_during_rules() -> None:
+    assert skip_rules(_started("Dana", "Bev"), BEV, now=3.0) is CaptainRefusal.NOT_CAPTAIN
+    asking = skip_rules(_started("Dana"), DANA, now=3.0)
+    assert isinstance(asking, Trivia)
+    assert skip_rules(asking, DANA, now=4.0) is CaptainRefusal.NOTHING_TO_SKIP
+    assert skip_rules(_lobby("Dana"), DANA, now=4.0) is CaptainRefusal.NOTHING_TO_SKIP

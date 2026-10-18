@@ -13,8 +13,17 @@ from typing import Literal, TypedDict
 from mayday.game import Game
 from mayday.lobby import MAX_PLAYERS, Lobby, Player, PlayerId
 from mayday.questions import CHOICES_PER_QUESTION
-from mayday.scoring import rank
-from mayday.trivia import Asking, Over, Revealed, Standings, Trivia
+from mayday.scoring import BASE_POINTS, SPEED_POINTS, rank
+from mayday.trivia import (
+    RULES_SLIDES,
+    STANDINGS_EVERY,
+    Asking,
+    Briefing,
+    Over,
+    Revealed,
+    Standings,
+    Trivia,
+)
 
 
 class CrewMember(TypedDict):
@@ -42,6 +51,28 @@ class PlayerLobbyView(TypedDict):
     screen: Literal["lobby"]
     you: CrewMember
     crew_count: int
+
+
+class HostRulesView(TypedDict):
+    t: Literal["view"]
+    screen: Literal["rules"]
+    slide: int
+    slides: int
+    remaining_ms: int
+    duration_ms: int
+    total: int
+    question_seconds: int
+    base_points: int
+    speed_points: int
+    standings_every: int
+
+
+class PlayerRulesView(TypedDict):
+    t: Literal["view"]
+    screen: Literal["rules"]
+    slide: int
+    slides: int
+    captain: bool
 
 
 class HostQuestionView(TypedDict):
@@ -143,8 +174,8 @@ class PlayerFinalView(TypedDict):
     captain: bool
 
 
-HostView = HostLobbyView | HostQuestionView | HostRevealView | HostStandingsView | HostFinalView
-PlayerView = PlayerLobbyView | PlayerQuestionView | PlayerRevealView | PlayerStandingsView | PlayerFinalView
+HostView = HostLobbyView | HostRulesView | HostQuestionView | HostRevealView | HostStandingsView | HostFinalView
+PlayerView = PlayerLobbyView | PlayerRulesView | PlayerQuestionView | PlayerRevealView | PlayerStandingsView | PlayerFinalView
 
 
 def _crew_member(player: Player, captain: Player | None) -> CrewMember:
@@ -178,6 +209,32 @@ def _remaining_ms(asking: Asking, now: float) -> int:
 
 def _duration_ms(asking: Asking) -> int:
     return round((asking.deadline - asking.opened_at) * 1000)
+
+
+def _host_rules(trivia: Trivia, briefing: Briefing, now: float) -> HostRulesView:
+    return {
+        "t": "view",
+        "screen": "rules",
+        "slide": briefing.slide,
+        "slides": RULES_SLIDES,
+        "remaining_ms": max(0, round((briefing.until - now) * 1000)),
+        "duration_ms": round(trivia.pace.rules * 1000),
+        "total": len(trivia.questions),
+        "question_seconds": round(trivia.pace.question),
+        "base_points": BASE_POINTS,
+        "speed_points": SPEED_POINTS,
+        "standings_every": STANDINGS_EVERY,
+    }
+
+
+def _player_rules(trivia: Trivia, briefing: Briefing, player_id: PlayerId) -> PlayerRulesView:
+    return {
+        "t": "view",
+        "screen": "rules",
+        "slide": briefing.slide,
+        "slides": RULES_SLIDES,
+        "captain": trivia.captain.id == player_id,
+    }
 
 
 def _host_question(trivia: Trivia, asking: Asking, now: float) -> HostQuestionView:
@@ -324,6 +381,8 @@ def host_view(game: Game, join_url: str, now: float) -> HostView:
     match game:
         case Lobby():
             return _host_lobby(game, join_url)
+        case Trivia(round=Briefing() as briefing):
+            return _host_rules(game, briefing, now)
         case Trivia(round=Asking() as asking):
             return _host_question(game, asking, now)
         case Trivia(round=Revealed() as revealed):
@@ -338,6 +397,8 @@ def player_view(game: Game, player_id: PlayerId, now: float) -> PlayerView:
     match game:
         case Lobby():
             return _player_lobby(game, player_id)
+        case Trivia(round=Briefing() as briefing):
+            return _player_rules(game, briefing, player_id)
         case Trivia(round=Asking() as asking):
             return _player_question(game, asking, player_id, now)
         case Trivia(round=Revealed() as revealed):

@@ -22,7 +22,7 @@ BANK = parse_questions(
         }
     ]
 )
-FAST = Pace(question=10, reveal=0.2, standings=0.2)
+FAST = Pace(question=10, reveal=0.2, standings=0.2, rules=0.01)
 
 
 def _send(ws: ClientConnection, intent: dict) -> None:
