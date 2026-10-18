@@ -1,8 +1,8 @@
 """Views: what each screen is allowed to see (ADR-0002, ADR-0005).
 
 Pure projections from the game phase to the JSON view sent to one device. The TV gets
-the room code, the crew and the question; a phone gets only itself, a head count, and
-the buttons it can press. While a question is open no view carries its answer, and the
+the room code and the crew; a phone gets only itself and a head count. Both get the
+question (phones too since playtest 1, so people can read it in their hand). While a question is open no view carries its answer, and the
 TV shows who has answered but never what. Countdowns go out as `remaining_ms`.
 
 Does not: send anything, read a clock (callers pass `now`), or change game state.
@@ -62,6 +62,8 @@ class PlayerQuestionView(TypedDict):
     screen: Literal["question"]
     number: int
     total: int
+    category: str
+    prompt: str
     choices: list[str]
     remaining_ms: int
     duration_ms: int
@@ -207,6 +209,8 @@ def _player_question(trivia: Trivia, asking: Asking, player_id: PlayerId, now: f
         "screen": "question",
         "number": trivia.number,
         "total": len(trivia.questions),
+        "category": trivia.current.category,
+        "prompt": trivia.current.prompt,
         "choices": list(trivia.current.choices),
         "remaining_ms": _remaining_ms(asking, now),
         "duration_ms": _duration_ms(asking),

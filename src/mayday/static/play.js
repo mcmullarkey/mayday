@@ -45,6 +45,8 @@ function renderQuestion(view) {
   show("question-screen");
   runTimer(view, "q-secs", "q-bar");
   $("q-number").textContent = view.number;
+  $("q-category").textContent = view.category;
+  $("q-prompt").textContent = view.prompt;
   $("choices").replaceChildren(
     ...view.choices.map((choice, i) => {
       const button = document.createElement("button");

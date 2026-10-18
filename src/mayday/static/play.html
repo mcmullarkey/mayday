@@ -42,7 +42,7 @@
   .choices { flex: 1; display: grid; grid-template-rows: repeat(4, 1fr); gap: 10px; margin: 0; }
   .choice {
     margin: 0; display: flex; align-items: center; gap: 12px; text-align: left;
-    padding: 0 16px; border-radius: 12px; font: 700 18px/1.15 var(--body);
+    padding: 8px 16px; border-radius: 12px; font: 700 17px/1.15 var(--body); min-height: 56px;
   }
   /* Flags sit on a dark chip: each flag shares a color with its own button. */
   .choice .flag, .pill .flag { width: 34px; height: 24px; flex: none; padding: 5px 6px; box-sizing: content-box; background: var(--deep); border-radius: 6px; }
@@ -50,6 +50,8 @@
   .choice-1 { background: var(--f-bravo); color: #fff; }
   .choice-2 { background: var(--f-charlie); color: var(--deep); }
   .choice-3 { background: var(--f-delta); color: var(--deep); }
+  .prompt { margin: 0; font: 700 21px/1.25 var(--body); text-wrap: balance; }
+  .q-head .cat { font-size: 11px; }
   .hint { margin: 0; font-size: 13px; color: var(--dim); text-align: center; }
   .bar { height: 5px; border-radius: 99px; background: rgba(243,238,226,.15); overflow: hidden; }
   .bar i { display: block; height: 100%; background: var(--flare); transform-origin: left; }
@@ -95,10 +97,11 @@
 </section>
 
 <section class="screen" id="question-screen" hidden>
-  <div class="q-head"><b>Q<span id="q-number">1</span></b><span class="secs" id="q-secs"></span></div>
+  <div class="q-head"><b>Q<span id="q-number">1</span></b><span class="label cat" id="q-category"></span><span class="secs" id="q-secs"></span></div>
   <div class="bar"><i id="q-bar"></i></div>
+  <p class="prompt" id="q-prompt"></p>
   <div class="choices" id="choices"></div>
-  <p class="hint">Question's on the TV. Pick a flag.</p>
+  <p class="hint">Pick a flag. Faster answers score more.</p>
 </section>
 
 <section class="screen" id="locked-screen" hidden>

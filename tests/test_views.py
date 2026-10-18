@@ -89,12 +89,14 @@ def test_host_question_view_shows_who_answered_but_not_what() -> None:
     }
 
 
-def test_player_question_view_shows_choices_and_own_lock() -> None:
+def test_player_question_view_shows_question_choices_and_own_lock() -> None:
     assert player_view(_trivia(), DANA, now=105) == {
         "t": "view",
         "screen": "question",
         "number": 1,
         "total": 1,
+        "category": "Great Lakes",
+        "prompt": "Which lake?",
         "choices": CHOICES,
         "remaining_ms": 15_000,
         "duration_ms": 20_000,
