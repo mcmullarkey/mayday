@@ -1,6 +1,6 @@
 # Build plan
 
-Status 2026-10-16: slices 1–10 built. Live at https://mayday-qsu4.onrender.com (TV: /host?key=...).
+Status 2026-10-18: slices 1–10 built, plus playtest 1 changes (30 s timer, rules briefing, questions on phones; ADR-0010). Live at https://mayday-qsu4.onrender.com (TV: /host?key=...).
 
 Design proposal: https://claude.ai/artifact/AxsNQiLCisbMNpGGNYhScr
 
