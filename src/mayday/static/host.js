@@ -195,3 +195,16 @@ openSocket(
     },
   },
 );
+
+// Full screen (the page, not the browser window): needs a click or key press to start.
+function toggleFullscreen() {
+  if (document.fullscreenElement) document.exitFullscreen();
+  else document.documentElement.requestFullscreen().catch(() => {});
+}
+if (document.fullscreenEnabled) {
+  $("fullscreen").hidden = false;
+  $("fullscreen").addEventListener("click", toggleFullscreen);
+  document.addEventListener("keydown", (event) => {
+    if (event.key.toLowerCase() === "f" && !event.metaKey && !event.ctrlKey && !event.altKey) toggleFullscreen();
+  });
+}
