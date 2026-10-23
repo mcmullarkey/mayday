@@ -3,7 +3,7 @@
 Pure domain core. `Game` is the sum of every phase; the functions here take a phase and
 a player's request and return the next phase or a closed refusal reason. Starting
 (with the rules briefing), skipping the rules, replaying (without them) and returning
-to the lobby are Captain-only.
+to the lobby (a new voyage: only the Captain stays aboard, ADR-0012) are Captain-only.
 
 Does not: hold rules internal to a phase (see lobby, trivia), talk to sockets, or pick
 questions or room codes (callers pass them in).
@@ -77,4 +77,4 @@ def back_to_lobby(game: Game, requester: PlayerId, code: RoomCode) -> Lobby | Ca
     finished = _finished(game, requester)
     if isinstance(finished, CaptainRefusal):
         return finished
-    return Lobby(code=code, players=finished.players)
+    return Lobby(code=code, players=(finished.players[0],))

@@ -159,8 +159,22 @@ const storage = {
   },
 };
 
+// Back to lobby (ADR-0012): the server let this phone go; one tap climbs back aboard.
+function renderNewVoyage(message) {
+  storage.clear();
+  stopCountdown();
+  $("code").value = message.code;
+  $("name").value = message.name;
+  $("join-title").hidden = false;
+  $("join").textContent = "Climb back aboard";
+  $("join").disabled = false;
+  $("join-error").hidden = true;
+  show("join-screen");
+}
+
 function handleMessage(message) {
   if (message.t === "welcome") storage.set(message.token);
+  if (message.t === "new_voyage") return renderNewVoyage(message);
   if (message.t === "refused" && message.reason === "unknown_player") {
     storage.clear();
     show("join-screen");

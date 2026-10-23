@@ -83,6 +83,17 @@ class Table:
         self.tokens: dict[str, PlayerId] = {}  # rejoin secrets (ADR-0009)
         self._clock_task: asyncio.Task | None = None
 
+    async def new_voyage(self, lobby: Lobby) -> None:
+        """Back to lobby (ADR-0012): forget everyone not aboard and invite their phones back."""
+        aboard = {p.id for p in lobby.players}
+        names = {p.id: str(p.name) for p in self.game.players}
+        self.tokens = {t: pid for t, pid in self.tokens.items() if pid in aboard}
+        for ws, player_id in list(self.phones.items()):
+            if player_id not in aboard:
+                del self.phones[ws]
+                await _send_quietly(ws, {"t": "new_voyage", "name": names[player_id], "code": lobby.code})
+        await self.apply(lobby)
+
     async def send_views(self) -> None:
         now = time.monotonic()
         for ws in list(self.hosts):
@@ -213,7 +224,11 @@ def create_app(
             case "again":
                 await settle(ws, play_again(table.game, player_id, fresh_questions(), now))
             case "lobby":
-                await settle(ws, back_to_lobby(table.game, player_id, code))
+                result = back_to_lobby(table.game, player_id, code)
+                if isinstance(result, Lobby):
+                    await table.new_voyage(result)
+                else:
+                    await settle(ws, result)
             case "answer" if isinstance(table.game, Trivia):
                 await settle(ws, answer(table.game, player_id, intent.get("choice"), now))
             case "answer":
