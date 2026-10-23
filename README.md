@@ -16,6 +16,10 @@ uv run mayday
 Open the printed host URL on the laptop (fullscreen it on the TV). Phones open the
 join URL shown on the TV.
 
+After a game the Captain picks **Play again** (same crew) or **Back to lobby (new
+crew)**: only the Captain stays aboard, and every other phone gets a one-tap "Climb
+back aboard", so anyone who left drops off and newcomers can take their seats.
+
 Options: `--port 8000`, `--question-seconds 30`.
 
 ## Host it online (friends on cellular)
