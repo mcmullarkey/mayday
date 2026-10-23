@@ -1,6 +1,6 @@
 import pytest
 
-from mayday.lobby import MAX_PLAYERS, JoinRefusal, Lobby, Player, PlayerId, PlayerName, join
+from mayday.lobby import MAX_PLAYERS, JoinRefusal, Lobby, Player, PlayerId, PlayerName, join, leave
 from mayday.room_code import RoomCode
 
 CODE = RoomCode("MXQT")
@@ -70,3 +70,14 @@ def test_name_is_trimmed() -> None:
 def test_name_cannot_be_built_unvalidated() -> None:
     with pytest.raises(ValueError):
         PlayerName("")
+
+
+def test_leaving_removes_the_sailor_and_the_next_in_line_becomes_captain() -> None:
+    lobby = leave(_joined("Dana", "Bev", "Cal"), PlayerId("p0"))
+    assert [str(p.name) for p in lobby.players] == ["Bev", "Cal"]
+    assert str(lobby.captain.name) == "Bev"
+
+
+def test_leaving_twice_changes_nothing() -> None:
+    lobby = _joined("Dana", "Bev")
+    assert leave(leave(lobby, PlayerId("p1")), PlayerId("p1")).players == lobby.players[:1]

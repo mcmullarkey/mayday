@@ -11,7 +11,7 @@ questions or room codes (callers pass them in).
 
 from enum import StrEnum
 
-from mayday.lobby import JoinRefusal, Lobby, Player, PlayerId, join
+from mayday.lobby import JoinRefusal, Lobby, Player, PlayerId, join, leave
 from mayday.questions import Question
 from mayday.room_code import RoomCode
 from mayday.trivia import Briefing, Over, Pace, Trivia, open_trivia, skip_briefing
@@ -30,6 +30,12 @@ def join_game(game: Game, code_guess: str, raw_name: str, player_id: PlayerId) -
     if isinstance(game, Trivia):
         return JoinRefusal.GAME_STARTED
     return join(game, code_guess, raw_name, player_id)
+
+
+def leave_game(game: Game, player_id: PlayerId) -> Lobby | JoinRefusal:
+    if isinstance(game, Trivia):
+        return JoinRefusal.GAME_STARTED
+    return leave(game, player_id)
 
 
 def _is_captain(captain: Player | None, requester: PlayerId) -> bool:

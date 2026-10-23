@@ -1,7 +1,7 @@
 import random
 from dataclasses import replace
 
-from mayday.game import CaptainRefusal, back_to_lobby, join_game, play_again, skip_rules, start_game
+from mayday.game import CaptainRefusal, back_to_lobby, join_game, leave_game, play_again, skip_rules, start_game
 from mayday.lobby import JoinRefusal, Lobby, PlayerId
 from mayday.questions import draw_questions, read_question_bank
 from mayday.room_code import RoomCode
@@ -106,3 +106,8 @@ def test_only_captain_skips_and_only_during_rules() -> None:
     assert isinstance(asking, Trivia)
     assert skip_rules(asking, DANA, now=4.0) is CaptainRefusal.NOTHING_TO_SKIP
     assert skip_rules(_lobby("Dana"), DANA, now=4.0) is CaptainRefusal.NOTHING_TO_SKIP
+
+
+def test_leaving_is_for_the_lobby_only() -> None:
+    assert [str(p.name) for p in leave_game(_lobby("Dana", "Bev"), DANA).players] == ["Bev"]
+    assert leave_game(_started("Dana", "Bev"), DANA) is JoinRefusal.GAME_STARTED
