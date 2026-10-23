@@ -75,11 +75,11 @@ def test_cannot_play_again_mid_game_or_from_lobby() -> None:
     assert play_again(_lobby("Dana"), DANA, OTHER_QUESTIONS, now=0) is CaptainRefusal.GAME_NOT_OVER
 
 
-def test_back_to_lobby_keeps_crew_and_reopens_room() -> None:
+def test_back_to_lobby_keeps_only_the_captain_and_reopens_room() -> None:
     lobby = back_to_lobby(_over("Dana", "Bev"), DANA, CODE)
     assert isinstance(lobby, Lobby)
     assert lobby.code == CODE
-    assert [str(p.name) for p in lobby.players] == ["Dana", "Bev"]
+    assert [str(p.name) for p in lobby.players] == ["Dana"]
     assert isinstance(join_game(lobby, CODE, "Late", PlayerId("p9")), Lobby)
 
 

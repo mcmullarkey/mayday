@@ -1,5 +1,5 @@
 """Slice 7: after the last reveal the TV crowns the winner; the Captain can start a fresh
-game with the same crew, or take everyone back to the lobby so others can join."""
+game with the same crew, or head back to the lobby so others can join (see test_new_voyage)."""
 
 import json
 
@@ -70,8 +70,7 @@ def test_winner_is_crowned_and_captain_can_replay_or_return_to_lobby() -> None:
         _send(dana, {"t": "lobby"})
         lobby = receive_screen(tv, "lobby")
         assert lobby["code"] == code
-        assert [p["name"] for p in lobby["players"]] == ["Dana", "Bev"]
-        assert receive_screen(bev, "lobby")["you"] == {"name": "Bev", "captain": False}
+        assert [p["name"] for p in lobby["players"]] == ["Dana"]
 
         _send(late, {"t": "join", "code": code, "name": "Late Larry"})
         assert receive_view(late)["screen"] == "lobby"
