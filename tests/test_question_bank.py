@@ -29,7 +29,7 @@ def test_every_question_cites_wikipedia_with_quotes() -> None:
 def test_bank_goes_beyond_shipwrecks() -> None:
     counts = Counter(q.category for q in BANK)
     assert all(counts[c] >= 4 for c in BEYOND_SHIPWRECKS), counts
-    assert len(BANK) >= 50
+    assert len(BANK) >= 110  # doubled after playtest 1 (v3)
 
 
 @pytest.mark.skipif(not os.environ.get("MAYDAY_FACTCHECK"), reason="set MAYDAY_FACTCHECK=1 to re-check sources online")
