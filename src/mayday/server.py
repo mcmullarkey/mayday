@@ -23,7 +23,16 @@ from starlette.routing import Mount, Route, WebSocketRoute
 from starlette.staticfiles import StaticFiles
 from starlette.websockets import WebSocket, WebSocketDisconnect
 
-from mayday.game import Game, back_to_lobby, join_game, leave_game, play_again, skip_rules, start_game
+from mayday.game import (
+    Game,
+    back_to_lobby,
+    hand_over_helm,
+    join_game,
+    leave_game,
+    play_again,
+    skip_rules,
+    start_game,
+)
 from mayday.guesses import GuessLog
 from mayday.lobby import JoinRefusal, Lobby, PlayerId, leave
 from mayday.qr import join_link, qr_svg
@@ -99,21 +108,26 @@ class Table:
                 await _send_quietly(ws, farewell)
 
     def phone_gone(self, player_id: PlayerId) -> None:
-        """A Captain whose last phone closed in the lobby gets `captain_grace` seconds to return."""
-        captain = self.game.captain if isinstance(self.game, Lobby) else None
-        if captain is None or captain.id != player_id or player_id in self.phones.values():
+        """A Captain whose last phone closed gets `captain_grace` seconds to return (ADR-0013)."""
+        if not self._is_absent_captain(player_id):
             return
-        task = asyncio.create_task(self._drop_captain_if_still_gone(player_id))
+        task = asyncio.create_task(self._relieve_captain_if_still_gone(player_id))
         self._grace_tasks.add(task)
         task.add_done_callback(self._grace_tasks.discard)
 
-    async def _drop_captain_if_still_gone(self, player_id: PlayerId) -> None:
+    def _is_absent_captain(self, player_id: PlayerId) -> bool:
+        captain = self.game.captain
+        return captain is not None and captain.id == player_id and player_id not in self.phones.values()
+
+    async def _relieve_captain_if_still_gone(self, player_id: PlayerId) -> None:
+        """In the lobby the Captain is dropped; mid-game they hand over the helm instead."""
         await asyncio.sleep(self.captain_grace)
-        game = self.game
-        if not isinstance(game, Lobby) or game.captain is None or game.captain.id != player_id:
+        if not self._is_absent_captain(player_id):
             return
-        if player_id not in self.phones.values():
-            await self.let_go(player_id, leave(game, player_id))
+        if isinstance(self.game, Lobby):
+            await self.let_go(player_id, leave(self.game, player_id))
+        elif len(self.game.players) > 1:
+            await self.apply(hand_over_helm(self.game))
 
     async def new_voyage(self, lobby: Lobby) -> None:
         """Back to lobby (ADR-0012): forget everyone not aboard and invite their phones back."""

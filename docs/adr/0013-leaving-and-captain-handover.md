@@ -35,5 +35,13 @@ Options 1 and 2 together.
 
 - A Captain whose phone sleeps for over a minute in the lobby comes back to the join
   form (name remembered) instead of the helm. Accepted: rejoining is two taps.
-- A Captain who vanishes mid-game or on the final screen still blocks "Play again" /
-  "Back to lobby"; not covered here.
+
+## Amendment (2026-10-23): mid-game hand-over
+
+A Captain who vanished mid-game used to block "Skip rules", "Play again" and "Back to
+lobby". Mid-game the grace period ends in `hand_over_helm` instead of a drop: the
+Captain moves to the back of the line (still playing, score and standings intact) and
+the next sailor becomes Captain. Removing them would rewrite scores mid-game. If the new
+Captain then heads back to the lobby, ADR-0012 drops the old one as usual. A lone
+Captain mid-game is left alone: there's nobody to hand over to, and the clock still
+carries the game to the final screen.
