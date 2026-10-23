@@ -13,7 +13,7 @@ Games:
 uv run mayday
 ```
 
-Open the printed host URL on the laptop (fullscreen it on the TV). Phones open the
+Open the printed host URL on the laptop and click **Full screen** (or press F) on the TV page. Phones open the
 join URL shown on the TV.
 
 After a game the Captain picks **Play again** (same crew) or **Back to lobby (new
