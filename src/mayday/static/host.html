@@ -101,6 +101,14 @@
   .crown p .blink { width: 1vw; height: 1vw; }
   .final .table { max-width: none; }
   .fact b { font-family: var(--mono); font-size: 1.1vw; text-transform: uppercase; letter-spacing: 0.1em; color: var(--f-bravo); flex: none; }
+  /* Full-screen toggle: the page itself, not the browser window. Hidden once full screen. */
+  #fullscreen {
+    position: fixed; right: 18px; bottom: 18px; z-index: 10;
+    border: 1px solid var(--line); border-radius: 10px; background: rgba(7, 22, 42, 0.8);
+    color: var(--foam); font: 600 14px var(--body); padding: 10px 14px; cursor: pointer;
+  }
+  #fullscreen:focus-visible { outline: 3px solid var(--brass); outline-offset: 2px; }
+  :fullscreen #fullscreen { display: none; }
 </style>
 </head>
 <body>
@@ -172,6 +180,7 @@
   </section>
   <ol class="table" id="f-table"></ol>
 </main>
+<button type="button" id="fullscreen" hidden>⛶ Full screen <span class="label">(F)</span></button>
 <script type="module" src="/static/host.js"></script>
 </body>
 </html>
