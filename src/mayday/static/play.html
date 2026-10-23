@@ -29,6 +29,7 @@
   }
   .error { margin: 0; padding: 12px 14px; border-radius: 10px; background: rgba(255, 82, 51, 0.16); border: 1px solid var(--flare); font-size: 15px; font-weight: 600; }
   button:disabled { opacity: 0.6; }
+  .voyage { margin: 0; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--brass); font-size: 15px; font-weight: 600; }
   .note { font-size: 13px; color: var(--dim); text-align: center; margin: 0; }
   .aboard { flex: 1; display: grid; align-content: center; gap: 14px; text-align: center; }
   .aboard h1 { font: 900 56px/0.95 var(--display); margin: 0; }
@@ -74,6 +75,7 @@
 <body>
 <form class="screen" id="join-screen" autocomplete="off">
   <div class="logo">MAYDAY<span>!</span></div>
+  <p class="voyage" id="join-title" hidden>New voyage! Still playing? Tap below to climb back aboard.</p>
   <label class="field" for="code"><span class="label">Room code (it's on the TV)</span>
     <input id="code" name="code" maxlength="4" inputmode="text" autocapitalize="characters" spellcheck="false" required>
   </label>
@@ -93,7 +95,10 @@
     <span class="badge" id="you-captain" hidden>Captain</span>
     <p id="lobby-note"></p>
   </div>
-  <button type="button" id="cast-off" hidden>Cast off</button>
+  <div class="captain-controls">
+    <button type="button" id="cast-off" hidden>Cast off</button>
+    <button type="button" class="secondary" id="leave-ship">Leave ship</button>
+  </div>
 </section>
 
 <section class="screen" id="rules-screen" hidden>
@@ -152,7 +157,7 @@
   <div class="tally"><span>Final score</span><span><b id="f-score">0</b> pts</span></div>
   <div class="captain-controls" id="f-controls" hidden>
     <button type="button" id="play-again">Play again</button>
-    <button type="button" class="secondary" id="to-lobby">Back to lobby</button>
+    <button type="button" class="secondary" id="to-lobby">Back to lobby (new crew)</button>
   </div>
   <p class="hint" id="f-wait">Waiting for the Captain to choose what's next.</p>
 </section>

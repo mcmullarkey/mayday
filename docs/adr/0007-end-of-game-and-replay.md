@@ -38,3 +38,7 @@ Option 2 with code (b).
 
 - ADR-0003 amended: the code lasts for the life of the server, not one game.
 - One server run can host a whole evening.
+
+## Superseded in part by ADR-0012
+
+`{"t": "lobby"}` now keeps only the Captain; everyone else is invited back with one tap.

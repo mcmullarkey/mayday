@@ -1,7 +1,8 @@
 """Lobby: who is aboard before the game starts (ADR-0003).
 
 Pure domain core. Holds validated player names, the Lobby record, and the join
-transition with every rule that can refuse it. The Captain is whoever came aboard first.
+transition with every rule that can refuse it, and leaving. The Captain is whoever is
+first in line, so when the Captain leaves the next sailor takes the helm (ADR-0013).
 
 Does not: talk to sockets, generate player ids or room codes (callers pass them in),
 or decide what any screen shows (see views).
@@ -76,3 +77,7 @@ def join(lobby: Lobby, code_guess: str, raw_name: str, player_id: PlayerId) -> L
     if any(p.name.value.casefold() == name.value.casefold() for p in lobby.players):
         return JoinRefusal.NAME_TAKEN
     return Lobby(code=lobby.code, players=(*lobby.players, Player(id=player_id, name=name)))
+
+
+def leave(lobby: Lobby, player_id: PlayerId) -> Lobby:
+    return Lobby(code=lobby.code, players=tuple(p for p in lobby.players if p.id != player_id))

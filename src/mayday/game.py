@@ -3,7 +3,7 @@
 Pure domain core. `Game` is the sum of every phase; the functions here take a phase and
 a player's request and return the next phase or a closed refusal reason. Starting
 (with the rules briefing), skipping the rules, replaying (without them) and returning
-to the lobby are Captain-only.
+to the lobby (a new voyage: only the Captain stays aboard, ADR-0012) are Captain-only.
 
 Does not: hold rules internal to a phase (see lobby, trivia), talk to sockets, or pick
 questions or room codes (callers pass them in).
@@ -11,7 +11,7 @@ questions or room codes (callers pass them in).
 
 from enum import StrEnum
 
-from mayday.lobby import JoinRefusal, Lobby, Player, PlayerId, join
+from mayday.lobby import JoinRefusal, Lobby, Player, PlayerId, join, leave
 from mayday.questions import Question
 from mayday.room_code import RoomCode
 from mayday.trivia import Briefing, Over, Pace, Trivia, open_trivia, skip_briefing
@@ -30,6 +30,12 @@ def join_game(game: Game, code_guess: str, raw_name: str, player_id: PlayerId) -
     if isinstance(game, Trivia):
         return JoinRefusal.GAME_STARTED
     return join(game, code_guess, raw_name, player_id)
+
+
+def leave_game(game: Game, player_id: PlayerId) -> Lobby | JoinRefusal:
+    if isinstance(game, Trivia):
+        return JoinRefusal.GAME_STARTED
+    return leave(game, player_id)
 
 
 def _is_captain(captain: Player | None, requester: PlayerId) -> bool:
@@ -77,4 +83,4 @@ def back_to_lobby(game: Game, requester: PlayerId, code: RoomCode) -> Lobby | Ca
     finished = _finished(game, requester)
     if isinstance(finished, CaptainRefusal):
         return finished
-    return Lobby(code=code, players=finished.players)
+    return Lobby(code=code, players=(finished.players[0],))

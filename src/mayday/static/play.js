@@ -38,6 +38,8 @@ function renderLobby(view) {
     : `${crew} aboard. Waiting for the Captain to cast off.`;
   $("cast-off").hidden = !view.you.captain;
   $("cast-off").disabled = false;
+  $("leave-ship").disabled = false;
+  remembered.set(view.you.name);
 }
 
 function renderRules(view) {
@@ -137,34 +139,55 @@ function renderRefusal(reason) {
   $("join").disabled = false;
 }
 
+// Per-phone memory that survives reloads; storage can be unavailable, so every access is guarded.
+function stored(key) {
+  return {
+    get: () => {
+      try {
+        return localStorage.getItem(key);
+      } catch {
+        return null;
+      }
+    },
+    set: (value) => {
+      try {
+        localStorage.setItem(key, value);
+      } catch {}
+    },
+    clear: () => {
+      try {
+        localStorage.removeItem(key);
+      } catch {}
+    },
+  };
+}
 // Rejoin token (ADR-0009): kept on this phone so a dropped socket comes back as the same player.
-const TOKEN_KEY = "mayday-token";
-const storage = {
-  get: () => {
-    try {
-      return localStorage.getItem(TOKEN_KEY);
-    } catch {
-      return null;
-    }
-  },
-  set: (token) => {
-    try {
-      localStorage.setItem(TOKEN_KEY, token);
-    } catch {}
-  },
-  clear: () => {
-    try {
-      localStorage.removeItem(TOKEN_KEY);
-    } catch {}
-  },
-};
+const storage = stored("mayday-token");
+// Last name used, so the join form is prefilled after leaving or being let go (ADR-0013).
+const remembered = stored("mayday-name");
+
+// Back to lobby (ADR-0012): the server let this phone go; one tap climbs back aboard.
+function renderNewVoyage(message) {
+  storage.clear();
+  stopCountdown();
+  $("code").value = message.code;
+  $("name").value = message.name;
+  $("join-title").hidden = false;
+  $("join").textContent = "Climb back aboard";
+  $("join").disabled = false;
+  $("join-error").hidden = true;
+  show("join-screen");
+}
 
 function handleMessage(message) {
   if (message.t === "welcome") storage.set(message.token);
-  if (message.t === "refused" && message.reason === "unknown_player") {
+  if (message.t === "new_voyage") return renderNewVoyage(message);
+  if (message.t === "left" || (message.t === "refused" && message.reason === "unknown_player")) {
     storage.clear();
-    show("join-screen");
+    $("name").value ||= remembered.get() ?? "";
+    $("join-title").hidden = true;
     $("join").disabled = false;
+    show("join-screen");
     return;
   }
   if (message.t === "refused") renderRefusal(message.reason);
@@ -196,6 +219,11 @@ $("skip-rules").addEventListener("click", () => {
   socket.send({ t: "skip" });
 });
 
+$("leave-ship").addEventListener("click", () => {
+  $("leave-ship").disabled = true;
+  socket.send({ t: "leave" });
+});
+
 $("cast-off").addEventListener("click", () => {
   $("cast-off").disabled = true;
   socket.send({ t: "start" });
@@ -203,6 +231,7 @@ $("cast-off").addEventListener("click", () => {
 
 const prefill = new URLSearchParams(location.search).get("code");
 if (prefill) $("code").value = prefill.toUpperCase();
+$("name").value = remembered.get() ?? "";
 
 $("join-screen").addEventListener("submit", async (event) => {
   event.preventDefault();

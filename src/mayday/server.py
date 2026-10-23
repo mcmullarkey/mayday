@@ -23,9 +23,9 @@ from starlette.routing import Mount, Route, WebSocketRoute
 from starlette.staticfiles import StaticFiles
 from starlette.websockets import WebSocket, WebSocketDisconnect
 
-from mayday.game import Game, back_to_lobby, join_game, play_again, skip_rules, start_game
+from mayday.game import Game, back_to_lobby, join_game, leave_game, play_again, skip_rules, start_game
 from mayday.guesses import GuessLog
-from mayday.lobby import JoinRefusal, Lobby, PlayerId
+from mayday.lobby import JoinRefusal, Lobby, PlayerId, leave
 from mayday.qr import join_link, qr_svg
 from mayday.questions import Question, draw_questions, read_question_bank
 from mayday.room_code import new_room_code
@@ -75,13 +75,53 @@ class AlwaysRevalidate:
 class Table:
     """The live game and every device watching it."""
 
-    def __init__(self, game: Game, join_url: str) -> None:
+    def __init__(self, game: Game, join_url: str, captain_grace: float) -> None:
         self.game = game
         self.join_url = join_url
+        self.captain_grace = captain_grace
         self.hosts: set[WebSocket] = set()
         self.phones: dict[WebSocket, PlayerId] = {}
         self.tokens: dict[str, PlayerId] = {}  # rejoin secrets (ADR-0009)
         self._clock_task: asyncio.Task | None = None
+        self._grace_tasks: set[asyncio.Task] = set()
+
+    async def let_go(self, player_id: PlayerId, lobby: Lobby) -> None:
+        """A sailor left the ship (ADR-0013): forget their phone and token, then show the rest."""
+        await self._forget(player_id, {"t": "left"})
+        await self.apply(lobby)
+
+    async def _forget(self, player_id: PlayerId, farewell: dict) -> None:
+        """Drop a sailor's rejoin token and phone binding, telling the phone why."""
+        self.tokens = {t: pid for t, pid in self.tokens.items() if pid != player_id}
+        for ws, pid in list(self.phones.items()):
+            if pid == player_id:
+                del self.phones[ws]
+                await _send_quietly(ws, farewell)
+
+    def phone_gone(self, player_id: PlayerId) -> None:
+        """A Captain whose last phone closed in the lobby gets `captain_grace` seconds to return."""
+        captain = self.game.captain if isinstance(self.game, Lobby) else None
+        if captain is None or captain.id != player_id or player_id in self.phones.values():
+            return
+        task = asyncio.create_task(self._drop_captain_if_still_gone(player_id))
+        self._grace_tasks.add(task)
+        task.add_done_callback(self._grace_tasks.discard)
+
+    async def _drop_captain_if_still_gone(self, player_id: PlayerId) -> None:
+        await asyncio.sleep(self.captain_grace)
+        game = self.game
+        if not isinstance(game, Lobby) or game.captain is None or game.captain.id != player_id:
+            return
+        if player_id not in self.phones.values():
+            await self.let_go(player_id, leave(game, player_id))
+
+    async def new_voyage(self, lobby: Lobby) -> None:
+        """Back to lobby (ADR-0012): forget everyone not aboard and invite their phones back."""
+        aboard = {p.id for p in lobby.players}
+        for player in self.game.players:
+            if player.id not in aboard:
+                await self._forget(player.id, {"t": "new_voyage", "name": str(player.name), "code": lobby.code})
+        await self.apply(lobby)
 
     async def send_views(self) -> None:
         now = time.monotonic()
@@ -129,12 +169,14 @@ def create_app(
     bank: tuple[Question, ...] | None = None,
     pace: Pace = Pace(),
     host_key: str | None = None,
+    captain_grace: float = 60.0,
 ) -> Starlette:
-    """`host_key`, when set, must be passed as `?key=` to open the TV socket (ADR-0008)."""
+    """`host_key`, when set, must be passed as `?key=` to open the TV socket (ADR-0008).
+    `captain_grace`: seconds a Captain's phone may be gone from the lobby (ADR-0013)."""
     rng = rng or random.SystemRandom()
     bank = bank if bank is not None else read_question_bank()
     code = new_room_code(rng)
-    table = Table(Lobby(code=code), join_url)
+    table = Table(Lobby(code=code), join_url, captain_grace)
     guesses = GuessLog()
 
     async def settle(ws: WebSocket, result: Game | StrEnum) -> None:
@@ -213,7 +255,17 @@ def create_app(
             case "again":
                 await settle(ws, play_again(table.game, player_id, fresh_questions(), now))
             case "lobby":
-                await settle(ws, back_to_lobby(table.game, player_id, code))
+                result = back_to_lobby(table.game, player_id, code)
+                if isinstance(result, Lobby):
+                    await table.new_voyage(result)
+                else:
+                    await settle(ws, result)
+            case "leave":
+                result = leave_game(table.game, player_id)
+                if isinstance(result, Lobby):
+                    await table.let_go(player_id, result)
+                else:
+                    await settle(ws, result)
             case "answer" if isinstance(table.game, Trivia):
                 await settle(ws, answer(table.game, player_id, intent.get("choice"), now))
             case "answer":
@@ -235,7 +287,8 @@ def create_app(
         except WebSocketDisconnect:
             pass
         finally:
-            table.phones.pop(ws, None)
+            if (player_id := table.phones.pop(ws, None)) is not None:
+                table.phone_gone(player_id)
 
     async def phone_page(_request) -> FileResponse:
         return FileResponse(STATIC / "play.html")
