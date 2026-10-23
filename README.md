@@ -20,7 +20,8 @@ After a game the Captain picks **Play again** (same crew) or **Back to lobby (ne
 crew)**: only the Captain stays aboard, and every other phone gets a one-tap "Climb
 back aboard", so anyone who left drops off and newcomers can take their seats. In the lobby anyone
 can tap **Leave ship**; if the Captain leaves, or their phone is gone for a minute, the
-next sailor in line becomes Captain.
+next sailor in line becomes Captain. Mid-game, a Captain whose phone is gone for a
+minute keeps their score but passes the Captain's buttons to the next sailor.
 
 Options: `--port 8000`, `--question-seconds 30`.
 
