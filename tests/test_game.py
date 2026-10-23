@@ -111,3 +111,12 @@ def test_only_captain_skips_and_only_during_rules() -> None:
 def test_leaving_is_for_the_lobby_only() -> None:
     assert [str(p.name) for p in leave_game(_lobby("Dana", "Bev"), DANA).players] == ["Bev"]
     assert leave_game(_started("Dana", "Bev"), DANA) is JoinRefusal.GAME_STARTED
+
+
+def test_handing_over_the_helm_moves_the_captain_to_the_back_with_score_intact() -> None:
+    from mayday.game import hand_over_helm
+
+    game = hand_over_helm(_over("Dana", "Bev"))
+    assert [str(p.name) for p in game.players] == ["Bev", "Dana"]
+    assert game.captain.id == BEV
+    assert game.totals == {DANA: 4000, BEV: 2500}

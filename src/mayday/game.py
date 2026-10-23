@@ -9,6 +9,7 @@ Does not: hold rules internal to a phase (see lobby, trivia), talk to sockets, o
 questions or room codes (callers pass them in).
 """
 
+from dataclasses import replace
 from enum import StrEnum
 
 from mayday.lobby import JoinRefusal, Lobby, Player, PlayerId, join, leave
@@ -36,6 +37,11 @@ def leave_game(game: Game, player_id: PlayerId) -> Lobby | JoinRefusal:
     if isinstance(game, Trivia):
         return JoinRefusal.GAME_STARTED
     return leave(game, player_id)
+
+
+def hand_over_helm(game: Trivia) -> Trivia:
+    """Mid-game, an absent Captain moves to the back of the line (ADR-0013)."""
+    return replace(game, players=(*game.players[1:], game.players[0]))
 
 
 def _is_captain(captain: Player | None, requester: PlayerId) -> bool:
