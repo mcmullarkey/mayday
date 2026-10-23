@@ -27,8 +27,9 @@ Options 1 and 2 together.
   rejoin token are forgotten, and it shows the join form.
 - When the Captain's last phone disconnects in the lobby, the server waits
   `captain_grace` (60 s by default). If the Captain is still unbound, still Captain,
-  the game is still a lobby, and someone else is aboard, the Captain is dropped.
-  A lone Captain is never dropped: there's nobody to hand over to.
+  and the game is still a lobby, the Captain is dropped. That includes a lone Captain:
+  otherwise latecomers would join behind a dead phone. A lone Captain who comes back
+  is first in line again anyway.
 
 ## Consequences
 
