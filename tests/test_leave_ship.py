@@ -77,3 +77,27 @@ def test_captain_who_reconnects_within_the_grace_period_keeps_the_helm() -> None
             with connect(f"ws://{address}/ws/play") as dana_again:
                 _send(dana_again, {"t": "rejoin", "token": dana_token})
                 assert receive_view(dana_again)["you"] == {"name": "Dana", "captain": True}
+
+
+def test_captain_gone_mid_game_hands_the_final_choice_to_the_next_sailor() -> None:
+    from test_final_and_replay import BANK
+
+    from mayday.trivia import Pace
+
+    with (
+        running_server(bank=BANK, pace=Pace(question=0.6, reveal=0.2, standings=0.2, rules=0.01), captain_grace=0.3) as address,
+        connect(f"ws://{address}/ws/host") as tv,
+        connect(f"ws://{address}/ws/play") as bev,
+    ):
+        code = receive_view(tv)["code"]
+        with connect(f"ws://{address}/ws/play") as dana:
+            _board(dana, code, "Dana")
+            _board(bev, code, "Bev")
+            _send(dana, {"t": "start"})
+            receive_screen(dana, "rules")
+
+        final = receive_screen(bev, "final", timeout=3)
+        assert final["captain"] is True
+        assert {s["name"] for s in receive_screen(tv, "final")["standings"]} == {"Dana", "Bev"}, "Dana stays in the standings"
+        _send(bev, {"t": "lobby"})
+        _crew(tv, ["Bev"])
