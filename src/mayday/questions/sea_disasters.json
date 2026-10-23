@@ -283,7 +283,7 @@
   {
     "id": "gustloff",
     "category": "War at Sea",
-    "prompt": "The Wilhelm Gustloff, sunk in the Baltic in January 1945, holds one very grim record. Which?",
+    "prompt": "The Wilhelm Gustloff, sunk in the Baltic in January 1945, holds one very grim record. Which? Hint: it's measured in lives, not tons.",
     "choices": [
       "Deadliest maritime disaster in modern history",
       "Largest ship ever sunk",
@@ -421,7 +421,7 @@
   {
     "id": "bounty-island",
     "category": "Mutiny",
-    "prompt": "After the 1789 mutiny on the Bounty, the mutineers hid on an island named after the 15-year-old who first spotted it. Which island?",
+    "prompt": "After the 1789 mutiny on the Bounty, the mutineers hid on an island named after the 15-year-old who first spotted it. Which island? Hint: his surname starts with a hole in the ground.",
     "choices": [
       "Tahiti",
       "Easter Island",
@@ -449,7 +449,7 @@
   {
     "id": "bounty-bligh",
     "category": "Mutiny",
-    "prompt": "Cast adrift by the Bounty mutineers, Captain Bligh sailed an open boat 3,618 nautical miles to the nearest European settlement. Where?",
+    "prompt": "Cast adrift by the Bounty mutineers, Captain Bligh sailed an open boat 3,618 nautical miles to the nearest European settlement. Where? Hint: it's the only one of these on Asia's doorstep.",
     "choices": [
       "Timor",
       "New Zealand",
@@ -988,7 +988,7 @@
   {
     "id": "megalodon",
     "category": "Legends & Monsters",
-    "prompt": "Megalodon, the giant shark whose name means \"big tooth,\" is extinct. Sorry, monster movies. Roughly when did it die out?",
+    "prompt": "Megalodon, the giant shark whose name means \"big tooth,\" is extinct. Sorry, monster movies. Roughly when did it die out? Hint: it never met a human, but it never met a T. rex either.",
     "choices": [
       "About 500 years ago",
       "About 10,000 years ago",
@@ -1010,7 +1010,7 @@
   {
     "id": "blue-hole",
     "category": "Into the Deep",
-    "prompt": "Egypt's Blue Hole is a notoriously deadly dive site. What do divers call the tunnel to the open sea whose ceiling sits 55 metres down?",
+    "prompt": "Egypt's Blue Hole is a notoriously deadly dive site. What do divers call the tunnel to the open sea whose ceiling sits 55 metres down? Hint: St. Louis has a famous gateway shaped like one.",
     "choices": [
       "The Arch",
       "The Throat",
@@ -1100,7 +1100,7 @@
   {
     "id": "challenger-deep",
     "category": "Into the Deep",
-    "prompt": "The Challenger Deep is the deepest known spot in the ocean. Drop Mount Everest in and it would vanish with room to spare. About how deep is it?",
+    "prompt": "The Challenger Deep is the deepest known spot in the ocean. Drop Mount Everest in and it would vanish with about two kilometres of water to spare. About how deep is it?",
     "choices": [
       "About 3,800 m",
       "About 6,000 m",
@@ -1167,7 +1167,7 @@
   {
     "id": "baikal",
     "category": "Strange Waters",
-    "prompt": "Siberia's Lake Baikal, the world's deepest lake, holds more water than all five North American Great Lakes combined. What share of the world's fresh surface water is that?",
+    "prompt": "Siberia's Lake Baikal, the world's deepest lake, holds more water than all five North American Great Lakes combined. What share of the world's fresh surface water is that? Hint: a bit more than one in five.",
     "choices": [
       "About 2%",
       "About 8%",
@@ -1357,7 +1357,7 @@
   {
     "id": "uss-arizona",
     "category": "War at Sea",
-    "prompt": "Sunk at Pearl Harbor in 1941, the USS Arizona still lies on the harbor floor. What has been built across her remains?",
+    "prompt": "Sunk at Pearl Harbor in 1941, the USS Arizona still lies on the harbor floor. What has been built across her remains? Hint: people go there to remember, not to swim.",
     "choices": [
       "A navy dry dock",
       "A memorial",
@@ -1403,7 +1403,7 @@
   {
     "id": "deepwater-horizon",
     "category": "Oil & Industry",
-    "prompt": "The 2010 Deepwater Horizon blowout killed 11 workers and caused a record oil spill in which gulf?",
+    "prompt": "The 2010 Deepwater Horizon blowout killed 11 workers and caused a record oil spill in which gulf? Hint: it's the gulf that Texas, Louisiana and Florida share.",
     "choices": [
       "Persian Gulf",
       "Gulf of Mexico",
@@ -1518,7 +1518,7 @@
   {
     "id": "baychimo",
     "category": "Ghost Ships",
-    "prompt": "The cargo ship Baychimo was abandoned off Alaska in 1931, but kept being spotted drifting through the Arctic. When was the last sighting?",
+    "prompt": "The cargo ship Baychimo was abandoned off Alaska in 1931, but kept being spotted drifting through the Arctic. When was the last sighting? Hint: the same year someone took one small step on the Moon.",
     "choices": [
       "1932",
       "1945",
@@ -1568,7 +1568,7 @@
   {
     "id": "joyita",
     "category": "Ghost Ships",
-    "prompt": "In 1955 the MV Joyita was found adrift in the South Pacific. How many of her 25 passengers and crew were aboard?",
+    "prompt": "In 1955 the MV Joyita was found adrift in the South Pacific. How many of her 25 passengers and crew were aboard? Hint: she's filed under ghost ships for a reason.",
     "choices": [
       "All 25",
       "Just the captain",
@@ -1635,7 +1635,7 @@
   {
     "id": "whydah",
     "category": "Pirates & Treasure",
-    "prompt": "The Whydah Gally, captured by \"Black Sam\" Bellamy, wrecked off Cape Cod in 1717. What makes her wreck unique?",
+    "prompt": "The Whydah Gally, captured by \"Black Sam\" Bellamy, wrecked off Cape Cod in 1717. What makes her wreck unique? Hint: experts can actually vouch for this one.",
     "choices": [
       "Deepest pirate wreck",
       "Only fully authenticated Golden Age pirate shipwreck",
@@ -1682,7 +1682,7 @@
   {
     "id": "san-jose",
     "category": "Pirates & Treasure",
-    "prompt": "The Spanish galleon San José sank off Colombia in 1708. Her cargo is so valuable she's nicknamed the \"Holy Grail of Shipwrecks.\" Roughly what's it worth?",
+    "prompt": "The Spanish galleon San José sank off Colombia in 1708. Her cargo is so valuable she's nicknamed the \"Holy Grail of Shipwrecks.\" Roughly what's it worth? Hint: think big. Then bigger.",
     "choices": [
       "About US$17 million",
       "About US$170 million",
@@ -1729,7 +1729,7 @@
   {
     "id": "skeleton-coast",
     "category": "Strange Waters",
-    "prompt": "Namibia's Skeleton Coast, littered with shipwrecks, got its name from bones on the beach. Whose bones, mostly?",
+    "prompt": "Namibia's Skeleton Coast, littered with shipwrecks, got its name from bones on the beach. Whose bones, mostly? Hint: think of what lives along a cold ocean coast.",
     "choices": [
       "Sailors'",
       "Dinosaurs'",
@@ -1751,7 +1751,7 @@
   {
     "id": "leviathan",
     "category": "Legends & Monsters",
-    "prompt": "The Leviathan of the Hebrew Bible became a byword for anything enormous. What kind of creature was it?",
+    "prompt": "The Leviathan of the Hebrew Bible became a byword for anything enormous. What kind of creature was it? Hint: it coils.",
     "choices": [
       "A giant sea serpent",
       "A flying whale",
@@ -1773,7 +1773,7 @@
   {
     "id": "scylla",
     "category": "Legends & Monsters",
-    "prompt": "Charybdis's neighbor Scylla is described as a beautiful woman down to the eyes with a few extra pieces of hardware. What's attached?",
+    "prompt": "Charybdis's neighbor Scylla is described as a beautiful woman down to the eyes and a lot less human below. What's attached? Hint: her bark is as bad as her bite.",
     "choices": [
       "Six dog heads on each side",
       "Eight crab claws",
@@ -1795,7 +1795,7 @@
   {
     "id": "selkie",
     "category": "Legends & Monsters",
-    "prompt": "In Celtic and Norse folklore, selkies shapeshift into humans by taking off their skin. What animal are they the rest of the time?",
+    "prompt": "In Celtic and Norse folklore, selkies shapeshift into humans by taking off their skin. What animal are they the rest of the time? Hint: they bark, flop about on rocks, and look great in a fur coat.",
     "choices": [
       "Otters",
       "Seals",
@@ -1862,7 +1862,7 @@
   {
     "id": "umibozu",
     "category": "Legends & Monsters",
-    "prompt": "Japan's umibōzu, a giant black \"sea monk,\" demands a ladle and uses it to sink your ship. What's the only safe thing to hand over?",
+    "prompt": "Japan's umibōzu, a giant black \"sea monk,\" demands a ladle and uses it to sink your ship. What's the only safe thing to hand over? Hint: think about how you'd sink a boat with a ladle.",
     "choices": [
       "A golden ladle",
       "A bottomless ladle",
@@ -1885,7 +1885,7 @@
   {
     "id": "jormungandr",
     "category": "Legends & Monsters",
-    "prompt": "Norse myth's World Serpent, Jörmungandr, grew so big it encircles the Earth. What is it doing with its mouth?",
+    "prompt": "Norse myth's World Serpent, Jörmungandr, grew so big it encircles the Earth. What is it doing with its mouth? Hint: when you're that long, the only thing left in reach is you.",
     "choices": [
       "Swallowing the Sun",
       "Biting its own tail",
@@ -1907,7 +1907,7 @@
   {
     "id": "rlyeh",
     "category": "Legends & Monsters",
-    "prompt": "H. P. Lovecraft's sunken city R'lyeh is the prison of a tentacled horror. Which one?",
+    "prompt": "H. P. Lovecraft's sunken city R'lyeh is the prison of a tentacled horror. Which one? Hint: his name sounds like someone clearing their throat.",
     "choices": [
       "Cthulhu",
       "Dagon",
@@ -1929,7 +1929,7 @@
   {
     "id": "atlantis",
     "category": "Legends & Monsters",
-    "prompt": "Which ancient Greek philosopher first wrote about Atlantis, the island that sank in a single day and night?",
+    "prompt": "Which ancient Greek philosopher first wrote about Atlantis, the island that sank in a single day and night? Hint: his name gave us a word for friendship with zero romance.",
     "choices": [
       "Aristotle",
       "Plato",
@@ -1975,7 +1975,7 @@
   {
     "id": "oarfish",
     "category": "Legends & Monsters",
-    "prompt": "The giant oarfish, the world's longest ray-finned fish, may explain many \"sea serpent\" sightings. In Japan, which disaster is it popularly believed to predict?",
+    "prompt": "The giant oarfish, the world's longest ray-finned fish, may explain many \"sea serpent\" sightings. In Japan, which disaster is it popularly believed to predict? Hint: think of what shakes the sea floor, not the sky.",
     "choices": [
       "Tsunamis",
       "Earthquakes",
@@ -1999,7 +1999,7 @@
   {
     "id": "bathysphere",
     "category": "Into the Deep",
-    "prompt": "In 1934 William Beebe and Otis Barton set a deep-diving record in a steel ball lowered on a cable. About how deep did they go?",
+    "prompt": "In 1934 William Beebe and Otis Barton set a deep-diving record in a steel ball lowered on a cable. About how deep did they go? Hint: a bit deeper than the world's tallest building is tall.",
     "choices": [
       "About 92 m",
       "About 923 m",
@@ -2021,7 +2021,7 @@
   {
     "id": "trieste",
     "category": "Into the Deep",
-    "prompt": "In 1960, Jacques Piccard and Don Walsh became the first people to reach the bottom of the Challenger Deep. Their vessel was named after an Italian port. Which?",
+    "prompt": "In 1960, Jacques Piccard and Don Walsh became the first people to reach the bottom of the Challenger Deep. Their vessel was named after an Italian port. Which? Hint: its name sounds like the Italian word for \"sad.\"",
     "choices": [
       "Venice",
       "Trieste",
@@ -2067,7 +2067,7 @@
   {
     "id": "thistlegorm",
     "category": "Into the Deep",
-    "prompt": "The SS Thistlegorm, bombed in the Red Sea in 1941, is now a famous wreck dive full of war cargo. Which famous ocean explorer first found her?",
+    "prompt": "The SS Thistlegorm, bombed in the Red Sea in 1941, is now a famous wreck dive full of war cargo. Which famous ocean explorer first found her? Hint: go with the most French name on the list.",
     "choices": [
       "Robert Ballard",
       "Jacques Cousteau",
@@ -2113,7 +2113,7 @@
   {
     "id": "anglerfish",
     "category": "Creatures of the Deep",
-    "prompt": "Deep-sea anglerfish lure prey with a glowing fishing rod on their heads. Some males go further and do what to their much bigger mates?",
+    "prompt": "Deep-sea anglerfish lure prey with a glowing fishing rod on their heads. Some males go further and do what to their much bigger mates? Hint: talk about a clingy boyfriend.",
     "choices": [
       "Eat them",
       "Fuse with them",
@@ -2227,7 +2227,7 @@
   {
     "id": "whale-fall",
     "category": "Creatures of the Deep",
-    "prompt": "When a whale dies and sinks to the deep sea floor, it's called a \"whale fall.\" How long can one carcass feed deep-sea life?",
+    "prompt": "When a whale dies and sinks to the deep sea floor, it's called a \"whale fall.\" How long can one carcass feed deep-sea life? Hint: a whale is a LOT of lunch.",
     "choices": [
       "Hours",
       "Days",
@@ -2271,7 +2271,7 @@
   {
     "id": "box-jellyfish",
     "category": "Creatures of the Deep",
-    "prompt": "Box jellyfish, some of the most venomous animals in the sea, have something almost no other jellyfish do. What?",
+    "prompt": "Box jellyfish, some of the most venomous animals in the sea, have something almost no other jellyfish do. What? Hint: you're using a pair right now to read this.",
     "choices": [
       "A brain",
       "True eyes with lenses",
@@ -2315,7 +2315,7 @@
   {
     "id": "blue-ringed-octopus",
     "category": "Creatures of the Deep",
-    "prompt": "The tiny blue-ringed octopus packs a powerful neurotoxin, the same one found in fugu pufferfish. Which?",
+    "prompt": "The tiny blue-ringed octopus packs a powerful neurotoxin, the same one found in fugu pufferfish. Which? Hint: the toxin is named after the pufferfish family.",
     "choices": [
       "Cyanide",
       "Tetrodotoxin",
@@ -2337,7 +2337,7 @@
   {
     "id": "dead-sea",
     "category": "Strange Waters",
-    "prompt": "The Dead Sea's shores are the lowest land on Earth. Roughly how far below sea level is the surface?",
+    "prompt": "The Dead Sea's shores are the lowest land on Earth. Roughly how far below sea level is the surface? Hint: about the height of the Empire State Building, antenna and all.",
     "choices": [
       "About 44 m",
       "About 440 m",
@@ -2383,7 +2383,7 @@
   {
     "id": "blood-falls",
     "category": "Strange Waters",
-    "prompt": "Antarctica's Blood Falls pours bright red out of the Taylor Glacier. What turns it red? Not actual blood.",
+    "prompt": "Antarctica's Blood Falls pours bright red out of the Taylor Glacier. What turns it red? Not actual blood. Hint: think of an old nail left out in the rain.",
     "choices": [
       "Red algae",
       "Iron oxide (rust)",
@@ -2405,7 +2405,7 @@
   {
     "id": "maelstrom",
     "category": "Strange Waters",
-    "prompt": "Norway's Moskstraumen is one of the strongest whirlpools in the world. Which spooky American author brought the word \"maelstrom\" into English with a story about it?",
+    "prompt": "Norway's Moskstraumen is one of the strongest whirlpools in the world. Which spooky American author brought the word \"maelstrom\" into English with a story about it? Hint: he also wrote a poem about a raven.",
     "choices": [
       "H. P. Lovecraft",
       "Edgar Allan Poe",
@@ -2449,7 +2449,7 @@
   {
     "id": "sargasso-sea",
     "category": "Strange Waters",
-    "prompt": "The Sargasso Sea in the Atlantic is unique among named seas. What doesn't it have?",
+    "prompt": "The Sargasso Sea in the Atlantic is unique among named seas. What doesn't it have? Hint: try finding where it ends.",
     "choices": [
       "Fish",
       "Land boundaries",
@@ -2472,7 +2472,7 @@
   {
     "id": "draupner-wave",
     "category": "Strange Waters",
-    "prompt": "On New Year's Day 1995 a North Sea platform measured the first-ever confirmed rogue wave. How tall was it?",
+    "prompt": "On New Year's Day 1995 a North Sea platform measured the first-ever confirmed rogue wave. How tall was it? Hint: \"rogue\" means big, but not skyscraper big.",
     "choices": [
       "2.5 m",
       "25.6 m",
@@ -2495,7 +2495,7 @@
   {
     "id": "denmark-strait-cataract",
     "category": "Strange Waters",
-    "prompt": "The world's tallest waterfall is hidden underwater between Greenland and Iceland. About how far does the water fall?",
+    "prompt": "The world's tallest waterfall is hidden underwater between Greenland and Iceland. About how far does the water fall? Hint: \"tallest\" means it beats every waterfall on land, too.",
     "choices": [
       "35 m",
       "350 m",
